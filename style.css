@@ -1,0 +1,155 @@
+/* Schriftart */
+@font-face {
+    font-family: 'Inter';
+    src: url(./assets/fonts/Inter-VariableFont_opsz\,wght.ttf);
+}
+
+/* Allgemein */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background-color: white;
+    scrollbar-color: black;
+}
+
+body {
+    font-family: 'Inter';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.2;
+    min-height: 100vh;
+    color: white;
+    display: flex;
+    justify-content: left;
+}
+
+.content_max-width {
+    width: 1440px;
+    max-width: 1440px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.list {
+    list-style-type: none;
+}
+
+/* Navigation */
+.navBar {
+    position: absolute;
+    width: 232px;
+    height: 100vh;
+    padding-bottom: 64px;
+    background-color: #2b3647;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.navBar__logo {
+    width: 100%;
+    padding: 64px 64px;
+    background-color: #2b3647;
+    display: flex;
+    justify-content: center;
+}
+
+.navBar__menu {
+    width: 100%;
+    padding: 64px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.menu__list {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.list__quicklink {
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.list__quicklink--active {
+    background-color: #091931;
+}
+
+.navBar__legalInformation {
+    height: 100%;
+    color: #a8a8a8;
+    display: flex;
+    justify-content: flex-end;
+    align-content: center;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.legalInformation {
+    padding: 8px;
+}
+
+/* Header */
+.header {
+    padding: 20px 40px 20px 348px;
+    color: black;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.header__headline {
+    font-size: 20px;
+}
+
+.header__loginHelp {
+    display: flex;
+    align-items: center;
+}
+
+.loginHelp__icon {
+    transition: all 125ms;
+}
+
+.loginHelp__icon:hover {
+    cursor: pointer;
+    scale: 1.2;
+}
+
+/* Main */
+.main {
+    padding: 32px 0;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.main_flex-instructions {
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Footer */
+.footer {
+    padding: 32px 0;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.footer_flex-instructions {
+    align-items: center;
+}

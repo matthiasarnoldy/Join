@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vorlage</title>
+
+    <link rel="shortcut icon" href="./assets/icons/desktop/logoFavicon.svg" type="image/x-icon">
+
+    <script src="./scripts/templates.js"></script>
+    <script src="./script.js"></script>
+    
+    <link rel="stylesheet" href="./styles/assets.css">
+    <link rel="stylesheet" href="./styles/standard.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <nav class="navBar">
+        <header class="logo navBar__logo">
+            <img class="logoIcon" src="./assets/icons/desktop/logo.svg" alt="Logo">
+        </header>
+        <main class="navBar__menu">
+            <ul class="list menu__list">
+                <li class="quicklink list__quicklink list__quicklink--active">
+                    <img src="./assets/icons/desktop/summary.svg" alt="" class="quicklink__icon">
+                    <span>Summary</span>
+                </li>
+                <li class="quicklink list__quicklink">
+                    <img src="./assets/icons/desktop/addTask.svg" alt="" class="quicklink__icon">
+                    <span>Add Task</span>
+                </li>
+                <li class="quicklink list__quicklink">
+                    <img src="./assets/icons/desktop/board.svg" alt="" class="quicklink__icon">
+                    <span>Board</span>
+                </li>
+                <li class="quicklink list__quicklink">
+                    <img src="./assets/icons/desktop/contacts.svg" alt="" class="quicklink__icon">
+                    <span>Contacts</span>
+                </li>
+            </ul>
+        </main>
+        <footer class="navBar__legalInformation">
+            <p class="legalInformation">Privacy Policy</p>
+            <p class="legalInformation">Legal Notice</p>
+        </footer>
+    </nav>
+    <section>
+        <header>
+            <div class="header content_max-width">
+                <span class="header__headline">Kanban Project Management Tool</span>
+                <section class="loginHelp header__loginHelp">
+                    <img src="./assets/icons/desktop/help.svg" alt="Help Icon" class="loginHelp__icon">
+                </section>
+            </div>
+        </header>
+        <main>
+            <div class="content_max-width main_flex-instructions"></div>
+        </main>
+        <footer>
+            <div class="content_max-width footer_flex-instructions"></div>
+        </footer>
+    </section>
+</body>
+</html>
