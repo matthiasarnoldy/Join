@@ -43,6 +43,7 @@ h1 {
 }
 
 .content {
+    width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -88,10 +89,12 @@ h1 {
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: all 100ms ease-in;
 }
 
 .list__quicklink:hover {
     cursor: pointer;
+    background-color: #2a3d59;
 }
 
 .list__quicklink--active {
@@ -110,19 +113,24 @@ h1 {
 
 .legalInformation {
     padding: 8px;
+    transition: all 125ms;
 }
 
 .legalInformation:hover {
     cursor: pointer;
+    color: #29abe2;
 }
 
 /* Header */
 .header {
-    padding: 20px 40px 20px 348px;
     background-color: #fff;
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));
+}
+
+.header_flex-instructions {
+    padding: 20px 40px 20px 348px;
     display: flex;
     align-items: center;
-    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));
 }
 
 .header__headline {
