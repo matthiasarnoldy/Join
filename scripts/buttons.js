@@ -7,8 +7,8 @@ const navSummary = document.getElementById("nav-summary");
 const navAddTask = document.getElementById("nav-add-task");
 const navBoard = document.getElementById("nav-board");
 const navContacts = document.getElementById("nav-contacts");
-const navPrivacyPolicy = document.getElementById("navPrivacyPolicy");
-const navLegalNotice = document.getElementById("navLegalNotice");
+const navPrivacyPolicy = document.getElementById("nav-Privacy-Policy");
+const navLegalNotice = document.getElementById("nav-Legal-Notice");
 
 // Add event listeners to the buttons to handle clicks and redirect to the appropriate pages
 
@@ -37,14 +37,14 @@ if (navContacts) {
 }
 
 if (navPrivacyPolicy) {
-   navContacts.addEventListener("click", () => {
-      location.href = "./privacy-policy.html";
+   navPrivacyPolicy.addEventListener("click", () => {
+      location.href = "./privacy-Policy.htm";
    });
 }
 
 if (navLegalNotice) {
-   navContacts.addEventListener("click", () => {
-      location.href = "./legal-notice.html";
+   navLegalNotice.addEventListener("click", () => {
+      location.href = "./legalnotice.html";
    });
 }
 

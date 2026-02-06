@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Board</title>
+      <title>Join</title>
 
       <link
          rel="shortcut icon"
@@ -20,16 +20,16 @@
    </head>
    <body>
       <nav class="navBar">
-         <header class="logo navBar__logo">
+         <header class="navBar__logo logo">
             <img
                class="logoIcon"
                src="./assets/icons/desktop/logo.svg"
                alt="Logo" />
          </header>
          <main class="navBar__menu">
-            <ul class="list menu__list">
+            <ul class="navBar__list list">
                <li
-                  class="quicklink list__quicklink list__quicklink--active"
+                  class="navBar__quicklink navBar__quicklink--active"
                   id="nav-summary">
                   <img
                      src="./assets/icons/desktop/summary.svg"
@@ -37,21 +37,21 @@
                      class="quicklink__icon" />
                   <span>Summary</span>
                </li>
-               <li class="quicklink list__quicklink" id="nav-add-task">
+               <li class="navBar__quicklink quicklink" id="nav-add-task">
                   <img
                      src="./assets/icons/desktop/addTask.svg"
                      alt=""
                      class="quicklink__icon" />
                   <span>Add Task</span>
                </li>
-               <li class="quicklink list__quicklink" id="nav-board">
+               <li class="navBar__quicklink quicklink" id="nav-board">
                   <img
                      src="./assets/icons/desktop/board.svg"
                      alt=""
                      class="quicklink__icon" />
                   <span>Board</span>
                </li>
-               <li class="quicklink list__quicklink" id="nav-contacts">
+               <li class="navBar__quicklink quicklink" id="nav-contacts">
                   <img
                      src="./assets/icons/desktop/contacts.svg"
                      alt=""
@@ -61,36 +61,27 @@
             </ul>
          </main>
          <footer class="navBar__legalInformation">
-            <p class="legalInformation" id="navPrivacyPolicy">Privacy Policy</p>
-            <p class="legalInformation" id="navLegalNotice">Legal Notice</p>
+            <p class="legalInformation" id="nav-Privacy-Policy">Privacy Policy</p>
+            <p class="legalInformation" id="nav-Legal-Notice">Legal Notice</p>
          </footer>
       </nav>
-      <section class="content">
+      <section class="mainArea">
          <header class="header">
-            <div class="content_max-width header_flex-instructions">
-               <span class="header__headline"
-                  >Kanban Project Management Tool</span
-               >
-               <section class="loginHelp header__loginHelp">
+            <div class="content_max-width header_flex-instructions topBar">
+               <span class="topBar__name">Kanban Project Management Tool</span>
+               <section class="topBar__loginHelp">
                   <img
                      src="./assets/icons/desktop/help.svg"
                      alt="Help Icon"
-                     class="loginHelp__icon" />
-                  <span class="loginHelp__initials">SM</span>
+                     class="help__icon" />
+                  <span class="login__initials">SM</span>
                </section>
             </div>
          </header>
-         <main class="main">
+         <main class="main content_max-width">
             <div class="main_flex-instructions">
-               <section class="headline main__headline">
-                  <h1 class="headline__name">Join 360</h1>
-                  <img
-                     src="./assets/icons/desktop/dividingLine.svg"
-                     alt=""
-                     class="headline__dividingLine" />
-                  <h3 class="headline__description">Key Metrics at a Glance</h3>
-               </section>
-            </div>
+               <section class="headline">
+                  <h1 class="headline__name">Board</h1>
          </main>
       </section>
    </body>
