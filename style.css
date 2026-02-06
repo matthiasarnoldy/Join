@@ -11,8 +11,9 @@
 }
 
 html {
-    background-color: white;
-    scrollbar-color: black;
+    background-color: #fff;
+    scrollbar-color: #2b3647;
+    cursor: default;
 }
 
 body {
@@ -103,6 +104,11 @@ h2 {
 }
 
 .navBar__quicklink--active {
+    background-color: #091931;
+}
+
+.navBar__quicklink--active:hover {
+    cursor: default;
     background-color: #091931;
 }
 
@@ -230,13 +236,13 @@ h2 {
 .overview {
     width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 64px;
 }
 
 .overview__summary {
-    width: 560px; /**/
-    height: 562px; /**/
+    width: 560px;
+    height: 562px;
     display: flex;
     flex-direction: column;
     gap: 28px;
@@ -259,10 +265,14 @@ h2 {
     transform-origin: right;
 }
 
-.summary__card .summary__urgent {
+.summary__card.summary__urgent {
+    background-color: #fff;
+    display: flex;
+    border-radius: 30px;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.1));
     transform-origin: left top;
+    transition: all 100ms;
 }
-
 
 .summary__card:hover {
     cursor: pointer;
@@ -272,7 +282,7 @@ h2 {
     filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
 }
 
-.summary__card:hover .summary__urgent {
+.summary__card.summary__urgent:hover {
     transform: scaleX(1.03) scaleY(1.09);
 }
 
@@ -404,6 +414,13 @@ h2 {
     flex-direction: column;
     flex: 1;
     text-align: center;
+}
+
+.overview__greetings {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 3px;
 }
 
 .greetings__name {
