@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Vorlage</title>
+      <title>Board</title>
 
       <link
          rel="shortcut icon"
@@ -11,6 +11,7 @@
          type="image/x-icon" />
 
       <script src="./scripts/templates.js"></script>
+      <script src="./scripts/buttons.js" defer></script>
       <script src="./script.js"></script>
 
       <link rel="stylesheet" href="./styles/assets.css" />
@@ -27,28 +28,30 @@
          </header>
          <main class="navBar__menu">
             <ul class="list menu__list">
-               <li class="quicklink list__quicklink list__quicklink--active">
+               <li
+                  class="quicklink list__quicklink list__quicklink--active"
+                  id="nav-summary">
                   <img
                      src="./assets/icons/desktop/summary.svg"
                      alt=""
                      class="quicklink__icon" />
                   <span>Summary</span>
                </li>
-               <li class="quicklink list__quicklink">
+               <li class="quicklink list__quicklink" id="nav-add-task">
                   <img
                      src="./assets/icons/desktop/addTask.svg"
                      alt=""
                      class="quicklink__icon" />
                   <span>Add Task</span>
                </li>
-               <li class="quicklink list__quicklink">
+               <li class="quicklink list__quicklink" id="nav-board">
                   <img
                      src="./assets/icons/desktop/board.svg"
                      alt=""
                      class="quicklink__icon" />
                   <span>Board</span>
                </li>
-               <li class="quicklink list__quicklink">
+               <li class="quicklink list__quicklink" id="nav-contacts">
                   <img
                      src="./assets/icons/desktop/contacts.svg"
                      alt=""
