@@ -227,10 +227,72 @@ h2 {
     display: flex;
     border-radius: 30px;
     filter: drop-shadow(0 0 4px rgba(0,0,0,0.1));
+    transform-origin: left;
+    transition: all 100ms;
 }
+
+.summary__card:nth-child(2) {
+    transform-origin: center;
+}
+
+.summary__card:last-child {
+    transform-origin: right;
+}
+
+.summary__card .summary__urgent {
+    transform-origin: left top;
+}
+
 
 .summary__card:hover {
     cursor: pointer;
+    background-color: #2b3647;
+    color: #fff;
+    transform: scaleX(1.07) scaleY(1.09);
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
+}
+
+.summary__card:hover .summary__urgent {
+    transform: scaleX(1.03) scaleY(1.09);
+}
+
+.summary__card:hover .summary__text {
+    color: #fff;
+}
+
+.summary__card:hover .todo__icon--circle {
+    fill: #fff;
+}
+
+.summary__card:hover .todo__icon--pencil {
+    fill: #2b3647;
+}
+
+.summary__card:hover .todo__icon--checked {
+    stroke: #2b3647;
+}
+
+.summary__card:active {
+    cursor: pointer;
+    background-color: #fff;
+    color: #000;
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
+}
+
+.summary__card:active .summary__text {
+    color: #2b3647;
+}
+
+.summary__card:active .todo__icon--circle {
+    fill: #2b3647;
+}
+
+.summary__card:active .todo__icon--pencil {
+    fill: #fff;
+}
+
+.summary__card:active .todo__icon--checked {
+    stroke: #fff;
 }
 
 .summary__number {
@@ -251,7 +313,6 @@ h2 {
 }
 
 .todo__card {
-    /* padding: 38px 19px; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -318,7 +379,6 @@ h2 {
 }
 
 .tasks__card {
-    /* padding: 25px; */
     justify-content: center;
     align-items: center;
     flex-direction: column;
