@@ -117,13 +117,20 @@ h2 {
 }
 
 .legalInformation {
-    padding: 8px;
+    width: 100%;
+    padding: 8px 56px;
+    box-sizing: border-box;
     transition: all 125ms;
 }
 
 .legalInformation:hover {
     cursor: pointer;
-    color: #29abe2;
+    color: #fff;
+}
+
+.legalInformation.navBar__quicklink--active {
+    background-color: #091931;
+    color: #fff;
 }
 
 /* Header */

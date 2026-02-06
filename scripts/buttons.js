@@ -10,40 +10,76 @@ const navContacts = document.getElementById("nav-contacts");
 const navPrivacyPolicy = document.getElementById("nav-Privacy-Policy");
 const navLegalNotice = document.getElementById("nav-Legal-Notice");
 
+// Function to set the active navigation item based on the clicked button
+function setActiveNav(clickedItem) {
+   document
+      .querySelectorAll(".navBar__quicklink, .legalInformation")
+      .forEach((item) => item.classList.remove("navBar__quicklink--active"));
+   if (clickedItem) {
+      clickedItem.classList.add("navBar__quicklink--active");
+   }
+}
+
+function setActiveNavByPath() {
+   const path = window.location.pathname.toLowerCase();
+   const activeMap = [
+      { match: "summary.html", el: navSummary },
+      { match: "add-task.html", el: navAddTask },
+      { match: "board.html", el: navBoard },
+      { match: "contacts.html", el: navContacts },
+      { match: "privacy-policy.htm", el: navPrivacyPolicy },
+      { match: "legalnotice.html", el: navLegalNotice },
+   ];
+   const active = activeMap.find((item) => path.endsWith(item.match));
+   if (active && active.el) {
+      setActiveNav(active.el);
+   }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+   setActiveNavByPath();
+});
+
 // Add event listeners to the buttons to handle clicks and redirect to the appropriate pages
 
 if (navSummary) {
    navSummary.addEventListener("click", () => {
+      setActiveNav(navSummary);
       location.href = "./summary.html";
    });
 }
 
 if (navAddTask) {
    navAddTask.addEventListener("click", () => {
+      setActiveNav(navAddTask);
       location.href = "./add-task.html";
    });
 }
 
 if (navBoard) {
    navBoard.addEventListener("click", () => {
+      setActiveNav(navBoard);
       location.href = "./board.html";
    });
 }
 
 if (navContacts) {
    navContacts.addEventListener("click", () => {
+      setActiveNav(navContacts);
       location.href = "./contacts.html";
    });
 }
 
 if (navPrivacyPolicy) {
    navPrivacyPolicy.addEventListener("click", () => {
+      setActiveNav(navPrivacyPolicy);
       location.href = "./privacy-Policy.htm";
    });
 }
 
 if (navLegalNotice) {
    navLegalNotice.addEventListener("click", () => {
+      setActiveNav(navLegalNotice);
       location.href = "./legalnotice.html";
    });
 }
