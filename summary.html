@@ -1,120 +1,169 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join</title>
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Join</title>
 
-    <link rel="shortcut icon" href="./assets/icons/desktop/logoFavicon.svg" type="image/x-icon">
+      <link
+         rel="shortcut icon"
+         href="./assets/icons/desktop/logoFavicon.svg"
+         type="image/x-icon" />
 
-    <script src="./scripts/templates.js"></script>
-    <script src="./script.js"></script>
-    
-    <link rel="stylesheet" href="./styles/assets.css">
-    <link rel="stylesheet" href="./styles/standard.css">
-    <link rel="stylesheet" href="./style.css">
-</head>
-<body>
-    <nav class="navBar">
-        <header class="navBar__logo logo">
-            <img class="logoIcon" src="./assets/icons/desktop/logo.svg" alt="Logo">
-        </header>
-        <main class="navBar__menu">
+      <script src="./scripts/templates.js"></script>
+      <script src="./scripts/buttons.js" defer></script>
+      <script src="./script.js"></script>
+
+      <link rel="stylesheet" href="./styles/assets.css" />
+      <link rel="stylesheet" href="./styles/standard.css" />
+      <link rel="stylesheet" href="./style.css" />
+   </head>
+   <body>
+      <nav class="navBar">
+         <header class="navBar__logo logo">
+            <img
+               class="logoIcon"
+               src="./assets/icons/desktop/logo.svg"
+               alt="Logo" />
+         </header>
+         <main class="navBar__menu">
             <ul class="navBar__list list">
-                <li class="navBar__quicklink navBar__quicklink--active quicklink">
-                    <img src="./assets/icons/desktop/summary.svg" alt="" class="quicklink__icon">
-                    <span>Summary</span>
-                </li>
-                <li class="navBar__quicklink quicklink">
-                    <img src="./assets/icons/desktop/addTask.svg" alt="" class="quicklink__icon">
-                    <span>Add Task</span>
-                </li>
-                <li class="navBar__quicklink quicklink">
-                    <img src="./assets/icons/desktop/board.svg" alt="" class="quicklink__icon">
-                    <span>Board</span>
-                </li>
-                <li class="navBar__quicklink quicklink">
-                    <img src="./assets/icons/desktop/contacts.svg" alt="" class="quicklink__icon">
-                    <span>Contacts</span>
-                </li>
+               <li
+                  class="navBar__quicklink navBar__quicklink--active"
+                  id="nav-summary quicklink">
+                  <img
+                     src="./assets/icons/desktop/summary.svg"
+                     alt=""
+                     class="quicklink__icon" />
+                  <span>Summary</span>
+               </li>
+               <li class="navBar__quicklink quicklink" id="nav-add-task">
+                  <img
+                     src="./assets/icons/desktop/addTask.svg"
+                     alt=""
+                     class="quicklink__icon" />
+                  <span>Add Task</span>
+               </li>
+               <li class="navBar__quicklink quicklink" id="nav-board">
+                  <img
+                     src="./assets/icons/desktop/board.svg"
+                     alt=""
+                     class="quicklink__icon" />
+                  <span>Board</span>
+               </li>
+               <li class="navBar__quicklink quicklink" id="nav-contacts">
+                  <img
+                     src="./assets/icons/desktop/contacts.svg"
+                     alt=""
+                     class="quicklink__icon" />
+                  <span>Contacts</span>
+               </li>
             </ul>
-        </main>
-        <footer class="navBar__legalInformation">
-            <p class="legalInformation">Privacy Policy</p>
-            <p class="legalInformation">Legal Notice</p>
-        </footer>
-    </nav>
-    <section class="mainArea">
-        <header class="header">
+         </main>
+         <footer class="navBar__legalInformation">
+            <p class="legalInformation" id="navPrivacyPolicy">Privacy Policy</p>
+            <p class="legalInformation" id="navLegalNotice">Legal Notice</p>
+         </footer>
+      </nav>
+      <section class="mainArea">
+         <header class="header">
             <div class="content_max-width header_flex-instructions topBar">
-                <span class="topBar__name">Kanban Project Management Tool</span>
-                <section class="topBar__loginHelp">
-                    <img src="./assets/icons/desktop/help.svg" alt="Help Icon" class="help__icon">
-                    <span class="login__initials">SM</span>
-                </section>
+               <span class="topBar__name">Kanban Project Management Tool</span>
+               <section class="topBar__loginHelp">
+                  <img
+                     src="./assets/icons/desktop/help.svg"
+                     alt="Help Icon"
+                     class="help__icon" />
+                  <span class="login__initials">SM</span>
+               </section>
             </div>
-        </header>
-        <main class="main content_max-width">
+         </header>
+         <main class="main content_max-width">
             <div class="main_flex-instructions">
-                <section class="headline">
-                    <h1 class="headline__name">Join 360</h1>
-                    <img src="./assets/icons/desktop/headline__dividingLine.svg" alt="Dividing Line" class="headline__dividingLine">
-                    <h3 class="headline__description">Key Metrics at a Glance</h3>
-                </section>
-                <section class="overview">
-                    <section class="overview__summary summary">
-                        <div class="summary__todo todo">
-                            <div class="todo__card summary__card">
-                                <img src="./assets/icons/desktop/pencil.svg" alt="ToDo" class="todo__icon">
-                                <div class="priority__card">
-                                    <span class="summary__number">5</span>
-                                    <span class="summary__text">Urgent</span>
-                                </div>
-                            </div>
-                            <div class="todo__card summary__card">
-                                <img src="./assets/icons/desktop/pencil.svg" alt="ToDo" class="todo__icon">
-                                <div class="priority__card">
-                                    <span class="summary__number">5</span>
-                                    <span class="summary__text">Urgent</span>
-                                </div>
-                            </div>
+               <section class="headline">
+                  <h1 class="headline__name">Join 360</h1>
+                  <img
+                     src="./assets/icons/desktop/headline__dividingLine.svg"
+                     alt="Dividing Line"
+                     class="headline__dividingLine" />
+                  <h3 class="headline__description">Key Metrics at a Glance</h3>
+               </section>
+               <section class="overview">
+                  <section class="overview__summary summary">
+                     <div class="summary__todo todo">
+                        <div class="todo__card summary__card">
+                           <img
+                              src="./assets/icons/desktop/pencil.svg"
+                              alt="ToDo"
+                              class="todo__icon" />
+                           <div class="priority__card">
+                              <span class="summary__number">5</span>
+                              <span class="summary__text">Urgent</span>
+                           </div>
                         </div>
-                        <div class="summary__urgent summary__card">
-                            <div class="urgent__priority priority">
-                                <img src="./assets/icons/desktop/urgent.svg" alt="Urgent" class="urgent__icon">
-                                <div class="priority__card">
-                                    <span class="summary__number">5</span>
-                                    <span class="priority__text">Urgent</span>
-                                </div>
-                            </div>
-                            <img src="./assets/icons/desktop/urgent__dividingLine.svg" alt="Dividing Line" class="urgent__dividingLine">
-                            <div class="urgent__date">
-                                <span class="date__number">February 06, 2026</span>
-                                <span class="date__deadline">Upcoming Deadline</span>
-                            </div>
+                        <div class="todo__card summary__card">
+                           <img
+                              src="./assets/icons/desktop/pencil.svg"
+                              alt="ToDo"
+                              class="todo__icon" />
+                           <div class="priority__card">
+                              <span class="summary__number">5</span>
+                              <span class="summary__text">Urgent</span>
+                           </div>
                         </div>
-                        <div class="summary__tasks tasks">
-                            <div class="tasks__card summary__card">
-                                <span class="summary__number">5</span>
-                                <span class="summary__text">Tasks in <br> Board</span>
-                            </div>
-                            <div class="tasks__card summary__card">
-                                <span class="summary__number">2</span>
-                                <span class="summary__text">Tasks in <br> Progress</span>
-                            </div>
-                            <div class="tasks__card summary__card">
-                                <span class="summary__number">2</span>
-                                <span class="summary__text">Awaiting Feedback</span>
-                            </div>
+                     </div>
+                     <div class="summary__urgent summary__card">
+                        <div class="urgent__priority priority">
+                           <img
+                              src="./assets/icons/desktop/urgent.svg"
+                              alt="Urgent"
+                              class="urgent__icon" />
+                           <div class="priority__card">
+                              <span class="summary__number">5</span>
+                              <span class="priority__text">Urgent</span>
+                           </div>
                         </div>
-                    </section>
-                    <section class="overview__greetings greetings">
-                        <h2 class="greetings__timeannouncement timeannouncement">Good Morning,</h2>
-                        <h1 class="greetings__name greetings__name--secondary">Sofia Müller</h1>
-                    </section>
-                </section>
+                        <img
+                           src="./assets/icons/desktop/urgent__dividingLine.svg"
+                           alt="Dividing Line"
+                           class="urgent__dividingLine" />
+                        <div class="urgent__date">
+                           <span class="date__number">February 06, 2026</span>
+                           <span class="date__deadline">Upcoming Deadline</span>
+                        </div>
+                     </div>
+                     <div class="summary__tasks tasks">
+                        <div class="tasks__card summary__card">
+                           <span class="summary__number">5</span>
+                           <span class="summary__text"
+                              >Tasks in <br />
+                              Board</span
+                           >
+                        </div>
+                        <div class="tasks__card summary__card">
+                           <span class="summary__number">2</span>
+                           <span class="summary__text"
+                              >Tasks in <br />
+                              Progress</span
+                           >
+                        </div>
+                        <div class="tasks__card summary__card">
+                           <span class="summary__number">2</span>
+                           <span class="summary__text">Awaiting Feedback</span>
+                        </div>
+                     </div>
+                  </section>
+                  <section class="overview__greetings greetings">
+                     <h2 class="greetings__timeannouncement timeannouncement">
+                        Good Morning,
+                     </h2>
+                     <h1 class="greetings__name greetings__name--secondary">
+                        Sofia Müller
+                     </h1>
+                  </section>
+               </section>
             </div>
-        </main>
-    </section>
-</body>
+         </main>
+      </section>
+   </body>
 </html>
