@@ -107,9 +107,11 @@ h2 {
 }
 
 .navBar__legalInformation {
+    width: 100%;
     height: 100%;
     color: #a8a8a8;
     display: flex;
+    align-items: stretch;
     justify-content: flex-end;
     align-content: center;
     flex-direction: column;
@@ -119,18 +121,29 @@ h2 {
 .legalInformation {
     width: 100%;
     padding: 8px 56px;
+    min-height: 24px;
     box-sizing: border-box;
+    color: #CDCDCD;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
     transition: all 125ms;
 }
 
 .legalInformation:hover {
     cursor: pointer;
-    color: #fff;
+    color: #29ABE2;
+    font-weight: 700;
 }
 
 .legalInformation.navBar__quicklink--active {
     background-color: #091931;
-    color: #fff;
+    color: #CDCDCD;
+}
+
+.legalInformation.navBar__quicklink--active:hover {
+    color: #29ABE2;
+    font-weight: 700;
 }
 
 /* Header */
