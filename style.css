@@ -38,11 +38,16 @@ h1 {
     font-weight: 700;
 }
 
+h2 {
+    font-size: 47px;
+    font-weight: 500;
+}
+
 .list {
     list-style-type: none;
 }
 
-.content {
+.mainArea {
     width: 100%;
     min-height: 100vh;
     display: flex;
@@ -77,14 +82,14 @@ h1 {
     justify-content: center;
 }
 
-.menu__list {
+.navBar__list {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     gap: 15px;
 }
 
-.list__quicklink {
+.navBar__quicklink {
     padding: 8px 56px;
     display: flex;
     align-items: center;
@@ -92,12 +97,12 @@ h1 {
     transition: all 100ms ease-in;
 }
 
-.list__quicklink:hover {
+.navBar__quicklink:hover {
     cursor: pointer;
     background-color: #2a3d59;
 }
 
-.list__quicklink--active {
+.navBar__quicklink--active {
     background-color: #091931;
 }
 
@@ -128,31 +133,34 @@ h1 {
 }
 
 .header_flex-instructions {
-    padding: 20px 40px 20px 348px;
     display: flex;
     align-items: center;
 }
 
-.header__headline {
+.topBar {
+    padding: 20px 40px 20px 348px;
+}
+
+.topBar__name {
     font-size: 20px;
 }
 
-.header__loginHelp {
+.topBar__loginHelp {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-.loginHelp__icon {
+.help__icon {
     transition: all 125ms;
 }
 
-.loginHelp__icon:hover {
+.help__icon:hover {
     cursor: pointer;
     scale: 1.2;
 }
 
-.loginHelp__initials {
+.login__initials {
     width: 56px;
     height: 56px;
     font-size: 14px;
@@ -165,25 +173,26 @@ h1 {
     transition: all 125ms;
 }
 
-.loginHelp__initials:hover {
+.login__initials:hover {
     cursor: pointer;
     background-color: rgba(12, 46, 98, 0.12);
 }
 
 /* Main */
 .main {
-    padding: 0 0 0 328px;
+    padding: 0 100px 0 328px;
     background-color: #f6f7f8;
     display: flex;
     flex-grow: 1;
 }
 
 .main_flex-instructions {
+    width: 100%;
     flex-direction: column;
 }
 
-.main__headline {
-    padding: 110px 0 0;
+.headline {
+    padding: 110px 0 48px;
     display: flex;
     align-items: center;
     gap: 30px;
@@ -196,4 +205,58 @@ h1 {
 .headline__description {
     font-size: 27px;
     font-weight: 400;
+}
+
+.overview {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.overview__summary {
+    width: 560px; /**/
+    height: 562px; /**/
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.summary__card {
+    background-color: #fff;
+    display: flex;
+    border-radius: 30px;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.1));
+}
+
+.summary__number {
+    font-size: 64px;
+    font-weight: 600;
+}
+
+.summary__text{
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.summary__tasks {
+    display: flex;
+    gap: 18px;
+}
+
+.tasks__card {
+    padding: 25px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.greetings__name {
+    font-size: 64px;
+}
+
+.greetings__name--secondary {
+    color: #29abe2;
 }
