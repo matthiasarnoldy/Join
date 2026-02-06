@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vorlage</title>
+    <title>Join</title>
 
     <link rel="shortcut icon" href="./assets/icons/desktop/logoFavicon.svg" type="image/x-icon">
 
@@ -16,24 +16,24 @@
 </head>
 <body>
     <nav class="navBar">
-        <header class="logo navBar__logo">
+        <header class="navBar__logo logo">
             <img class="logoIcon" src="./assets/icons/desktop/logo.svg" alt="Logo">
         </header>
         <main class="navBar__menu">
-            <ul class="list menu__list">
-                <li class="quicklink list__quicklink list__quicklink--active">
+            <ul class="navBar__list list">
+                <li class="navBar__quicklink navBar__quicklink--active quicklink">
                     <img src="./assets/icons/desktop/summary.svg" alt="" class="quicklink__icon">
                     <span>Summary</span>
                 </li>
-                <li class="quicklink list__quicklink">
+                <li class="navBar__quicklink quicklink">
                     <img src="./assets/icons/desktop/addTask.svg" alt="" class="quicklink__icon">
                     <span>Add Task</span>
                 </li>
-                <li class="quicklink list__quicklink">
+                <li class="navBar__quicklink quicklink">
                     <img src="./assets/icons/desktop/board.svg" alt="" class="quicklink__icon">
                     <span>Board</span>
                 </li>
-                <li class="quicklink list__quicklink">
+                <li class="navBar__quicklink quicklink">
                     <img src="./assets/icons/desktop/contacts.svg" alt="" class="quicklink__icon">
                     <span>Contacts</span>
                 </li>
@@ -44,22 +44,51 @@
             <p class="legalInformation">Legal Notice</p>
         </footer>
     </nav>
-    <section class="content">
+    <section class="mainArea">
         <header class="header">
-            <div class="content_max-width header_flex-instructions">
-                <span class="header__headline">Kanban Project Management Tool</span>
-                <section class="loginHelp header__loginHelp">
-                    <img src="./assets/icons/desktop/help.svg" alt="Help Icon" class="loginHelp__icon">
-                    <span class="loginHelp__initials">SM</span>
+            <div class="content_max-width header_flex-instructions topBar">
+                <span class="topBar__name">Kanban Project Management Tool</span>
+                <section class="topBar__loginHelp">
+                    <img src="./assets/icons/desktop/help.svg" alt="Help Icon" class="help__icon">
+                    <span class="login__initials">SM</span>
                 </section>
             </div>
         </header>
         <main class="main">
             <div class="main_flex-instructions">
-                <section class="headline main__headline">
+                <section class="headline">
                     <h1 class="headline__name">Join 360</h1>
                     <img src="./assets/icons/desktop/dividingLine.svg" alt="" class="headline__dividingLine">
                     <h3 class="headline__description">Key Metrics at a Glance</h3>
+                </section>
+                <section class="overview">
+                    <section class="overview__summary summary">
+                        <div class="summary__todo todo">
+                            <div class="todo__card summary__card"></div>
+                            <div class="todo__card summary__card"></div>
+                        </div>
+                        <div class="summary__urgent urgent">
+                            <div class="urgent__card summary__card"></div>
+                        </div>
+                        <div class="summary__tasks tasks">
+                            <div class="tasks__card summary__card">
+                                <span class="summary__number">5</span>
+                                <span class="summary__text">Tasks in Board</span>
+                            </div>
+                            <div class="tasks__card summary__card">
+                                <span class="summary__number">2</span>
+                                <span class="summary__text">Tasks In Progress</span>
+                            </div>
+                            <div class="tasks__card summary__card">
+                                <span class="summary__number">2</span>
+                                <span class="summary__text">Awaiting Feedback</span>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="overview__greetings greetings">
+                        <h2 class="greetings__timeannouncement timeannouncement">Good Morning,</h2>
+                        <h1 class="greetings__name greetings__name--secondary">Sofia Müller</h1>
+                    </section>
                 </section>
             </div>
         </main>
