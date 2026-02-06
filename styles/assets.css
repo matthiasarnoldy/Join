@@ -1,0 +1,75 @@
+/* Board Headline Controls */
+.board-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Find Task Search */
+.find-task {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px 6px 12px;
+    background-color: #ffffff;
+    border: 1px solid #a8a8a8;
+    border-radius: 10px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.08);
+}
+
+.find-task__input {
+    width: 220px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #000000;
+    background: transparent;
+}
+
+.find-task__input::placeholder {
+    color: #d1d1d1;
+}
+
+.find-task__divider {
+    width: 1px;
+    height: 24px;
+    background-color: #d1d1d1;
+    display: block;
+}
+
+.find-task__button {
+    border: none;
+    background: transparent;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.find-task__icon {
+    width: 18px;
+    height: 18px;
+    stroke: #2a3647;
+    stroke-width: 2px;
+    fill: none;
+}
+
+/* Add Task Button */
+.add-task-btn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    background-color: #2a3647;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.add-task-btn:hover {
+    background-color: #29abe2;
+}
