@@ -1,0 +1,153 @@
+.addTask__overview {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.overview__information {
+    width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.overview__selection {
+    gap: 24px;
+}
+
+.overview__selection--group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.information__input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.addTask__label {
+    font-size: 20px;
+    font-weight: 400;
+    display: flex;
+    color: #2b3647;
+}
+
+.addTask__label--required {
+    color: #ff8190;
+}
+
+.addTask__input {
+    font-size: 20px;
+    font-weight: 400;
+    padding: 18px 16px;
+    background-color: #fff;
+    border: 1px solid #d1d1d1;
+    border-radius: 10px;
+}
+
+.addTask__input::placeholder {
+    color: #d1d1d1;
+}
+
+.addTask__inputfield {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.addTask__input--title {
+    padding: 12px 21px;
+}
+
+.addTask__input--required {
+    font-family: 'Poppins';
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(230, 0, 38, 30%); /**/
+}
+
+.addTask__input--textarea {
+    height: 120px;
+    resize: none;
+}
+
+.addTask__input--date {
+    padding: 12px 16px;
+}
+
+.addTask__dividingLine {
+    height: 424px;
+}
+
+.addTask__priorityfield {
+    display: flex;
+    gap: 16px;
+}
+
+.addTask__priorityOption {
+    font-size: 20px;
+    font-weight: 400;
+    padding: 16px 0;
+    background-color: #fff;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    gap: 8px;
+    border: none;
+    border-radius: 10px;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.1));
+    cursor: pointer;
+}
+
+.addTask__priorityOption:hover {
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
+}
+
+.addTask__priorityOption--active.addTask__priorityOption--urgent {
+    background-color: #ff3d00;
+}
+
+.addTask__priorityOption--active.addTask__priorityOption--medium {
+    background-color: #ffa800;
+}
+
+.addTask__priorityOption--active.addTask__priorityOption--low {
+    background-color: #7ae229;
+}
+
+.addTask__priorityOption--active {
+    font-size: 21px;
+    font-weight: 700;
+    color: #fff;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0));
+}
+
+.addTask__priorityOption--active:hover {
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0));
+}
+
+.addTask__priorityOption--active .priorityOption__icon--secondary {
+    fill: #fff;
+}
+
+.addTask__category {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.information__input--required:last-child {
+    gap: 4px;
+}
+
+.addTask__category.addTask__category--open .select__arrow {
+    transform: rotate(180deg);
+}
+
+.addTask__assigned.addTask__assigned--open .select__arrow {
+    transform: rotate(180deg);
+}
