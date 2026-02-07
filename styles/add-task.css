@@ -1,44 +1,50 @@
-.addTask__overview {
+.add-task__form-information {
+    display: flex;
+    flex-direction: column;
+    gap: 124px;
+}
+
+.add-task__overview {
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
 
-.overview__information {
+.add-task__information-group {
     width: 440px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.overview__selection {
+.add-task__information-group--selection {
     gap: 24px;
 }
 
-.overview__selection--group {
+.add-task__selection-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.information__input {
+.add-task__input-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.addTask__label {
+.add-task__label {
     font-size: 20px;
     font-weight: 400;
     display: flex;
     color: #2b3647;
 }
 
-.addTask__label--required {
+.add-task__label--required {
     color: #ff8190;
 }
 
-.addTask__input {
+.add-task__input {
     font-size: 20px;
     font-weight: 400;
     padding: 18px 16px;
@@ -47,46 +53,46 @@
     border-radius: 10px;
 }
 
-.addTask__input::placeholder {
+.add-task__input::placeholder {
     color: #d1d1d1;
 }
 
-.addTask__inputfield {
+.add-task__input-field {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.addTask__input--title {
+.add-task__input--title {
     padding: 12px 21px;
 }
 
-.addTask__input--required {
+.add-task__input--required {
     font-family: 'Poppins';
     font-size: 12px;
     font-weight: 400;
-    color: rgba(230, 0, 38, 30%); /**/
+    color: rgba(230, 0, 38, 30%);
 }
 
-.addTask__input--textarea {
+.add-task__input--textarea {
     height: 120px;
     resize: none;
 }
 
-.addTask__input--date {
+.add-task__input--date {
     padding: 12px 16px;
 }
 
-.addTask__dividingLine {
+.add-task__dividing-line {
     height: 424px;
 }
 
-.addTask__priorityfield {
+.add-task__priority-field {
     display: flex;
     gap: 16px;
 }
 
-.addTask__priorityOption {
+.add-task__priority-option {
     font-size: 20px;
     font-weight: 400;
     padding: 16px 0;
@@ -103,51 +109,72 @@
     cursor: pointer;
 }
 
-.addTask__priorityOption:hover {
+.add-task__priority-option:hover {
     filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
 }
 
-.addTask__priorityOption--active.addTask__priorityOption--urgent {
+.add-task__priority-option--active.add-task__priority-option--urgent {
     background-color: #ff3d00;
 }
 
-.addTask__priorityOption--active.addTask__priorityOption--medium {
+.add-task__priority-option--active.add-task__priority-option--medium {
     background-color: #ffa800;
 }
 
-.addTask__priorityOption--active.addTask__priorityOption--low {
+.add-task__priority-option--active.add-task__priority-option--low {
     background-color: #7ae229;
 }
 
-.addTask__priorityOption--active {
+.add-task__priority-option--active {
     font-size: 21px;
     font-weight: 700;
     color: #fff;
     filter: drop-shadow(0 0 4px rgba(0,0,0,0));
 }
 
-.addTask__priorityOption--active:hover {
+.add-task__priority-option--active:hover {
     filter: drop-shadow(0 0 4px rgba(0,0,0,0));
 }
 
-.addTask__priorityOption--active .priorityOption__icon--secondary {
+.add-task__priority-option--active .add-task__priority-icon--secondary {
     fill: #fff;
 }
 
-.addTask__category {
+.add-task__select {
+    font-size: 20px;
+    font-weight: 400;
+    padding: 12px 16px;
+    background-color: #fff;
+    border: 1px solid #d1d1d1;
+    border-radius: 10px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     cursor: pointer;
 }
 
-.information__input--required:last-child {
+.add-task__input-group--required:last-child {
     gap: 4px;
 }
 
-.addTask__category.addTask__category--open .select__arrow {
+.add-task__select--category.add-task__select--open .add-task__select-arrow {
     transform: rotate(180deg);
 }
 
-.addTask__assigned.addTask__assigned--open .select__arrow {
+.add-task__select--assigned.add-task__select--open .add-task__select-arrow {
     transform: rotate(180deg);
+}
+
+.add-task__footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-task__required-symbol {
+    font-size: 20px;
+    color: #ff8190;
+}
+
+.add-task__required-text {
+    font-size: 16px;
 }
