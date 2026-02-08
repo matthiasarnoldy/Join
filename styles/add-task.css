@@ -1,7 +1,7 @@
 .add-task__form-information {
     display: flex;
     flex-direction: column;
-    gap: 124px;
+    gap: 96px;
 }
 
 .add-task__overview {
@@ -51,6 +51,7 @@
     background-color: #fff;
     border: 1px solid #d1d1d1;
     border-radius: 10px;
+    outline: none;
 }
 
 .add-task__input::placeholder {
@@ -71,7 +72,7 @@
     font-family: 'Poppins';
     font-size: 12px;
     font-weight: 400;
-    color: rgba(230, 0, 38, 30%);
+    color: rgba(230, 0, 38, 0);
 }
 
 .add-task__input--textarea {
@@ -81,6 +82,24 @@
 
 .add-task__input--date {
     padding: 12px 16px;
+    background-image: url("../assets/icons/desktop/calendary.svg");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 24px 24px;
+    color: #2b3647;
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.add-task__input--date::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+    position: absolute;
+    right: 16px;
+    width: 24px;
+    height: 24px;
 }
 
 .add-task__dividing-line {
@@ -165,9 +184,27 @@
     transform: rotate(180deg);
 }
 
+.add-task__input-field.add-task__input-field--required .add-task__input,.add-task__select--category {
+    border: 1px solid rgba(230, 0, 38, 1);
+}
+
+.add-task__input-field.add-task__input-field--required .add-task__input--required {
+    color: rgba(230, 0, 38, 1);
+}
+
+.add-task__input-field.add-task__input-field--required 
+.add-task__input:focus {
+    border: 1px solid #29abe2;
+}
+
+.add-task__input:focus {
+    border: 1px solid #29abe2;
+}
+
 .add-task__footer {
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
 }
 
 .add-task__required-symbol {
@@ -177,4 +214,69 @@
 
 .add-task__required-text {
     font-size: 16px;
+}
+
+.add-task__form-buttons {
+    display: flex;
+    gap: 16px;
+}
+
+.add-task__button {
+    padding: 16px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 100ms ease-in-out;
+}
+
+.add-task__button:hover {
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
+}
+
+.add-task__button--create {
+    font-size: 21px;
+    font-weight: 700;
+    background-color: #2a3647;
+}
+
+.add-task__button--create:hover {
+    background-color: #29abe2;
+}
+
+.add-task__button--create:active {
+    background-color: #091931;
+}
+
+.add-task__button--cancel {
+    font-size: 20px;
+    font-weight: 400;
+    background-color: #f6f7f8;
+    color: #2a3647;
+    border: 1px solid #2a3647;
+}
+
+.add-task__cancel--secondary {
+    transition: all 100ms ease-in-out;
+}
+
+.add-task__button--cancel:hover {
+    border: 1px solid #29abe2;
+    color: #29abe2;
+}
+
+.add-task__button--cancel:hover .add-task__cancel--secondary {
+    fill: #29abe2;
+}
+
+.add-task__button--cancel:active {
+    border: 1px solid #091931;
+    color: #091931;
+}
+
+.add-task__button--cancel:active .add-task__cancel--secondary {
+    fill: #091931;
 }
