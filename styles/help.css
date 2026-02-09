@@ -1,0 +1,51 @@
+.headline--help {
+    justify-content: space-between;
+}
+
+.headline__logo {
+    border-radius: 50%;
+    transition: all 100ms;
+}
+
+.headline__logo:hover {
+    cursor: pointer;
+    scale: 1.1;
+    background-color: #d1d1d1;
+}
+
+.textcontent {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.help__subheading {
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.help__howToUse {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.help__howToUse--list {
+    display: flex;
+    gap: 35px;
+}
+
+.help__subheading--bulletpoint {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.help__howToUse--gap {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.help__subheading--conclusion {
+    padding: 16px 0 32px;
+}
