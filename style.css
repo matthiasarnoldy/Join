@@ -4,6 +4,11 @@
     src: url(./assets/fonts/Inter-VariableFont_opsz\,wght.ttf);
 }
 
+@font-face {
+    font-family: 'Poppins';
+    src: url(./assets/fonts/Poppins-Regular.ttf);
+}
+
 /* Allgemein */
 * {
     margin: 0;
