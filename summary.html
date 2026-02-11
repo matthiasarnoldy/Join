@@ -10,16 +10,18 @@
          href="./assets/icons/desktop/logoFavicon.svg"
          type="image/x-icon" />
 
-      <script src="./scripts/templates.js"></script>
+      
+      <script src="./scripts/template.js"></script>
       <script src="./scripts/buttons.js" defer></script>
       <script src="./script.js"></script>
+      <script src="./scripts/summary.js"></script>
 
       <link rel="stylesheet" href="styles/summary.css">
       <link rel="stylesheet" href="./styles/assets.css" />
       <link rel="stylesheet" href="./styles/standard.css" />
       <link rel="stylesheet" href="./style.css" />
    </head>
-   <body>
+   <body onload="summary()">
       <nav class="navBar">
          <header class="navBar__logo logo">
             <img
@@ -206,7 +208,7 @@
                      </div>
                   </section>
                   <section class="overview__greetings greetings">
-                     <h2 class="greetings__timeannouncement timeannouncement">
+                     <h2 id="greetings" class="greetings__timeannouncement timeannouncement">
                         Good Morning, 
                      </h2>
                      <h1 class="greetings__name greetings__name--secondary">
