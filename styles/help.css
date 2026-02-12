@@ -3,6 +3,9 @@
 }
 
 .headline__logo {
+    position: fixed;
+    top: 230px;
+    right: 100px;
     border-radius: 50%;
     transition: all 100ms;
 }
@@ -17,6 +20,10 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+}
+
+.help__text--secondary {
+    color: #29abe2;
 }
 
 .help__subheading {

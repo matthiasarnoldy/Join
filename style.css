@@ -153,8 +153,8 @@ h2 {
 
 /* Header */
 .header {
-    /* position: fixed;
-    width: 100%; */
+    position: fixed;
+    width: 100%;
     background-color: #fff;
     filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));
 }
@@ -207,7 +207,7 @@ h2 {
 
 /* Main */
 .main {
-    padding: 0 100px 0 328px;
+    padding: 96px 100px 0 328px;
     background-color: #f6f7f8;
     display: flex;
     flex-grow: 1;
