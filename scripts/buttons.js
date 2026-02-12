@@ -73,7 +73,7 @@ if (navContacts) {
 if (navPrivacyPolicy) {
    navPrivacyPolicy.addEventListener("click", () => {
       setActiveNav(navPrivacyPolicy);
-      location.href = "./privacy-Policy.htm";
+      location.href = "./privacy-Policy.html";
    });
 }
 
