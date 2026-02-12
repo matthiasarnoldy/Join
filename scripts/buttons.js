@@ -27,7 +27,7 @@ function setActiveNavByPath() {
       { match: "add-task.html", el: navAddTask },
       { match: "board.html", el: navBoard },
       { match: "contacts.html", el: navContacts },
-      { match: "privacy-policy.htm", el: navPrivacyPolicy },
+      { match: "privacy-policy.html", el: navPrivacyPolicy },
       { match: "legalnotice.html", el: navLegalNotice },
    ];
    const active = activeMap.find((item) => path.endsWith(item.match));
