@@ -20,22 +20,6 @@ function setActiveNav(clickedItem) {
    }
 }
 
-function setActiveNavByPath() {
-   const path = window.location.pathname.toLowerCase();
-   const activeMap = [
-      { match: "summary.html", el: navSummary },
-      { match: "add-task.html", el: navAddTask },
-      { match: "board.html", el: navBoard },
-      { match: "contacts.html", el: navContacts },
-      { match: "privacy-policy.html", el: navPrivacyPolicy },
-      { match: "legalnotice.html", el: navLegalNotice },
-   ];
-   const active = activeMap.find((item) => path.endsWith(item.match));
-   if (active && active.el) {
-      setActiveNav(active.el);
-   }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
    setActiveNavByPath();
 });
