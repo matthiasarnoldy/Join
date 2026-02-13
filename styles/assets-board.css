@@ -6,6 +6,13 @@
    gap: 32px;
 }
 
+.headline_board {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+   padding: 110px 64px 48px 64px;
+   width: 100%;
+}
 /* Find Task Search */
 .find-task {
    width: 312px;
@@ -106,7 +113,7 @@
    align-items: center;
    justify-content: space-between;
    width: 1208px;
-   padding: 0px 0 0 96px;
+   padding: 0 64px 0 64px;
    gap: 26px;
 }
 
@@ -153,7 +160,7 @@
    align-items: flex-start;
    justify-content: space-between;
    width: 1208px;
-   padding: 0px 0 0 96px;
+   padding: 0 64px 0 64px;
    gap: 26px;
 }
 

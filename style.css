@@ -33,7 +33,7 @@ body {
 }
 
 .content_max-width {
-   width: 1440px;
+   width: calc(1440px - 232px);
    max-width: 1440px;
    display: flex;
    justify-content: space-between;
@@ -167,6 +167,7 @@ h2 {
 .header_flex-instructions {
    display: flex;
    align-items: center;
+   justify-content: space-between;
 }
 
 .topBar {
@@ -222,14 +223,8 @@ h2 {
 }
 
 .headline {
-   padding: 110px 0 48px 96px;
    display: flex;
    align-items: center;
-}
-.headline_summary {
-   display: flex;
-   align-items: center;
-   gap: 30px;
 }
 
 .headline__dividingLine {

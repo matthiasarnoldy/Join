@@ -1,230 +1,238 @@
 .overview {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 64px;
+   width: 100%;
+   display: flex;
+   align-items: center;
+   gap: 64px;
+   padding-left: 96px;
 }
 
 .overview__summary {
-    width: 560px;
-    height: 562px;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
+   width: 560px;
+   height: 562px;
+   display: flex;
+   flex-direction: column;
+   gap: 28px;
+}
+
+.headline_summary {
+   display: flex;
+   align-items: center;
+   gap: 30px;
+   padding: 110px 64px 48px 96px;
 }
 
 .summary__card {
-    background-color: #fff;
-    display: flex;
-    border-radius: 30px;
-    filter: drop-shadow(0 0 4px rgba(0,0,0,0.1));
-    transform-origin: left;
-    transition: all 100ms;
+   background-color: #fff;
+   display: flex;
+   border-radius: 30px;
+   filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+   transform-origin: left;
+   transition: all 100ms;
 }
 
 .summary__card:nth-child(2) {
-    transform-origin: center;
+   transform-origin: center;
 }
 
 .summary__card:last-child {
-    transform-origin: right;
+   transform-origin: right;
 }
 
 .summary__card.summary__urgent {
-    background-color: #fff;
-    display: flex;
-    border-radius: 30px;
-    filter: drop-shadow(0 0 4px rgba(0,0,0,0.1));
-    transform-origin: left top;
-    transition: all 100ms;
+   background-color: #fff;
+   display: flex;
+   border-radius: 30px;
+   filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+   transform-origin: left top;
+   transition: all 100ms;
 }
 
 .summary__card:hover {
-    cursor: pointer;
-    background-color: #2b3647;
-    color: #fff;
-    transform: scaleX(1.07) scaleY(1.09);
-    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
+   cursor: pointer;
+   background-color: #2b3647;
+   color: #fff;
+   transform: scaleX(1.07) scaleY(1.09);
+   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
 }
 
 .summary__card.summary__urgent:hover {
-    transform: scaleX(1.03) scaleY(1.09);
+   transform: scaleX(1.03) scaleY(1.09);
 }
 
 .summary__card:hover .summary__text {
-    color: #fff;
+   color: #fff;
 }
 
 .summary__card:hover .todo__icon--circle {
-    fill: #fff;
+   fill: #fff;
 }
 
 .summary__card:hover .todo__icon--pencil {
-    fill: #2b3647;
+   fill: #2b3647;
 }
 
 .summary__card:hover .todo__icon--checked {
-    stroke: #2b3647;
+   stroke: #2b3647;
 }
 
 .summary__card:active {
-    cursor: pointer;
-    background-color: #fff;
-    color: #000;
-    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
+   cursor: pointer;
+   background-color: #fff;
+   color: #000;
+   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
 }
 
 .summary__card:active .summary__text {
-    color: #2b3647;
+   color: #2b3647;
 }
 
 .summary__card:active .todo__icon--circle {
-    fill: #2b3647;
+   fill: #2b3647;
 }
 
 .summary__card:active .todo__icon--pencil {
-    fill: #fff;
+   fill: #fff;
 }
 
 .summary__card:active .todo__icon--checked {
-    stroke: #fff;
+   stroke: #fff;
 }
 
 .summary__number {
-    font-size: 64px;
-    font-weight: 600;
+   font-size: 64px;
+   font-weight: 600;
 }
 
-.summary__text{
-    font-size: 20px;
-    font-weight: 400;
-    color: #2a3647;
+.summary__text {
+   font-size: 20px;
+   font-weight: 400;
+   color: #2a3647;
 }
 
 .summary__todo {
-    display: flex;
-    flex: 1;
-    gap: 28px;
+   display: flex;
+   flex: 1;
+   gap: 28px;
 }
 
 .todo__card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-    gap: 18px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex: 1;
+   gap: 18px;
 }
 
 .summary__urgent {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-    gap: 61px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex: 1;
+   gap: 61px;
 }
 
 .urgent__priority {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 18px;
 }
 
 .urgent__icon {
-    height: 60px;
+   height: 60px;
 }
 
 .priority__card {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+   display: flex;
+   align-items: center;
+   flex-direction: column;
 }
 
 .priority__text {
-    font-size: 16px;
-    font-weight: 400;
-    color: #2a3647;
+   font-size: 16px;
+   font-weight: 400;
+   color: #2a3647;
 }
 
 .urgent__dividingLine {
-    height: 102px;
+   height: 102px;
 }
 
 .urgent__date {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    gap: 13px;
+   display: flex;
+   justify-content: center;
+   flex-direction: column;
+   gap: 13px;
 }
 
 .date__number {
-    font-size: 21px;
-    font-weight: 700;
+   font-size: 21px;
+   font-weight: 700;
 }
 
 .date__deadline {
-    font-size: 16px;
-    font-weight: 400;
+   font-size: 16px;
+   font-weight: 400;
 }
 
 .summary__tasks {
-    display: flex;
-    flex: 1;
-    gap: 28px;
+   display: flex;
+   flex: 1;
+   gap: 28px;
 }
 
 .tasks__card {
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    flex: 1;
-    text-align: center;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   flex: 1;
+   text-align: center;
 }
 
 .overview__greetings {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: 3px;
+   display: flex;
+   flex-direction: column;
+   flex: 1;
+   gap: 3px;
 }
 
 .greetings__name {
-    font-size: 64px;
+   font-size: 64px;
 }
 
 .greetings__name--secondary {
-    color: #29abe2;
+   color: #29abe2;
 }
 
 @media (max-width: 1160px) {
-    .overview {
-        flex-direction: column;
-        gap: 24px;
-    }
+   .overview {
+      flex-direction: column;
+      gap: 24px;
+   }
 
-    .overview__summary {
-        gap: 24px;
-    }
+   .overview__summary {
+      gap: 24px;
+   }
 
-    .summary__todo {
-        gap: 24px;
-    }
+   .summary__todo {
+      gap: 24px;
+   }
 
-    .todo__card {
-        gap: 14px;
-    }
+   .todo__card {
+      gap: 14px;
+   }
 
-    .urgent__priority {
-        gap: 14px;
-    }
+   .urgent__priority {
+      gap: 14px;
+   }
 
-    .summary__tasks {
-        gap: 24px;
-    }
+   .summary__tasks {
+      gap: 24px;
+   }
 
-    .overview__greetings {
-        display: none;
-        flex-direction: row;
-        gap: 16px;
-    }
+   .overview__greetings {
+      display: none;
+      flex-direction: row;
+      gap: 16px;
+   }
 }
