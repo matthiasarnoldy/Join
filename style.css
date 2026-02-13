@@ -149,13 +149,10 @@ h2 {
 }
 
 .legalInformation.navBar__quicklink--active {
+   font-weight: 400;
    background-color: #091931;
    color: #cdcdcd;
-}
-
-.legalInformation.navBar__quicklink--active:hover {
-   color: #29abe2;
-   font-weight: 700;
+   cursor: default;
 }
 
 /* Header */
