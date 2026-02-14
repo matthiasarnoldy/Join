@@ -12,15 +12,31 @@
 }
 
 .headline_tasks {
+   width: 100%;
    display: flex;
    align-items: center;
+   justify-content: space-between;
    gap: 16px;
    padding: 110px 64px 48px 96px;
 }
 
+.add-task__close-button {
+   background-color: transparent;
+   border: none;
+}
+
+.add-task__close-icon {
+   height: 32px;
+   border-radius: 56px;
+}
+
+.add-task__close-icon:hover {
+    cursor: pointer;
+    background-color: #d1d1d1;
+}
+
 .add-task__information-group {
    width: 43.5%;
-   /* width: 440px; */
    display: flex;
    flex-direction: column;
    gap: 8px;
