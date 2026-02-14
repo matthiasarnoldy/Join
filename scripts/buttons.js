@@ -9,6 +9,7 @@ const navBoard = document.getElementById("nav-board");
 const navContacts = document.getElementById("nav-contacts");
 const navPrivacyPolicy = document.getElementById("nav-Privacy-Policy");
 const navLegalNotice = document.getElementById("nav-Legal-Notice");
+const help = document.getElementById("help");
 
 // Function to set the active navigation item based on the clicked button
 function setActiveNav(clickedItem) {
@@ -19,10 +20,6 @@ function setActiveNav(clickedItem) {
       clickedItem.classList.add("navBar__quicklink--active");
    }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-   setActiveNavByPath();
-});
 
 // Add event listeners to the buttons to handle clicks and redirect to the appropriate pages
 
@@ -65,6 +62,15 @@ if (navLegalNotice) {
    navLegalNotice.addEventListener("click", () => {
       setActiveNav(navLegalNotice);
       location.href = "./legalnotice.html";
+   });
+}
+
+if (help) {
+   help.addEventListener("click", () => {
+      document
+         .querySelectorAll(".navBar__quicklink, .legalInformation")
+         .forEach((item) => item.classList.remove("navBar__quicklink--active"));
+      location.href = "./help.html";
    });
 }
 
