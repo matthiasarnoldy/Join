@@ -15,6 +15,7 @@ const dropdownHelp = document.getElementById("dropdownHelp");
 const dropdownPrivacyPolicy = document.getElementById("dropdownPrivacyPolicy");
 const dropdownLegalNotice = document.getElementById("dropdownLegalNotice");
 const dropdownLog = document.getElementById("dropdownLog");
+const arrowBack = document.getElementById("help__arrowBack");
 
 // Function to set the active navigation item based on the clicked button
 function setActiveNav(clickedItem) {
@@ -123,5 +124,12 @@ window.addEventListener("click", (event) => {
       dropdownMenu.classList.remove("header__dropdown--opened");
    }
 });
+
+// Redirect to the last visited page or home page when clicking the arrow back button in the help page
+if (arrowBack) {
+   arrowBack.addEventListener("click", () => {
+      window.history.back();
+   });
+}
 
 // new code
