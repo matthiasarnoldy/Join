@@ -134,4 +134,9 @@ if (arrowBack) {
    });
 }
 
-// new code
+// Summary cards navigation - Event delegation
+document.addEventListener("click", (event) => {
+   if (event.target.closest(".summary__card")) {
+      location.href = "./board.html";
+   }
+});
