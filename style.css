@@ -33,7 +33,7 @@ body {
 }
 
 .content_max-width {
-   width: calc(1440px - 232px);
+   width: calc(1440px - 222px);
    max-width: 1440px;
    display: flex;
    justify-content: space-between;
@@ -71,7 +71,6 @@ h2 {
    align-items: center;
    flex-direction: column;
    z-index: 1;
-   width: 232px;
 }
 
 .navBar__logo {
@@ -162,6 +161,7 @@ h2 {
 }
 
 .header_flex-instructions {
+    max-width: 1440px;
    display: flex;
    align-items: center;
    justify-content: space-between;
@@ -243,7 +243,7 @@ h2 {
 
 /* Main */
 .main {
-   margin-left: 232px;
+   margin-left: 222px;
    background-color: #f6f7f8;
    flex-grow: 1;
 }
