@@ -6,13 +6,11 @@
 }
 
 .add-task__overview {
-   width: 100%;
    display: flex;
    justify-content: space-between;
 }
 
 .headline_tasks {
-   width: 100%;
    display: flex;
    align-items: center;
    justify-content: space-between;
@@ -104,8 +102,22 @@
    height: 120px;
    min-height: 48px;
    max-height: 160px;
-   resize: vertical;
+   resize: none;
    overflow: auto;
+}
+
+.add-task__input-field--textarea {
+   position: relative;
+}
+
+.add-task__textarea-resize {
+   position: absolute;
+   right: 6px;
+   bottom: 24px;
+   height: 16px;
+   cursor: ns-resize;
+   user-select: none;
+   pointer-events: none;
 }
 
 .add-task__input--date {
@@ -113,16 +125,12 @@
    width: 100%;
    box-sizing: border-box;
    color: #2b3647;
-   position: relative;
    appearance: none;
-   -webkit-appearance: none;
-   -moz-appearance: none;
 }
 
 .date-picker {
    position: relative;
    width: 100%;
-   display: block;
 }
 
 .date-picker__toggle {

@@ -192,9 +192,48 @@ const initFormValidation = () => {
    document.querySelectorAll(".add-task__button--create").forEach(bindCreateButton);
 };
 
+// ===== TEXTAREA RESIZE =====
+
+const parsePx = (value) => Number.parseFloat(value) || 0;
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+const getHeightLimits = (textarea) => {
+   const styles = getComputedStyle(textarea);
+   const min = parsePx(styles.minHeight) || 48;
+   const max = parsePx(styles.maxHeight) || 10000;
+   return { min, max };
+};
+
+const startResize = (event, textarea) => {
+   event.preventDefault();
+   const { min, max } = getHeightLimits(textarea);
+   const startY = event.clientY;
+   const startHeight = textarea.offsetHeight;
+   const onMove = (e) => {
+      textarea.style.height = `${clamp(startHeight + e.clientY - startY, min, max)}px`;
+   };
+   const onUp = () => { document.removeEventListener("mousemove", onMove); document.removeEventListener("mouseup", onUp); };
+   document.addEventListener("mousemove", onMove);
+   document.addEventListener("mouseup", onUp);
+};
+
+const bindTextareaResize = (wrapper) => {
+   const textarea = wrapper.querySelector("textarea");
+   const handle = wrapper.querySelector(".add-task__textarea-resize");
+   if (!textarea || !handle) return;
+   handle.style.pointerEvents = "auto";
+   handle.addEventListener("mousedown", (event) => startResize(event, textarea));
+};
+
+const initTextareaResize = () => {
+   document.querySelectorAll(".add-task__input-field--textarea").forEach(bindTextareaResize);
+};
+
 // ===== INIT =====
 
 document.addEventListener("DOMContentLoaded", () => {
    initDatePicker();
    initFormValidation();
+   initTextareaResize();
 });
