@@ -101,7 +101,8 @@
 }
 
 .add-task__input--textarea {
-   min-height: 120px;
+   height: 120px;
+   min-height: 48px;
    max-height: 160px;
    resize: vertical;
    overflow: auto;
