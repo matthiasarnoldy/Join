@@ -1,239 +1,147 @@
+
 <!DOCTYPE html>
 <html lang="de">
-   <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Join</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Join</title>
 
-      <link
-         rel="shortcut icon"
-         href="./assets/icons/desktop/logoFavicon.svg"
-         type="image/x-icon" />
+    <link rel="icon" href="./assets/icons/desktop/logoFavicon.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="./assets/icons/desktop/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
 
-      
-      <script src="./scripts/template.js"></script>
-      <script src="./scripts/buttons.js" defer></script>
-      <script src="./script.js"></script>
-      <script src="./scripts/summary.js"></script>
+    <script src="./scripts/template.js"></script>
+    <script src="./scripts/buttons.js" defer></script>
+    <script src="./script.js"></script>
+    <script src="./scripts/summary.js"></script>
 
-      <link rel="stylesheet" href="styles/summary.css">
-      <link rel="stylesheet" href="./styles/assets.css" />
-      <link rel="stylesheet" href="./styles/standard.css" />
-      <link rel="stylesheet" href="./style.css" />
-   </head>
-   <body onload="summary()">
-      <nav class="navBar">
-         <header class="navBar__logo logo">
-            <img
-               class="logoIcon"
-               src="./assets/icons/desktop/logo.svg"
-               alt="Logo" />
-         </header>
-         <main class="navBar__menu">
-            <ul class="navBar__list list">
-               <li
-                  class="navBar__quicklink navBar__quicklink--active"
-                  id="nav-summary">
-                  <img
-                     src="./assets/icons/desktop/summary.svg"
-                     alt=""
-                     class="quicklink__icon" />
-                  <span>Summary</span>
-               </li>
-               <li class="navBar__quicklink quicklink" id="nav-add-task">
-                  <img
-                     src="./assets/icons/desktop/addTask.svg"
-                     alt=""
-                     class="quicklink__icon" />
-                  <span>Add Task</span>
-               </li>
-               <li class="navBar__quicklink quicklink" id="nav-board">
-                  <img
-                     src="./assets/icons/desktop/board.svg"
-                     alt=""
-                     class="quicklink__icon" />
-                  <span>Board</span>
-               </li>
-               <li class="navBar__quicklink quicklink" id="nav-contacts">
-                  <img
-                     src="./assets/icons/desktop/contacts.svg"
-                     alt=""
-                     class="quicklink__icon" />
-                  <span>Contacts</span>
-               </li>
-            </ul>
-         </main>
-         <footer class="navBar__legalInformation">
-            <p class="legalInformation" id="nav-Privacy-Policy">
-               Privacy Policy
-            </p>
-            <p class="legalInformation" id="nav-Legal-Notice">Legal Notice</p>
-         </footer>
-      </nav>
-      <section class="mainArea">
-         <header class="header">
-            <div class="header_flex-instructions topBar">
-               <span class="topBar__name">Kanban Project Management Tool</span>
-               <section class="topBar__loginHelp">
-                  <img
-                     src="./assets/icons/desktop/help.svg"
-                     alt="Help Icon"
-                     class="help__icon"
-                     id="help" />
-                  <span id="login__initials" class="login__initials">SM</span>
-               </section>
-            </div>
-         </header>
-        <div id="dropdownMenu" class="header__dropdown">
-            <ul class="header__dropdown-quicklinks">
-                <li class="header__dropdown-quicklink" id="dropdownHelp">Help</li>
-                <li class="header__dropdown-quicklink" id="dropdownPrivacyPolicy">Privacy Policy</li>
-                <li class="header__dropdown-quicklink" id="dropdownLegalNotice">Legal Notice</li>
-                <li class="header__dropdown-quicklink" id="dropdownLog">Log out</li>
-            </ul>
+    <link rel="stylesheet" href="styles/summary.css">
+    <link rel="stylesheet" href="./styles/assets.css" />
+    <link rel="stylesheet" href="./styles/standard.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body onload="summary()">
+    <nav class="navBar">
+      <header class="navBar__logo logo">
+        <img class="logoIcon" src="./assets/icons/desktop/logo.svg" alt="Logo" />
+      </header>
+      <main class="navBar__menu">
+        <ul class="navBar__list list">
+          <li class="navBar__quicklink navBar__quicklink--active" id="nav-summary">
+            <img src="./assets/icons/desktop/summary.svg" alt="" class="quicklink__icon" />
+            <span>Summary</span>
+          </li>
+          <li class="navBar__quicklink quicklink" id="nav-add-task">
+            <img src="./assets/icons/desktop/addTask.svg" alt="" class="quicklink__icon" />
+            <span>Add Task</span>
+          </li>
+          <li class="navBar__quicklink quicklink" id="nav-board">
+            <img src="./assets/icons/desktop/board.svg" alt="" class="quicklink__icon" />
+            <span>Board</span>
+          </li>
+          <li class="navBar__quicklink quicklink" id="nav-contacts">
+            <img src="./assets/icons/desktop/contacts.svg" alt="" class="quicklink__icon" />
+            <span>Contacts</span>
+          </li>
+        </ul>
+      </main>
+      <footer class="navBar__legalInformation">
+        <p class="legalInformation" id="nav-Privacy-Policy">Privacy Policy</p>
+        <p class="legalInformation" id="nav-Legal-Notice">Legal Notice</p>
+      </footer>
+    </nav>
+    <section class="mainArea">
+      <header class="header">
+        <div class="header_flex-instructions topBar">
+          <span class="topBar__name">Kanban Project Management Tool</span>
+          <section class="topBar__loginHelp">
+            <img src="./assets/icons/desktop/help.svg" alt="Help Icon" class="help__icon" id="help" />
+            <span id="login__initials" class="login__initials">SM</span>
+          </section>
         </div>
-         <main class="main content_max-width">
-            <div class="main_flex-instructions">
-               <section class="headline">
-                  <div class="headline_summary">
-                     <h1 class="headline__name">Join 360</h1>
-                     <img
-                        src="./assets/icons/desktop/headline__dividingLine.svg"
-                        alt="Dividing Line"
-                        class="headline__dividingLine" />
-                     <h3 class="headline__description">
-                        Key Metrics at a Glance
-                     </h3>
-                  </div>
-               </section>
-               <section class="overview">
-                  <section class="overview__summary summary">
-                     <div class="summary__todo todo">
-                        <div class="todo__card summary__card">
-                           <svg
-                              class="todo__icon"
-                              width="69"
-                              height="69"
-                              viewBox="0 0 69 69"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg">
-                              <circle
-                                 class="todo__icon--circle"
-                                 cx="34.5"
-                                 cy="34.5"
-                                 r="34.5"
-                                 fill="#2A3647" />
-                              <mask
-                                 id="mask0_62_578"
-                                 style="mask-type: alpha"
-                                 maskUnits="userSpaceOnUse"
-                                 x="18"
-                                 y="18"
-                                 width="33"
-                                 height="33">
-                                 <rect
-                                    class="todo__icon--symbol"
-                                    x="18.5"
-                                    y="18.5"
-                                    width="32"
-                                    height="32"
-                                    fill="#D9D9D9" />
-                              </mask>
-                              <g mask="url(#mask0_62_578)">
-                                 <path
-                                    class="todo__icon--pencil"
-                                    d="M25.1667 43.8334H27.0333L38.5333 32.3334L36.6667 30.4667L25.1667 41.9667V43.8334ZM44.2333 30.4001L38.5667 24.8001L40.4333 22.9334C40.9444 22.4223 41.5722 22.1667 42.3167 22.1667C43.0611 22.1667 43.6889 22.4223 44.2 22.9334L46.0667 24.8001C46.5778 25.3112 46.8444 25.9279 46.8667 26.6501C46.8889 27.3723 46.6444 27.989 46.1333 28.5001L44.2333 30.4001ZM42.3 32.3667L28.1667 46.5001H22.5V40.8334L36.6333 26.7001L42.3 32.3667Z"
-                                    fill="white" />
-                              </g>
-                           </svg>
-                           <div class="priority__card">
-                              <span class="summary__number">2</span>
-                              <span class="summary__text">In Backlog</span>
-                           </div>
-                        </div>
-                        <div class="todo__card summary__card">
-                           <svg
-                              class="todo__icon"
-                              width="69"
-                              height="69"
-                              viewBox="0 0 69 69"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg">
-                              <circle
-                                 class="todo__icon--circle"
-                                 cx="34.5"
-                                 cy="34.5"
-                                 r="34.5"
-                                 fill="#2A3647" />
-                              <path
-                                 class="todo__icon--checked"
-                                 d="M19.5283 34.5001L30.7571 45.5662L49.4717 23.4341"
-                                 stroke="white"
-                                 stroke-width="7"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round" />
-                           </svg>
-                           <div class="priority__card">
-                              <span class="summary__number">1</span>
-                              <span class="summary__text">Done</span>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="summary__urgent summary__card">
-                        <div class="urgent__priority priority">
-                           <img
-                              src="./assets/icons/desktop/urgent.svg"
-                              alt="Urgent"
-                              class="urgent__icon" />
-                           <div class="priority__card">
-                              <span class="summary__number">5</span>
-                              <span class="priority__text summary__text"
-                                 >Urgent</span
-                              >
-                           </div>
-                        </div>
-                        <img
-                           src="./assets/icons/desktop/urgent__dividingLine.svg"
-                           alt="Dividing Line"
-                           class="urgent__dividingLine" />
-                        <div class="urgent__date">
-                           <span class="date__number">February 06, 2026</span>
-                           <span class="date__deadline">Upcoming Deadline</span>
-                        </div>
-                     </div>
-                     <div class="summary__tasks tasks">
-                        <div class="tasks__card summary__card">
-                           <span class="summary__number">5</span>
-                           <span class="summary__text"
-                              >Tasks on <br />
-                              Board</span
-                           >
-                        </div>
-                        <div class="tasks__card summary__card">
-                           <span class="summary__number">2</span>
-                           <span class="summary__text"
-                              >Tasks in <br />
-                              Progress</span
-                           >
-                        </div>
-                        <div class="tasks__card summary__card">
-                           <span class="summary__number">2</span>
-                           <span class="summary__text">Awaiting Feedback</span>
-                        </div>
-                     </div>
-                  </section>
-                  <section class="overview__greetings greetings">
-                     <h2 id="greetings" class="greetings__timeannouncement timeannouncement">
-                        Good Morning, 
-                     </h2>
-                     <h1 class="greetings__name greetings__name--secondary">
-                        Sofia Müller
-                     </h1>
-                  </section>
-               </section>
+      </header>
+      <div id="dropdownMenu" class="header__dropdown">
+        <ul class="header__dropdown-quicklinks">
+          <li class="header__dropdown-quicklink" id="dropdownHelp">Help</li>
+          <li class="header__dropdown-quicklink" id="dropdownPrivacyPolicy">Privacy Policy</li>
+          <li class="header__dropdown-quicklink" id="dropdownLegalNotice">Legal Notice</li>
+          <li class="header__dropdown-quicklink" id="dropdownLog">Log out</li>
+        </ul>
+      </div>
+      <main class="main content_max-width">
+        <div class="main_flex-instructions">
+          <section class="headline">
+            <div class="headline_summary">
+              <h1 class="headline__name">Join 360</h1>
+              <img src="./assets/icons/desktop/headline__dividingLine.svg" alt="Dividing Line" class="headline__dividingLine" />
+              <h3 class="headline__description">Key Metrics at a Glance</h3>
             </div>
-         </main>
-      </section>
-   </body>
+          </section>
+          <section class="overview">
+            <section class="overview__summary summary">
+              <div class="summary__todo todo">
+                <div class="todo__card summary__card">
+                  <svg class="todo__icon" width="69" height="69" viewBox="0 0 69 69" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="todo__icon--circle" cx="34.5" cy="34.5" r="34.5" fill="#2A3647" />
+                    <mask id="mask0_62_578" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="18" y="18" width="33" height="33">
+                      <rect class="todo__icon--symbol" x="18.5" y="18.5" width="32" height="32" fill="#D9D9D9" />
+                    </mask>
+                    <g mask="url(#mask0_62_578)">
+                      <path class="todo__icon--pencil" d="M25.1667 43.8334H27.0333L38.5333 32.3334L36.6667 30.4667L25.1667 41.9667V43.8334ZM44.2333 30.4001L38.5667 24.8001L40.4333 22.9334C40.9444 22.4223 41.5722 22.1667 42.3167 22.1667C43.0611 22.1667 43.6889 22.4223 44.2 22.9334L46.0667 24.8001C46.5778 25.3112 46.8444 25.9279 46.8667 26.6501C46.8889 27.3723 46.6444 27.989 46.1333 28.5001L44.2333 30.4001ZM42.3 32.3667L28.1667 46.5001H22.5V40.8334L36.6333 26.7001L42.3 32.3667Z" fill="white" />
+                    </g>
+                  </svg>
+                  <div class="priority__card">
+                    <span class="summary__number">2</span>
+                    <span class="summary__text">In Backlog</span>
+                  </div>
+                </div>
+                <div class="todo__card summary__card">
+                  <svg class="todo__icon" width="69" height="69" viewBox="0 0 69 69" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="todo__icon--circle" cx="34.5" cy="34.5" r="34.5" fill="#2A3647" />
+                    <path class="todo__icon--checked" d="M19.5283 34.5001L30.7571 45.5662L49.4717 23.4341" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <div class="priority__card">
+                    <span class="summary__number">1</span>
+                    <span class="summary__text">Done</span>
+                  </div>
+                </div>
+              </div>
+              <div class="summary__urgent summary__card">
+                <div class="urgent__priority priority">
+                  <img src="./assets/icons/desktop/urgent.svg" alt="Urgent" class="urgent__icon" />
+                  <div class="priority__card">
+                    <span class="summary__number">5</span>
+                    <span class="priority__text summary__text">Urgent</span>
+                  </div>
+                </div>
+                <img src="./assets/icons/desktop/urgent__dividingLine.svg" alt="Dividing Line" class="urgent__dividingLine" />
+                <div class="urgent__date">
+                  <span class="date__number">February 06, 2026</span>
+                  <span class="date__deadline">Upcoming Deadline</span>
+                </div>
+              </div>
+              <div class="summary__tasks tasks">
+                <div class="tasks__card summary__card">
+                  <span class="summary__number">5</span>
+                  <span class="summary__text">Tasks on <br />Board</span>
+                </div>
+                <div class="tasks__card summary__card">
+                  <span class="summary__number">2</span>
+                  <span class="summary__text">Tasks in <br />Progress</span>
+                </div>
+                <div class="tasks__card summary__card">
+                  <span class="summary__number">2</span>
+                  <span class="summary__text">Awaiting Feedback</span>
+                </div>
+              </div>
+            </section>
+            <section class="overview__greetings greetings">
+              <h2 id="greetings" class="greetings__timeannouncement timeannouncement">Good Morning,</h2>
+              <h1 class="greetings__name greetings__name--secondary">Sofia Müller</h1>
+            </section>
+          </section>
+        </div>
+      </main>
+    </section>
+  </body>
 </html>
 
