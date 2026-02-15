@@ -33,7 +33,6 @@ body {
 }
 
 .content_max-width {
-   width: calc(1440px - 222px);
    max-width: 1440px;
    display: flex;
    justify-content: space-between;
