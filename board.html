@@ -10,6 +10,7 @@
 
       <script src="./scripts/templates.js"></script>
       <script src="./scripts/buttons.js" defer></script>
+      <script src="./scripts/add-task.js" defer></script>
       <script src="./script.js"></script>
       <script src="./scripts/board.js"></script>
 
@@ -352,11 +353,55 @@
                            </label>
                            <div
                               class="add-task__input-field add-task__input-field--required">
-                              <input
-                                 type="date"
-                                 name="date"
-                                 id="addTaskDate"
-                                 class="add-task__input add-task__input--date" />
+                              <div class="date-picker" id="datePicker">
+                                 <input
+                                    type="text"
+                                    name="date"
+                                    id="addTaskDate"
+                                    class="add-task__input add-task__input--date"
+                                    placeholder="DD.MM.YYYY"
+                                    readonly />
+                                 <button
+                                    type="button"
+                                    class="date-picker__toggle"
+                                    aria-label="Open calendar"></button>
+                                 <div
+                                    class="date-picker__panel"
+                                    id="datePickerPanel"
+                                    aria-hidden="true">
+                                    <div class="date-picker__header">
+                                       <button
+                                          type="button"
+                                          class="date-picker__nav"
+                                          data-action="prev"
+                                          aria-label="Previous month">
+                                          ‹
+                                       </button>
+                                       <span
+                                          class="date-picker__month"
+                                          id="datePickerMonth"></span>
+                                       <button
+                                          type="button"
+                                          class="date-picker__nav"
+                                          data-action="next"
+                                          aria-label="Next month">
+                                          ›
+                                       </button>
+                                    </div>
+                                    <div class="date-picker__weekdays">
+                                       <span>Mo</span>
+                                       <span>Di</span>
+                                       <span>Mi</span>
+                                       <span>Do</span>
+                                       <span>Fr</span>
+                                       <span>Sa</span>
+                                       <span>So</span>
+                                    </div>
+                                    <div
+                                       class="date-picker__days"
+                                       id="datePickerDays"></div>
+                                 </div>
+                              </div>
                               <span class="add-task__input--required"
                                  >This field is required</span
                               >
