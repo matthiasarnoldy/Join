@@ -109,6 +109,7 @@ if (loginInitials) {
       const dropdownMenu = document.getElementById("dropdownMenu");
       if (dropdownMenu) {
          dropdownMenu.classList.toggle("header__dropdown--opened");
+         loginInitials.classList.toggle("login__initials--opened");
       }
    });
 }
@@ -122,6 +123,7 @@ window.addEventListener("click", (event) => {
       event.target !== loginInitials
    ) {
       dropdownMenu.classList.remove("header__dropdown--opened");
+      loginInitials.classList.remove("login__initials--opened");
    }
 });
 

@@ -207,6 +207,11 @@ h2 {
    background-color: rgba(12, 46, 98, 0.12);
 }
 
+.login__initials.login__initials--opened {
+   cursor: pointer;
+   background-color: rgba(12, 46, 98, 0.12);
+}
+
 /* Dropdown */
 .header__dropdown {
     display: none;
