@@ -10,6 +10,11 @@ const navContacts = document.getElementById("nav-contacts");
 const navPrivacyPolicy = document.getElementById("nav-Privacy-Policy");
 const navLegalNotice = document.getElementById("nav-Legal-Notice");
 const help = document.getElementById("help");
+const loginInitials = document.getElementById("login__initials");
+const dropdownHelp = document.getElementById("dropdownHelp");
+const dropdownPrivacyPolicy = document.getElementById("dropdownPrivacyPolicy");
+const dropdownLegalNotice = document.getElementById("dropdownLegalNotice");
+const dropdownLog = document.getElementById("dropdownLog");
 
 // Function to set the active navigation item based on the clicked button
 function setActiveNav(clickedItem) {
@@ -73,5 +78,50 @@ if (help) {
       location.href = "./help.html";
    });
 }
+
+if (dropdownHelp) {  
+   dropdownHelp.addEventListener("click", () => {
+      document
+         .querySelectorAll(".navBar__quicklink, .legalInformation")
+         .forEach((item) => item.classList.remove("navBar__quicklink--active"));
+      location.href = "./help.html";
+   });
+}
+
+if (dropdownPrivacyPolicy) {
+   dropdownPrivacyPolicy.addEventListener("click", () => {
+      setActiveNav(navPrivacyPolicy);
+      location.href = "./privacy-Policy.html";
+   });
+}
+
+if (dropdownLegalNotice) {
+   dropdownLegalNotice.addEventListener("click", () => {
+      setActiveNav(navLegalNotice);
+      location.href = "./legalnotice.html";
+   });
+}
+
+// Open the dropdown menu when clicking on the user initials
+if (loginInitials) {
+   loginInitials.addEventListener("click", () => {
+      const dropdownMenu = document.getElementById("dropdownMenu");
+      if (dropdownMenu) {
+         dropdownMenu.classList.toggle("header__dropdown--opened");
+      }
+   });
+}
+
+// Close the dropdown menu when clicking outside of it
+window.addEventListener("click", (event) => {
+   const dropdownMenu = document.getElementById("dropdownMenu");
+   if (
+      dropdownMenu &&
+      !dropdownMenu.contains(event.target) &&
+      event.target !== loginInitials
+   ) {
+      dropdownMenu.classList.remove("header__dropdown--opened");
+   }
+});
 
 // new code
