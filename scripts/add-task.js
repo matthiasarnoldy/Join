@@ -374,6 +374,74 @@ function initPriorityField() {
    priorityField.addEventListener("click", handlePriorityClick);
 }
 
+// ===== CATEGORY SELECT =====
+
+function getCategoryElements() {
+   const select = document.getElementById("addTaskCategory");
+   return {
+      select,
+      menu: document.getElementById("addTaskCategoryMenu"),
+      input: document.getElementById("addTaskCategoryInput"),
+      valueLabel: document.querySelector("#addTaskCategory .add-task__select-value"),
+      selectionGroup: select?.closest(".add-task__selection-group")
+   };
+}
+
+function isCategoryReady(elements) {
+   return elements.select && elements.menu && elements.input && elements.valueLabel;
+}
+
+function setCategoryOpenState(elements, isOpen) {
+   if (!elements.selectionGroup) return;
+   elements.selectionGroup.classList.toggle("add-task__selection-group--category-open", isOpen);
+}
+
+function toggleCategoryMenu(elements) {
+   const isOpen = elements.select.classList.toggle("add-task__select--open");
+   elements.select.setAttribute("aria-expanded", isOpen ? "true" : "false");
+   setCategoryOpenState(elements, isOpen);
+}
+
+function closeCategoryMenu(elements) {
+   elements.select.classList.remove("add-task__select--open");
+   elements.select.setAttribute("aria-expanded", "false");
+   setCategoryOpenState(elements, false);
+}
+
+function setCategoryValue(option, elements) {
+   const label = option.textContent.trim();
+   const value = option.dataset.value || label;
+   elements.input.value = value;
+   elements.valueLabel.textContent = label;
+   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
+   closeCategoryMenu(elements);
+}
+
+function handleCategorySelectClick(event, elements) {
+   event.stopPropagation();
+   toggleCategoryMenu(elements);
+}
+
+function handleCategoryOptionClick(event, elements) {
+   event.stopPropagation();
+   const option = event.target.closest(".add-task__select-option");
+   if (!option) return;
+   setCategoryValue(option, elements);
+}
+
+function setupCategoryEvents(elements) {
+   elements.select.addEventListener("click", (event) => handleCategorySelectClick(event, elements));
+   elements.menu.addEventListener("click", (event) => handleCategoryOptionClick(event, elements));
+   document.addEventListener("click", () => closeCategoryMenu(elements));
+}
+
+function initCategorySelect() {
+   const elements = getCategoryElements();
+   if (!isCategoryReady(elements)) return;
+   elements.select.setAttribute("aria-expanded", "false");
+   setupCategoryEvents(elements);
+}
+
 // Alle Textareas mit Resize-Handle initialisieren
 function initTextareaResize() {
    const allTextareaWrappers = document.querySelectorAll(".add-task__input-field--textarea");
@@ -386,5 +454,6 @@ document.addEventListener("DOMContentLoaded", () => {
    initDatePicker();
    initFormValidation();
    initPriorityField();
+   initCategorySelect();
    initTextareaResize();
 });

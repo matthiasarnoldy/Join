@@ -1,8 +1,8 @@
 .add-task__form-information {
+   padding: 0 136px 0 96px;
    display: flex;
    flex-direction: column;
    gap: 96px;
-   padding: 0 136px 0 96px;
 }
 
 .add-task__overview {
@@ -11,11 +11,11 @@
 }
 
 .headline_tasks {
+   padding: 110px 64px 48px 96px;
    display: flex;
    align-items: center;
    justify-content: space-between;
    gap: 16px;
-   padding: 110px 64px 48px 96px;
 }
 
 .add-task__close-button {
@@ -29,8 +29,8 @@
 }
 
 .add-task__close-icon:hover {
-    cursor: pointer;
-    background-color: #d1d1d1;
+   background-color: #d1d1d1;
+   cursor: pointer;
 }
 
 .add-task__information-group {
@@ -59,8 +59,8 @@
 .add-task__label {
    font-size: 20px;
    font-weight: 400;
-   display: flex;
    color: #2b3647;
+   display: flex;
 }
 
 .add-task__label--required {
@@ -121,10 +121,10 @@
 }
 
 .add-task__input--date {
-   padding: 12px 48px 12px 16px;
    width: 100%;
-   box-sizing: border-box;
+   padding: 12px 48px 12px 16px;
    color: #2b3647;
+   box-sizing: border-box;
    appearance: none;
 }
 
@@ -135,12 +135,12 @@
 
 .date-picker__toggle {
    position: absolute;
-   right: 0;
    top: 0;
-   height: 100%;
+   right: 0;
    width: 48px;
-   border: none;
+   height: 100%;
    background: transparent url("../assets/icons/desktop/calendary.svg") no-repeat center;
+   border: none;
    background-size: 24px 24px;
    cursor: pointer;
    z-index: 2;
@@ -151,13 +151,13 @@
    bottom: calc(100% + 8px);
    left: 0;
    width: 100%;
+   padding: 12px;
    background: #fff;
+   display: none;
    border: 1px solid #d1d1d1;
    border-radius: 10px;
    overflow: hidden;
    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-   padding: 12px;
-   display: none;
    z-index: 10;
 }
 
@@ -166,25 +166,25 @@
 }
 
 .date-picker__header {
+   margin-bottom: 8px;
    display: grid;
    grid-template-columns: repeat(7, 1fr);
    align-items: center;
    gap: 4px;
-   margin-bottom: 8px;
 }
 
 .date-picker__nav {
+   font-size: 16px;
    width: 100%;
    height: 32px;
-   border: none;
-   border-radius: 6px;
    background: #f6f7f8;
-   cursor: pointer;
-   font-size: 16px;
    color: #2a3647;
    display: flex;
    align-items: center;
    justify-content: center;
+   border: none;
+   border-radius: 6px;
+   cursor: pointer;
 }
 
 .date-picker__nav:hover {
@@ -192,19 +192,19 @@
 }
 
 .date-picker__month {
-   grid-column: 2 / span 5;
-   text-align: center;
    font-weight: 600;
    color: #2a3647;
+   text-align: center;
+   grid-column: 2 / span 5;
 }
 
 .date-picker__weekdays {
+   font-size: 12px;
+   margin-bottom: 6px;
+   color: #a8a8a8;
    display: grid;
    grid-template-columns: repeat(7, 1fr);
-   font-size: 12px;
-   color: #a8a8a8;
    text-align: center;
-   margin-bottom: 6px;
 }
 
 .date-picker__days {
@@ -216,17 +216,17 @@
 }
 
 .date-picker__day {
-   border: none;
-   background: #f6f7f8;
-   border-radius: 6px;
+   font-size: 14px;
    height: 32px;
    padding: 0;
-   cursor: pointer;
-   font-size: 14px;
+   background: #f6f7f8;
    color: #2a3647;
    display: flex;
    align-items: center;
    justify-content: center;
+   border: none;
+   border-radius: 6px;
+   cursor: pointer;
 }
 
 .date-picker__day:hover {
@@ -239,8 +239,8 @@
 }
 
 .date-picker__day--today {
-   outline: 2px solid #29abe2;
    background: #e7f7fc;
+   outline: 2px solid #29abe2;
 }
 
 .date-picker__day--today:hover {
@@ -322,14 +322,58 @@
 .add-task__select {
    font-size: 20px;
    font-weight: 400;
+   position: relative;
    padding: 12px 16px;
    background-color: #fff;
-   border: 1px solid #d1d1d1;
-   border-radius: 10px;
    display: flex;
    justify-content: space-between;
    align-items: center;
+   border: 1px solid #d1d1d1;
+   border-radius: 10px;
    cursor: pointer;
+   z-index: 2;
+}
+
+.add-task__select-wrapper {
+   position: relative;
+}
+
+.add-task__select-menu {
+   position: absolute;
+   top: calc(100% - 10px);
+   left: 0;
+   right: 0;
+   padding: 10px 0 0;
+   margin: 0;
+   background-color: #fff;
+   display: none;
+   flex-direction: column;
+   list-style: none;
+   border: 1px solid #d1d1d1;
+   border-top: none;
+   border-radius: 0 0 10px 10px;
+   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+   z-index: 1;
+}
+
+.add-task__select-wrapper .add-task__select--open ~ .add-task__select-menu {
+   display: flex;
+}
+
+.add-task__selection-group--category-open .add-task__input-group--subtasks {
+   position: relative;
+   transform: translateY(90px);
+}
+
+.add-task__select-option {
+   font-size: 20px;
+   padding: 10px 16px;
+   cursor: pointer;
+   border-radius: 10px;
+}
+
+.add-task__select-option:hover {
+   background-color: rgba(41, 171, 226, 0.1);
 }
 
 .add-task__input-group--required:last-child {
@@ -433,8 +477,8 @@
 }
 
 .add-task__button--cancel:hover {
-   border: 1px solid #29abe2;
    color: #29abe2;
+   border: 1px solid #29abe2;
 }
 
 .add-task__button--cancel:hover .add-task__cancel--secondary {
@@ -442,8 +486,8 @@
 }
 
 .add-task__button--cancel:active {
-   border: 1px solid #091931;
    color: #091931;
+   border: 1px solid #091931;
 }
 
 .add-task__button--cancel:active .add-task__cancel--secondary {
