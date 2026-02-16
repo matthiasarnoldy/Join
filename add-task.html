@@ -94,7 +94,7 @@
             <div class="main_flex-instructions">
                <section class="headline">
                   <div class="headline_tasks">
-                     <h1 class="headline__name">Add Tasks</h1>
+                     <h1 class="headline__name">Add Task</h1>
                   </div>
                </section>
                <section class="add-task__form-information">
@@ -306,37 +306,54 @@
                            <label for="addTaskAssigned" class="add-task__label">
                               Assigned to
                            </label>
-                           <section
-                              id="addTaskAssigned"
-                              class="add-task__select add-task__select--assigned">
-                              <span>Select contacts to assign</span>
-                              <svg
-                                 class="add-task__select-arrow"
-                                 width="24"
-                                 height="24"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                 <mask
-                                    id="mask0_75597_14124"
-                                    style="mask-type: alpha"
-                                    maskUnits="userSpaceOnUse"
-                                    x="0"
-                                    y="0"
+                           <div class="add-task__select-wrapper">
+                              <section
+                                 id="addTaskAssigned"
+                                 class="add-task__select add-task__select--assigned">
+                                 <span class="add-task__select-value">Select contacts to assign</span>
+                                 <svg
+                                    class="add-task__select-arrow"
                                     width="24"
-                                    height="24">
-                                    <rect
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <mask
+                                       id="mask0_75597_14124"
+                                       style="mask-type: alpha"
+                                       maskUnits="userSpaceOnUse"
+                                       x="0"
+                                       y="0"
                                        width="24"
-                                       height="24"
-                                       fill="#D9D9D9" />
-                                 </mask>
-                                 <g mask="url(#mask0_75597_14124)">
-                                    <path
-                                       d="M11.3005 14.3L8.70046 11.7C8.3838 11.3833 8.31296 11.0208 8.48796 10.6125C8.66296 10.2042 8.97546 10 9.42546 10H14.5755C15.0255 10 15.338 10.2042 15.513 10.6125C15.688 11.0208 15.6171 11.3833 15.3005 11.7L12.7005 14.3C12.6005 14.4 12.4921 14.475 12.3755 14.525C12.2588 14.575 12.1338 14.6 12.0005 14.6C11.8671 14.6 11.7421 14.575 11.6255 14.525C11.5088 14.475 11.4005 14.4 11.3005 14.3Z"
-                                       fill="#2A3647" />
-                                 </g>
-                              </svg>
-                           </section>
+                                       height="24">
+                                       <rect
+                                          width="24"
+                                          height="24"
+                                          fill="#D9D9D9" />
+                                    </mask>
+                                    <g mask="url(#mask0_75597_14124)">
+                                       <path
+                                          d="M11.3005 14.3L8.70046 11.7C8.3838 11.3833 8.31296 11.0208 8.48796 10.6125C8.66296 10.2042 8.97546 10 9.42546 10H14.5755C15.0255 10 15.338 10.2042 15.513 10.6125C15.688 11.0208 15.6171 11.3833 15.3005 11.7L12.7005 14.3C12.6005 14.4 12.4921 14.475 12.3755 14.525C12.2588 14.575 12.1338 14.6 12.0005 14.6C11.8671 14.6 11.7421 14.575 11.6255 14.525C11.5088 14.475 11.4005 14.4 11.3005 14.3Z"
+                                          fill="#2A3647" />
+                                    </g>
+                                 </svg>
+                              </section>
+                              <input
+                                 type="hidden"
+                                 id="addTaskAssignedInput"
+                                 name="assigned" />
+                              <ul
+                                 class="add-task__select-menu add-task__select-menu--assigned"
+                                 id="addTaskAssignedMenu"
+                                 role="listbox">
+                                 <li class="add-task__select-option add-task__select-option--assigned" data-value="contact-1">Contact 1</li>
+                                 <li class="add-task__select-option add-task__select-option--assigned" data-value="contact-2">Contact 2</li>
+                                 <li class="add-task__select-option add-task__select-option--assigned" data-value="contact-3">Contact 3</li>
+                                 <li class="add-task__select-option add-task__select-option--assigned" data-value="contact-4">Contact 4</li>
+                                 <li class="add-task__select-option add-task__select-option--assigned" data-value="contact-5">Contact 5</li>
+                                 <li class="add-task__select-option add-task__select-option--assigned" data-value="contact-6">Contact 6</li>
+                              </ul>
+                           </div>
                         </section>
                         <section class="add-task__selection-group">
                            <section

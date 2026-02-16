@@ -581,9 +581,34 @@
    transform: scaleY(1);
 }
 
+.add-task__select-menu--assigned {
+   max-height: 250px;
+   overflow-y: scroll;
+   scrollbar-gutter: stable;
+   scrollbar-color: #2b3647 #fff;
+}
+
+.add-task__select-menu--assigned::-webkit-scrollbar {
+   width: 8px;
+}
+
+.add-task__select-menu--assigned::-webkit-scrollbar-track {
+   background-color: #fff;
+}
+
+.add-task__select-menu--assigned::-webkit-scrollbar-thumb {
+   background-color: #2b3647;
+   border-radius: 4px;
+}
+
 .add-task__selection-group--category-open .add-task__input-group--subtasks {
    position: relative;
    transform: translateY(90px);
+}
+
+.add-task__information-group--selection.add-task__selection-group--assigned-open .add-task__selection-group {
+   position: relative;
+   transform: translateY(250px);
 }
 
 .add-task__select-option {

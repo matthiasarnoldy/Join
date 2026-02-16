@@ -263,6 +263,104 @@ function initCategorySelect() {
    setupCategoryEvents(elements);
 }
 
+// ===== ASSIGNED SELECT =====
+
+function getAssignedElements() {
+   const select = document.getElementById("addTaskAssigned");
+   return {
+      select,
+      menu: document.getElementById("addTaskAssignedMenu"),
+      input: document.getElementById("addTaskAssignedInput"),
+      valueLabel: document.querySelector("#addTaskAssigned .add-task__select-value"),
+      selectionGroup: select?.closest(".add-task__information-group--selection")
+   };
+}
+
+function isAssignedReady(elements) {
+   return elements.select && elements.menu && elements.input && elements.valueLabel;
+}
+
+function setAssignedOpenState(elements, isOpen) {
+   if (!elements.selectionGroup) return;
+   elements.selectionGroup.classList.toggle("add-task__selection-group--assigned-open", isOpen);
+}
+
+function toggleAssignedMenu(elements) {
+   const isOpen = elements.select.classList.toggle("add-task__select--open");
+   if (isOpen) {
+      resetAssignedPlaceholder(elements);
+   } else {
+      restoreLastAssignedSelection(elements);
+   }
+   elements.select.setAttribute("aria-expanded", isOpen ? "true" : "false");
+   setAssignedOpenState(elements, isOpen);
+}
+
+function closeAssignedMenu(elements) {
+   elements.select.classList.remove("add-task__select--open");
+   elements.select.setAttribute("aria-expanded", "false");
+   setAssignedOpenState(elements, false);
+   restoreLastAssignedSelection(elements);
+}
+
+function setAssignedValue(option, elements) {
+   const label = option.textContent.trim();
+   const value = option.dataset.value || label;
+   elements.input.value = value;
+   elements.valueLabel.textContent = label;
+   elements.input.dataset.lastValue = value;
+   elements.valueLabel.dataset.lastLabel = label;
+   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
+   closeAssignedMenu(elements);
+}
+
+function resetAssignedPlaceholder(elements) {
+   const placeholder = elements.valueLabel.dataset.placeholder || elements.valueLabel.textContent;
+   elements.valueLabel.textContent = placeholder;
+   elements.valueLabel.dataset.placeholder = placeholder;
+   elements.input.value = "";
+   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function restoreLastAssignedSelection(elements) {
+   const lastLabel = elements.valueLabel.dataset.lastLabel;
+   const lastValue = elements.input.dataset.lastValue;
+   if (!lastLabel || !lastValue) return;
+   elements.valueLabel.textContent = lastLabel;
+   elements.input.value = lastValue;
+   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function handleAssignedSelectClick(event, elements) {
+   event.stopPropagation();
+   toggleAssignedMenu(elements);
+}
+
+function handleAssignedOptionClick(event, elements) {
+   event.stopPropagation();
+   const option = event.target.closest(".add-task__select-option");
+   if (!option) return;
+   setAssignedValue(option, elements);
+}
+
+function setupAssignedEvents(elements) {
+   elements.select.addEventListener("click", (event) => handleAssignedSelectClick(event, elements));
+   elements.menu.addEventListener("click", (event) => handleAssignedOptionClick(event, elements));
+   document.addEventListener("click", () => closeAssignedMenu(elements));
+}
+
+function initAssignedSelect() {
+   const elements = getAssignedElements();
+   if (!isAssignedReady(elements)) return;
+   elements.select.setAttribute("aria-expanded", "false");
+   elements.valueLabel.dataset.placeholder = elements.valueLabel.textContent;
+   if (elements.input.value) {
+      elements.input.dataset.lastValue = elements.input.value;
+      elements.valueLabel.dataset.lastLabel = elements.valueLabel.textContent;
+   }
+   setupAssignedEvents(elements);
+}
+
 // Alle Textareas mit Resize-Handle initialisieren
 function initTextareaResize() {
    const allTextareaWrappers = document.querySelectorAll(".add-task__input-field--textarea");
@@ -513,6 +611,7 @@ document.addEventListener("DOMContentLoaded", () => {
    initFormValidation();
    initPriorityField();
    initCategorySelect();
+   initAssignedSelect();
    initTextareaResize();
    initClearButtons();
    initSubtaskControls();
