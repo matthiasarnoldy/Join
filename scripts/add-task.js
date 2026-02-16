@@ -1,239 +1,390 @@
-// ===== DATE PICKER =====
+const MONTHS = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 
-const MONTHS = [
-   "Januar",
-   "Februar",
-   "März",
-   "April",
-   "Mai",
-   "Juni",
-   "Juli",
-   "August",
-   "September",
-   "Oktober",
-   "November",
-   "Dezember",
-];
+function twoDigits(number) {
+   return String(number).padStart(2, "0");
+}
 
-const pad2 = (value) => String(value).padStart(2, "0");
+function formatGermanDate(date) {
+   const day = twoDigits(date.getDate());
+   const month = twoDigits(date.getMonth() + 1);
+   const year = date.getFullYear();
+   return `${day}/${month}/${year}`;
+}
 
-const formatDate = (date) => `${pad2(date.getDate())}.${pad2(date.getMonth() + 1)}.${date.getFullYear()}`;
+function formatISODate(date) {
+   const year = date.getFullYear();
+   const month = twoDigits(date.getMonth() + 1);
+   const day = twoDigits(date.getDate());
+   return `${year}-${month}-${day}`;
+}
 
-const formatISO = (date) => `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+function areSameDay(dateToCheck, targetDate) {
+   if (!dateToCheck || !targetDate) return false;
+   return dateToCheck.getFullYear() === targetDate.getFullYear() && 
+          dateToCheck.getMonth() === targetDate.getMonth() && 
+          dateToCheck.getDate() === targetDate.getDate();
+}
 
-const sameDate = (a, b) =>
-   a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-
-const todayMidnight = () => {
+function getTodayAtMidnight() {
    const now = new Date();
    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-};
+}
 
-const getPickerRefs = () => ({
-   picker: document.getElementById("datePicker"),
-   input: document.getElementById("addTaskDate"),
-   panel: document.getElementById("datePickerPanel"),
-   monthLabel: document.getElementById("datePickerMonth"),
-   days: document.getElementById("datePickerDays"),
-});
+function openCalendar(panel) {
+   panel.classList.add("date-picker__panel--open");
+   panel.setAttribute("aria-hidden", "false");
+}
 
-const hasRefs = (refs) => Object.values(refs).every(Boolean);
+function closeCalendar(panel) {
+   panel.classList.remove("date-picker__panel--open");
+   panel.setAttribute("aria-hidden", "true");
+}
 
-const setPanelOpen = (panel, isOpen) => {
-   panel.classList.toggle("date-picker__panel--open", isOpen);
-   panel.setAttribute("aria-hidden", String(!isOpen));
-};
-
-const emptyDayButton = () => {
+function createEmptyDayButton() {
    const button = document.createElement("button");
    button.type = "button";
    button.className = "date-picker__day date-picker__day--empty";
    button.setAttribute("aria-hidden", "true");
    return button;
-};
+}
 
-const applyDayClasses = (state, date, button) => {
-   if (sameDate(date, state.today)) button.classList.add("date-picker__day--today");
-   if (date < state.today) {
-      button.disabled = true;
-      button.classList.add("date-picker__day--disabled");
-   }
-   if (sameDate(date, state.selectedDate)) button.classList.add("date-picker__day--selected");
-};
+function markTodayIfNeeded(button, date, today) {
+   if (!areSameDay(date, today)) return;
+   button.classList.add("date-picker__day--today");
+}
 
-const createDayButton = (state, date) => {
+function disableIfPastDay(button, date, today) {
+   if (date >= today) return;
+   button.disabled = true;
+   button.classList.add("date-picker__day--disabled");
+}
+
+function markSelectedIfNeeded(button, date, selectedDate) {
+   if (!areSameDay(date, selectedDate)) return;
+   button.classList.add("date-picker__day--selected");
+}
+
+function createDayButton(date, today, selectedDate) {
    const button = document.createElement("button");
    button.type = "button";
    button.className = "date-picker__day";
-   button.textContent = String(date.getDate());
-   button.dataset.date = formatISO(date);
-   applyDayClasses(state, date, button);
+   button.textContent = date.getDate();
+   button.dataset.date = formatISODate(date);
+   markTodayIfNeeded(button, date, today);
+   disableIfPastDay(button, date, today);
+   markSelectedIfNeeded(button, date, selectedDate);
    return button;
-};
+}
 
-const monthInfo = (date) => {
-   const year = date.getFullYear();
-   const month = date.getMonth();
-   const firstDay = new Date(year, month, 1);
-   return {
-      year,
-      month,
-      startIndex: (firstDay.getDay() + 6) % 7,
-      daysInMonth: new Date(year, month + 1, 0).getDate(),
-   };
-};
+function updateMonthLabel(currentDate, monthLabel) {
+   const year = currentDate.getFullYear();
+   const month = currentDate.getMonth();
+   monthLabel.textContent = `${MONTHS[month]} ${year}`;
+}
 
-const renderCalendar = (state) => {
-   const info = monthInfo(state.currentDate);
-   state.monthLabel.textContent = `${MONTHS[info.month]} ${info.year}`;
-   state.days.innerHTML = "";
-   for (let i = 0; i < info.startIndex; i += 1) state.days.appendChild(emptyDayButton());
-   for (let day = 1; day <= info.daysInMonth; day += 1) {
-      state.days.appendChild(createDayButton(state, new Date(info.year, info.month, day)));
+function addEmptyDays(year, month, daysContainer) {
+   const firstDayOfMonth = new Date(year, month, 1);
+   const firstWeekday = (firstDayOfMonth.getDay() + 6) % 7;
+   for (let i = 0; i < firstWeekday; i++) {
+      daysContainer.appendChild(createEmptyDayButton());
    }
-};
+}
 
-const togglePanel = (state) => {
-   const isOpen = state.panel.classList.contains("date-picker__panel--open");
-   setPanelOpen(state.panel, !isOpen);
-};
+function addMonthDays(year, month, today, selectedDate, daysContainer) {
+   const lastDayOfMonth = new Date(year, month + 1, 0);
+   const totalDays = lastDayOfMonth.getDate();
+   for (let day = 1; day <= totalDays; day++) {
+      const date = new Date(year, month, day);
+      const dayButton = createDayButton(date, today, selectedDate);
+      daysContainer.appendChild(dayButton);
+   }
+}
 
-const handleNavClick = (target, state) => {
-   const navButton = target.closest(".date-picker__nav");
-   if (!navButton) return false;
-   const delta = navButton.dataset.action === "prev" ? -1 : 1;
-   state.currentDate = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth() + delta, 1);
-   renderCalendar(state);
-   return true;
-};
+function drawCalendar(currentDate, today, selectedDate, monthLabel, daysContainer) {
+   const year = currentDate.getFullYear();
+   const month = currentDate.getMonth();
+   updateMonthLabel(currentDate, monthLabel);
+   daysContainer.innerHTML = "";
+   addEmptyDays(year, month, daysContainer);
+   addMonthDays(year, month, today, selectedDate, daysContainer);
+}
 
-const handleDayClick = (target, state) => {
-   const dayButton = target.closest(".date-picker__day[data-date]");
-   if (!dayButton || dayButton.disabled) return;
+function getSelectedOrToday(pickerState) {
+   if (pickerState.selectedDate) return pickerState.selectedDate;
+   return pickerState.today;
+}
+
+function setCalendarToSelected(pickerState, monthLabel, daysContainer) {
+   const baseDate = getSelectedOrToday(pickerState);
+   pickerState.currentDate = new Date(baseDate);
+   drawCalendar(pickerState.currentDate, pickerState.today, pickerState.selectedDate, monthLabel, daysContainer);
+}
+
+function handleToggleClick(panel, pickerState, monthLabel, daysContainer) {
+   if (panel.classList.contains("date-picker__panel--open")) {
+      closeCalendar(panel);
+      return;
+   }
+   setCalendarToSelected(pickerState, monthLabel, daysContainer);
+   openCalendar(panel);
+}
+
+function handleNavClick(navButton, pickerState, monthLabel, daysContainer) {
+   const direction = navButton.dataset.action === "prev" ? -1 : 1;
+   pickerState.currentDate = new Date(pickerState.currentDate.getFullYear(), pickerState.currentDate.getMonth() + direction, 1);
+   drawCalendar(pickerState.currentDate, pickerState.today, pickerState.selectedDate, monthLabel, daysContainer);
+}
+
+function handleDayClick(dayButton, pickerState, input, monthLabel, daysContainer, panel) {
    const [year, month, day] = dayButton.dataset.date.split("-").map(Number);
-   state.selectedDate = new Date(year, month - 1, day);
-   state.input.value = formatDate(state.selectedDate);
-   state.input.dispatchEvent(new Event("input", { bubbles: true }));
-   renderCalendar(state);
-   setPanelOpen(state.panel, false);
-};
+   pickerState.selectedDate = new Date(year, month - 1, day);
+   input.value = formatGermanDate(pickerState.selectedDate);
+   input.dispatchEvent(new Event("input", { bubbles: true }));
+   drawCalendar(pickerState.currentDate, pickerState.today, pickerState.selectedDate, monthLabel, daysContainer);
+   closeCalendar(panel);
+}
 
-const handlePickerClick = (event, state) => {
+function getDatePickerElements() {
+   return {
+      picker: document.getElementById("datePicker"),
+      input: document.getElementById("addTaskDate"),
+      panel: document.getElementById("datePickerPanel"),
+      monthLabel: document.getElementById("datePickerMonth"),
+      daysContainer: document.getElementById("datePickerDays")
+   };
+}
+
+function isPickerReady(elements) {
+   return elements.picker && elements.input && elements.panel && elements.monthLabel && elements.daysContainer;
+}
+
+function createPickerState() {
+   const today = getTodayAtMidnight();
+   return { today, currentDate: new Date(today), selectedDate: new Date(today) };
+}
+
+function initializeCalendar(pickerState, monthLabel, daysContainer) {
+   drawCalendar(pickerState.currentDate, pickerState.today, pickerState.selectedDate, monthLabel, daysContainer);
+}
+
+function handleToggleHit(clicked, elements, pickerState) {
+   if (!clicked.closest(".date-picker__toggle") && clicked !== elements.input) return false;
+   handleToggleClick(elements.panel, pickerState, elements.monthLabel, elements.daysContainer);
+   return true;
+}
+
+function handleNavHit(clicked, elements, pickerState) {
+   const navButton = clicked.closest(".date-picker__nav");
+   if (!navButton) return false;
+   handleNavClick(navButton, pickerState, elements.monthLabel, elements.daysContainer);
+   return true;
+}
+
+function handleDayHit(clicked, elements, pickerState) {
+   const dayButton = clicked.closest(".date-picker__day[data-date]");
+   if (!dayButton || dayButton.disabled) return;
+   handleDayClick(dayButton, pickerState, elements.input, elements.monthLabel, elements.daysContainer, elements.panel);
+}
+
+function handlePickerClick(event, elements, pickerState) {
    event.stopPropagation();
-   const target = event.target;
-   if (target.closest(".date-picker__toggle") || target === state.input) return togglePanel(state);
-   if (handleNavClick(target, state)) return;
-   handleDayClick(target, state);
-};
+   const clicked = event.target;
+   if (handleToggleHit(clicked, elements, pickerState)) return;
+   if (handleNavHit(clicked, elements, pickerState)) return;
+   handleDayHit(clicked, elements, pickerState);
+}
 
-const bindPickerEvents = (state) => {
-   state.picker.addEventListener("click", (event) => handlePickerClick(event, state));
-   document.addEventListener("click", () => setPanelOpen(state.panel, false));
-};
+function setupPickerEvents(elements, pickerState) {
+   elements.picker.addEventListener("click", (event) => handlePickerClick(event, elements, pickerState));
+   document.addEventListener("click", () => closeCalendar(elements.panel));
+}
 
-const initDatePicker = () => {
-   const refs = getPickerRefs();
-   if (!hasRefs(refs)) return;
-   const state = {
-      ...refs,
-      today: todayMidnight(),
-      currentDate: todayMidnight(),
-      selectedDate: todayMidnight(),
-   };
-   bindPickerEvents(state);
-   renderCalendar(state);
-};
+function initDatePicker() {
+   const elements = getDatePickerElements();
+   if (!isPickerReady(elements)) return;
+   const pickerState = createPickerState();
+   initializeCalendar(pickerState, elements.monthLabel, elements.daysContainer);
+   setupPickerEvents(elements, pickerState);
+}
 
-// ===== FORM VALIDATION =====
+// ===== FORMULAR-VALIDIERUNG =====
 
-const requiredFields = (container) => Array.from(container.querySelectorAll(".add-task__input-field--required"));
+// Alle Pflichtfelder im Container finden
+function findRequiredFields(container) {
+   return Array.from(container.querySelectorAll(".add-task__input-field--required"));
+}
 
-const fieldInput = (field) => field.querySelector("input, textarea, select");
+// Input-Element aus Feld holen (input, textarea oder select)
+function getInputFromField(field) {
+   return field.querySelector("input, textarea, select");
+}
 
-const fieldValid = (field) => {
-   const input = fieldInput(field);
-   return input && input.value.trim() !== "";
-};
+// Prüfen ob ein Feld ausgefüllt ist
+function isFieldFilled(field) {
+   const input = getInputFromField(field);
+   if (!input) return false;
+   return input.value.trim() !== ""; // Nicht leer
+}
 
-const updateButton = (fields, button) => {
-   const allValid = fields.every(fieldValid);
-   button.classList.toggle("is-disabled", !allValid);
-   button.setAttribute("aria-disabled", String(!allValid));
-};
+// Button aktivieren/deaktivieren
+function setButtonState(button, allFieldsValid) {
+   if (allFieldsValid) {
+      button.classList.remove("is-disabled");
+      button.setAttribute("aria-disabled", "false");
+   } else {
+      button.classList.add("is-disabled");
+      button.setAttribute("aria-disabled", "true");
+   }
+}
 
-const showErrors = (fields) => {
-   fields.forEach((field) => field.classList.toggle("add-task__input-field--error", !fieldValid(field)));
-};
-
-const bindFieldInputs = (fields, button) => {
+// Fehler anzeigen bei leeren Feldern
+function showErrorsOnEmptyFields(fields) {
    fields.forEach((field) => {
-      const input = fieldInput(field);
+      if (!isFieldFilled(field)) {
+         field.classList.add("add-task__input-field--error");
+      }
+   });
+}
+
+// Input-Handler für ein Feld
+function handleFieldInput(field, fields, button) {
+   field.classList.remove("add-task__input-field--error");
+   const allValid = fields.every(isFieldFilled);
+   setButtonState(button, allValid);
+}
+
+// Live-Validierung: Bei jeder Eingabe prüfen
+function setupLiveValidation(fields, button) {
+   fields.forEach((field) => {
+      const input = getInputFromField(field);
       if (!input) return;
-      input.addEventListener("input", () => {
-         field.classList.remove("add-task__input-field--error");
-         updateButton(fields, button);
-      });
+      input.addEventListener("input", () => handleFieldInput(field, fields, button));
    });
-};
+}
 
-const bindCreateButton = (button) => {
-   const fields = requiredFields(button.closest("form") || document);
-   if (fields.length === 0) return;
-   updateButton(fields, button);
-   bindFieldInputs(fields, button);
-   button.addEventListener("click", (event) => {
-      if (fields.every(fieldValid)) return;
-      event.preventDefault();
-      showErrors(fields);
-   });
-};
-
-const initFormValidation = () => {
-   document.querySelectorAll(".add-task__button--create").forEach(bindCreateButton);
-};
-
-// ===== TEXTAREA RESIZE =====
-
-const parsePx = (value) => Number.parseFloat(value) || 0;
-
-const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-
-const getHeightLimits = (textarea) => {
-   const styles = getComputedStyle(textarea);
-   const min = parsePx(styles.minHeight) || 48;
-   const max = parsePx(styles.maxHeight) || 10000;
-   return { min, max };
-};
-
-const startResize = (event, textarea) => {
+// Button-Click Handler
+function handleCreateButtonClick(event, fields) {
+   if (fields.every(isFieldFilled)) return;
    event.preventDefault();
-   const { min, max } = getHeightLimits(textarea);
-   const startY = event.clientY;
-   const startHeight = textarea.offsetHeight;
-   const onMove = (e) => {
-      textarea.style.height = `${clamp(startHeight + e.clientY - startY, min, max)}px`;
-   };
-   const onUp = () => { document.removeEventListener("mousemove", onMove); document.removeEventListener("mouseup", onUp); };
-   document.addEventListener("mousemove", onMove);
-   document.addEventListener("mouseup", onUp);
-};
+   showErrorsOnEmptyFields(fields);
+}
 
-const bindTextareaResize = (wrapper) => {
+// Create-Button vorbereiten
+function setupCreateButton(button) {
+   const form = button.closest("form") || document;
+   const fields = findRequiredFields(form);
+   if (fields.length === 0) return;
+   const allValid = fields.every(isFieldFilled);
+   setButtonState(button, allValid);
+   setupLiveValidation(fields, button);
+   button.addEventListener("click", (event) => handleCreateButtonClick(event, fields));
+}
+
+// Alle Create-Buttons initialisieren
+function initFormValidation() {
+   const allCreateButtons = document.querySelectorAll(".add-task__button--create");
+   allCreateButtons.forEach(setupCreateButton);
+}
+
+// ===== TEXTAREA VERGRÖSSERN/VERKLEINERN =====
+
+// Pixel-Wert aus String extrahieren ("120px" → 120)
+function extractPixels(cssValue) {
+   return Number.parseFloat(cssValue) || 0;
+}
+
+// Wert zwischen Min und Max begrenzen
+function limitValue(value, min, max) {
+   if (value < min) return min;
+   if (value > max) return max;
+   return value;
+}
+
+// Min/Max-Höhe aus CSS holen
+function getTextareaLimits(textarea) {
+   const styles = getComputedStyle(textarea);
+   const minHeight = extractPixels(styles.minHeight) || 48;
+   const maxHeight = extractPixels(styles.maxHeight) || 10000;
+   return { minHeight, maxHeight };
+}
+
+// Textarea-Höhe während Drag anpassen
+function resizeTextarea(moveEvent, startMouseY, startHeight, textarea, minHeight, maxHeight) {
+   const mouseDelta = moveEvent.clientY - startMouseY;
+   const newHeight = startHeight + mouseDelta;
+   const limitedHeight = limitValue(newHeight, minHeight, maxHeight);
+   textarea.style.height = `${limitedHeight}px`;
+}
+
+// Resize starten (Maus gedrückt)
+function startTextareaResize(event, textarea) {
+   event.preventDefault();
+   const { minHeight, maxHeight } = getTextareaLimits(textarea);
+   const startMouseY = event.clientY;
+   const startHeight = textarea.offsetHeight;
+   
+   const onMouseMove = (e) => resizeTextarea(e, startMouseY, startHeight, textarea, minHeight, maxHeight);
+   const onMouseUp = () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+   };
+   document.addEventListener("mousemove", onMouseMove);
+   document.addEventListener("mouseup", onMouseUp);
+}
+
+// Resize-Handle für ein Textarea einrichten
+function setupTextareaResizeHandle(wrapper) {
    const textarea = wrapper.querySelector("textarea");
    const handle = wrapper.querySelector(".add-task__textarea-resize");
+   
    if (!textarea || !handle) return;
+   
+   // Handle klickbar machen
    handle.style.pointerEvents = "auto";
-   handle.addEventListener("mousedown", (event) => startResize(event, textarea));
-};
+   
+   // Bei Maus-Klick auf Handle
+   handle.addEventListener("mousedown", (event) => {
+      startTextareaResize(event, textarea);
+   });
+}
 
-const initTextareaResize = () => {
-   document.querySelectorAll(".add-task__input-field--textarea").forEach(bindTextareaResize);
-};
+// ===== PRIORITY FIELD =====
+
+// Click-Handler für einen Priority-Button
+function handlePriorityClick(event) {
+   const clickedButton = event.target.closest(".add-task__priority-option");
+   if (!clickedButton) return;
+   
+   // Alle Priority-Buttons finden
+   const field = clickedButton.closest(".add-task__priority-field");
+   const allButtons = field.querySelectorAll(".add-task__priority-option");
+   
+   // Entferne active-Klasse von allen
+   allButtons.forEach(btn => btn.classList.remove("add-task__priority-option--active"));
+   
+   // Füge active-Klasse zum geklickten Button hinzu
+   clickedButton.classList.add("add-task__priority-option--active");
+}
+
+// Priority-Feld initialisieren
+function initPriorityField() {
+   const priorityField = document.getElementById("addTaskPriority");
+   if (!priorityField) return;
+   
+   priorityField.addEventListener("click", handlePriorityClick);
+}
+
+// Alle Textareas mit Resize-Handle initialisieren
+function initTextareaResize() {
+   const allTextareaWrappers = document.querySelectorAll(".add-task__input-field--textarea");
+   allTextareaWrappers.forEach(setupTextareaResizeHandle);
+}
 
 // ===== INIT =====
 
 document.addEventListener("DOMContentLoaded", () => {
    initDatePicker();
    initFormValidation();
+   initPriorityField();
    initTextareaResize();
 });
