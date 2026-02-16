@@ -622,11 +622,29 @@
                                  class="add-task__label">
                                  Subtasks
                               </label>
-                              <input
-                                 type="text"
-                                 id="addTaskSubtasks"
-                                 placeholder="Add new Subtask"
-                                 class="add-task__input add-task__input--text" />
+                              <div class="add-task__subtask-field">
+                                 <input
+                                    type="text"
+                                    id="addTaskSubtasks"
+                                    placeholder="Add new Subtask"
+                                    class="add-task__input add-task__input--text add-task__input--subtasks" />
+                                 <div class="add-task__subtask-actions">
+                                    <button type="button" class="add-task__subtask-button" data-action="clear">
+                                       <img
+                                          src="./assets/icons/desktop/close.svg"
+                                          alt=""
+                                          class="add-task__subtask-icon" />
+                                    </button>
+                                    <span class="add-task__subtask-dividingline"></span>
+                                    <button type="button" class="add-task__subtask-button" data-action="add">
+                                       <img
+                                          src="./assets/icons/desktop/check.svg"
+                                          alt=""
+                                          class="add-task__subtask-icon" />
+                                    </button>
+                                 </div>
+                              </div>
+                              <ul class="add-task__subtask-list"></ul>
                            </section>
                         </section>
                      </section>

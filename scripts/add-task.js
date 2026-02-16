@@ -269,6 +269,43 @@ function initTextareaResize() {
    allTextareaWrappers.forEach(setupTextareaResizeHandle);
 }
 
+// ===== SUBTASKS =====
+
+function addSubtaskItem(list, value) {
+   const item = document.createElement("li");
+   item.className = "add-task__subtask-item";
+   item.textContent = value;
+   list.appendChild(item);
+}
+
+function handleSubtaskClear(input) {
+   input.value = "";
+   input.focus();
+}
+
+function handleSubtaskAdd(input, list) {
+   const value = input.value.trim();
+   if (!value) return;
+   addSubtaskItem(list, value);
+   input.value = "";
+   input.focus();
+}
+
+function setupSubtaskGroup(group) {
+   const input = group.querySelector(".add-task__input--subtasks");
+   const list = group.querySelector(".add-task__subtask-list");
+   const clearButton = group.querySelector(".add-task__subtask-button[data-action='clear']");
+   const addButton = group.querySelector(".add-task__subtask-button[data-action='add']");
+   if (!input || !list || !clearButton || !addButton) return;
+   clearButton.addEventListener("click", () => handleSubtaskClear(input));
+   addButton.addEventListener("click", () => handleSubtaskAdd(input, list));
+}
+
+function initSubtaskControls() {
+   const groups = document.querySelectorAll(".add-task__input-group--subtasks");
+   groups.forEach(setupSubtaskGroup);
+}
+
 // ===== CLEAR BUTTON =====
 
 function clearFormFields(container) {
@@ -319,10 +356,18 @@ function resetValidationState(container) {
    }
 }
 
+function clearSubtaskLists(container) {
+   const lists = container.querySelectorAll(".add-task__subtask-list");
+   lists.forEach((list) => {
+      list.innerHTML = "";
+   });
+}
+
 function handleClearButtonClick(event, button) {
    event.preventDefault();
    const container = button.closest(".main_flex-instructions") || document;
    clearFormFields(container);
+   clearSubtaskLists(container);
    resetCategorySelect(container);
    resetPriorityToMedium(container);
    resetValidationState(container);
@@ -344,4 +389,5 @@ document.addEventListener("DOMContentLoaded", () => {
    initCategorySelect();
    initTextareaResize();
    initClearButtons();
+   initSubtaskControls();
 });

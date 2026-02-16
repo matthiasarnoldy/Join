@@ -31,6 +31,7 @@
 .add-task__close-icon:hover {
    background-color: #d1d1d1;
    cursor: pointer;
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__information-group {
@@ -89,6 +90,88 @@
 
 .add-task__input--title {
    padding: 12px 21px;
+}
+
+.add-task__subtask-field {
+   position: relative;
+   display: flex;
+   align-items: center;
+   width: 100%;
+}
+
+.add-task__input--subtasks {
+   width: 100%;
+   padding-right: 76px;
+   box-sizing: border-box;
+}
+
+.add-task__subtask-actions {
+   position: absolute;
+   top: 0;
+   right: 8px;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   gap: 4px;
+   opacity: 0;
+   pointer-events: none;
+   transition: all 100ms ease-in-out;
+}
+
+.add-task__subtask-field:focus-within .add-task__subtask-actions {
+   opacity: 1;
+   pointer-events: auto;
+}
+
+.add-task__subtask-button {
+   width: 24px;
+   height: 24px;
+   padding: 0;
+   background-color: transparent;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: none;
+   cursor: pointer;
+}
+
+.add-task__subtask-icon {
+   width: 24px;
+   height: 24px;
+   display: block;
+}
+
+.add-task__subtask-dividingline {
+   width: 1px;
+   height: 24px;
+   background-color: #d1d1d1;
+   display: block;
+}
+
+.add-task__input-group--subtasks {
+   position: relative;
+}
+
+.add-task__subtask-list {
+   position: absolute;
+   top: calc(100% + 8px);
+   left: 0;
+   right: 0;
+   padding: 6px 16px;
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   list-style: disc inside;
+   z-index: 2;
+}
+
+.add-task__subtask-list:empty {
+   display: none;
+}
+
+.add-task__subtask-item {
+   font-size: 16px;
+   color: #2b3647;
 }
 
 .add-task__input--required {
@@ -189,6 +272,7 @@
 
 .date-picker__nav:hover {
    background: rgba(41, 171, 226, 0.25);
+   transition: all 100ms ease-in-out;
 }
 
 .date-picker__month {
@@ -231,6 +315,7 @@
 
 .date-picker__day:hover {
    background: rgba(41, 171, 226, 0.25);
+   transition: all 100ms ease-in-out;
 }
 
 .date-picker__day--empty {
@@ -245,6 +330,7 @@
 
 .date-picker__day--today:hover {
    color: #2a3647;
+   transition: all 100ms ease-in-out;
 }
 
 .date-picker__day--selected {
@@ -254,6 +340,7 @@
 
 .date-picker__day--selected:hover {
    color: #2a3647;
+   transition: all 100ms ease-in-out;
 }
 
 .date-picker__day--disabled {
@@ -290,6 +377,7 @@
 
 .add-task__priority-option:hover {
    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__priority-option--active.add-task__priority-option--urgent {
@@ -313,6 +401,7 @@
 
 .add-task__priority-option--active:hover {
    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0));
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__priority-option--active .add-task__priority-icon--secondary {
@@ -336,10 +425,12 @@
 
 .add-task__select:hover {
    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__select:active {
    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__select-wrapper {
@@ -357,7 +448,6 @@
    display: none;
    flex-direction: column;
    list-style: none;
-   border: 1px solid #d1d1d1;
    border-top: none;
    border-radius: 0 0 10px 10px;
    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
@@ -382,6 +472,12 @@
 
 .add-task__select-option:hover {
    background-color: #d1d1d1;
+   transition: all 100ms ease-in-out;
+}
+
+.add-task__select-option:active {
+   background-color: #a8a8a8;
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__input-group--required:last-child {
@@ -468,6 +564,7 @@
 
 .add-task__button:hover {
    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__button--create {
@@ -478,6 +575,7 @@
 
 .add-task__button--create:hover {
    background-color: #29abe2;
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__button--create.is-disabled {
@@ -489,6 +587,7 @@
 
 .add-task__button--create:active {
    background-color: #091931;
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__button--cancel {
@@ -506,19 +605,23 @@
 .add-task__button--cancel:hover {
    color: #29abe2;
    border: 1px solid #29abe2;
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__button--cancel:hover .add-task__cancel--secondary {
    fill: #29abe2;
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__button--cancel:active {
    color: #091931;
    border: 1px solid #091931;
+   transition: all 100ms ease-in-out;
 }
 
 .add-task__button--cancel:active .add-task__cancel--secondary {
    fill: #091931;
+   transition: all 100ms ease-in-out;
 }
 
 @media (max-width: 1300px) {
