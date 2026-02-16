@@ -157,12 +157,27 @@
    top: calc(100% + 8px);
    left: 0;
    right: 0;
-   padding: 6px 16px;
+   max-height: 110px;
+   background-color: #f6f7f8;
    display: flex;
    flex-direction: column;
-   gap: 8px;
    list-style: disc inside;
    z-index: 2;
+   overflow-y: auto;
+   scrollbar-color: #2b3647 #f6f7f8;
+}
+
+.add-task__subtask-list::-webkit-scrollbar {
+   width: 8px;
+}
+
+.add-task__subtask-list::-webkit-scrollbar-track {
+   background-color: #f6f7f8;
+}
+
+.add-task__subtask-list::-webkit-scrollbar-thumb {
+   background-color: #2b3647;
+   border-radius: 4px;
 }
 
 .add-task__subtask-list:empty {
@@ -171,7 +186,108 @@
 
 .add-task__subtask-item {
    font-size: 16px;
+   padding: 6px 16px;
    color: #2b3647;
+   border-radius: 10px;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 4px;
+   transition: all 100ms ease-in-out;   list-style: none;
+}
+
+.add-task__subtask-item::before {
+   content: "•";
+   margin-right: 8px;
+}
+
+.add-task__subtask-text {
+   flex: 1;
+}
+
+.add-task__subtask-item-actions {
+   display: flex;
+   align-items: center;
+   gap: 4px;
+   opacity: 0;
+   pointer-events: none;
+   transition: all 100ms ease-in-out;
+}
+
+.add-task__subtask-item:hover .add-task__subtask-item-actions {
+   opacity: 1;
+   pointer-events: auto;
+}
+
+.add-task__subtask-item-button {
+   width: 24px;
+   height: 24px;
+   padding: 0;
+   background-color: transparent;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: none;
+   cursor: pointer;
+}
+
+.add-task__subtask-item-icon {
+   width: 24px;
+   height: 24px;
+   display: block;
+}
+
+.add-task__subtask-item--editing {
+   background-color: #fff;
+   padding: 6px 16px 5px;
+   border-bottom: 1px solid #29abe2;
+   border-radius: 0;
+   transition: all 100ms ease-in-out;
+}
+
+.add-task__subtask-item--editing::before {
+   display: none;
+}
+
+.add-task__subtask-item--editing .add-task__subtask-item-actions {
+   opacity: 1;
+   pointer-events: auto;
+}
+
+.add-task__subtask-item-button--delete-edit,
+.add-task__subtask-item-button--check {
+   display: none !important;
+}
+
+.add-task__subtask-item--editing .add-task__subtask-item-button--edit,
+.add-task__subtask-item--editing .add-task__subtask-item-button--delete {
+   display: none !important;
+}
+
+.add-task__subtask-item--editing .add-task__subtask-item-button--delete-edit,
+.add-task__subtask-item--editing .add-task__subtask-item-button--check {
+   display: flex !important;
+}
+
+.add-task__subtask-input {
+   font-size: 16px;
+   padding: 0;
+   background-color: transparent;
+   color: #2b3647;
+   border: none;
+   border-radius: 0;
+   outline: none;
+   font-family: inherit;
+   flex: 1;
+}
+
+.add-task__subtask-item:hover {
+   background-color: #eee;
+   cursor: text;
+}
+
+.add-task__subtask-item--editing:hover {
+   background-color: #fff;
 }
 
 .add-task__input--required {
@@ -445,17 +561,24 @@
    padding: 10px 0 0;
    margin: 0;
    background-color: #fff;
-   display: none;
+   display: flex;
    flex-direction: column;
    list-style: none;
    border-top: none;
    border-radius: 0 0 10px 10px;
    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
    z-index: 1;
+   opacity: 0;
+   pointer-events: none;
+   transform: scaleY(0);
+   transform-origin: top;
+   transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;
 }
 
 .add-task__select-wrapper .add-task__select--open ~ .add-task__select-menu {
-   display: flex;
+   opacity: 1;
+   pointer-events: auto;
+   transform: scaleY(1);
 }
 
 .add-task__selection-group--category-open .add-task__input-group--subtasks {
@@ -471,12 +594,12 @@
 }
 
 .add-task__select-option:hover {
-   background-color: #d1d1d1;
+   background-color: #eee;
    transition: all 100ms ease-in-out;
 }
 
 .add-task__select-option:active {
-   background-color: #a8a8a8;
+   background-color: #d1d1d1;
    transition: all 100ms ease-in-out;
 }
 
@@ -520,6 +643,7 @@
    justify-content: space-between;
    align-items: flex-end;
    z-index: 10;
+   pointer-events: none;
 }
 
 .add-task__footer::before {
@@ -534,6 +658,7 @@
 .add-task__footer > * {
    position: relative;
    z-index: 1;
+   pointer-events: auto;
 }
 
 .add-task__required-symbol {

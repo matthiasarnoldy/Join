@@ -274,8 +274,134 @@ function initTextareaResize() {
 function addSubtaskItem(list, value) {
    const item = document.createElement("li");
    item.className = "add-task__subtask-item";
-   item.textContent = value;
-   list.appendChild(item);
+   item.innerHTML = `
+      <span class="add-task__subtask-text">${value}</span>
+      <div class="add-task__subtask-item-actions">
+         <button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--edit" data-action="edit">
+            <img src="./assets/icons/desktop/subtask__pencil.svg" alt="" class="add-task__subtask-item-icon" />
+         </button>
+         <button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--delete-edit" data-action="delete-edit" style="display: none;">
+            <img src="./assets/icons/desktop/subtask__trash.svg" alt="" class="add-task__subtask-item-icon" />
+         </button>
+         <span class="add-task__subtask-dividingline"></span>
+         <button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--delete" data-action="delete">
+            <img src="./assets/icons/desktop/subtask__trash.svg" alt="" class="add-task__subtask-item-icon" />
+         </button>
+         <button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--check" data-action="check" style="display: none;">
+            <img src="./assets/icons/desktop/check.svg" alt="" class="add-task__subtask-item-icon" />
+         </button>
+      </div>
+   `;
+   
+   const textSpan = item.querySelector(".add-task__subtask-text");
+   const deleteButton = item.querySelector(".add-task__subtask-item-button[data-action='delete']");
+   const deleteEditButton = item.querySelector(".add-task__subtask-item-button[data-action='delete-edit']");
+   const checkButton = item.querySelector(".add-task__subtask-item-button[data-action='check']");
+   const editButton = item.querySelector(".add-task__subtask-item-button[data-action='edit']");
+   
+   // Delete button handler (normal mode)
+   deleteButton.addEventListener("click", () => {
+      item.remove();
+   });
+   
+   // Delete button handler (edit mode)
+   deleteEditButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      item.remove();
+   });
+   
+   // Edit button handler
+   editButton.addEventListener("click", () => {
+      enableEditMode(item, textSpan, checkButton);
+   });
+   
+   // Double-click to edit on text
+   textSpan.addEventListener("dblclick", () => {
+      enableEditMode(item, textSpan, checkButton);
+   });
+   
+   list.prepend(item);
+}
+
+function enableEditMode(item, textSpan, checkButton) {
+   const currentText = textSpan.textContent;
+   item.classList.add("add-task__subtask-item--editing");
+   
+   const input = document.createElement("input");
+   input.type = "text";
+   input.className = "add-task__subtask-input";
+   input.value = currentText;
+   
+   textSpan.replaceWith(input);
+   input.focus();
+   input.select();
+   
+   function reattachListeners(newSpan) {
+      // Re-attach dblclick listener
+      newSpan.addEventListener("dblclick", () => {
+         enableEditMode(item, newSpan, checkButton);
+      });
+      
+      // Re-attach edit button listener
+      const editButton = item.querySelector(".add-task__subtask-item-button[data-action='edit']");
+      editButton.replaceWith(editButton.cloneNode(true));
+      const newEditButton = item.querySelector(".add-task__subtask-item-button[data-action='edit']");
+      newEditButton.addEventListener("click", () => {
+         enableEditMode(item, newSpan, checkButton);
+      });
+   }
+   
+   function saveEdit() {
+      const newText = input.value.trim();
+      if (newText) {
+         const newSpan = document.createElement("span");
+         newSpan.className = "add-task__subtask-text";
+         newSpan.textContent = newText;
+         input.replaceWith(newSpan);
+         item.classList.remove("add-task__subtask-item--editing");
+         
+         reattachListeners(newSpan);
+      } else {
+         input.focus();
+      }
+   }
+   
+   // Check button handler for saving
+   const checkClickHandler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      saveEdit();
+   };
+   checkButton.addEventListener("click", checkClickHandler);
+   
+   const originalSaveEdit = saveEdit;
+   saveEdit = function() {
+      checkButton.removeEventListener("click", checkClickHandler);
+      originalSaveEdit();
+   };
+   
+   input.addEventListener("blur", (e) => {
+      // Delay blur to allow button clicks to register first
+      setTimeout(() => {
+         if (item.classList.contains("add-task__subtask-item--editing")) {
+            saveEdit();
+         }
+      }, 100);
+   });
+   input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+         saveEdit();
+      } else if (e.key === "Escape") {
+         checkButton.removeEventListener("click", checkClickHandler);
+         const newSpan = document.createElement("span");
+         newSpan.className = "add-task__subtask-text";
+         newSpan.textContent = currentText;
+         input.replaceWith(newSpan);
+         item.classList.remove("add-task__subtask-item--editing");
+         
+         reattachListeners(newSpan);
+      }
+   });
 }
 
 function handleSubtaskClear(input) {
