@@ -189,6 +189,11 @@ function setCategoryOpenState(elements, isOpen) {
 
 function toggleCategoryMenu(elements) {
    const isOpen = elements.select.classList.toggle("add-task__select--open");
+   if (isOpen) {
+      resetCategoryPlaceholder(elements);
+   } else {
+      restoreLastCategorySelection(elements);
+   }
    elements.select.setAttribute("aria-expanded", isOpen ? "true" : "false");
    setCategoryOpenState(elements, isOpen);
 }
@@ -197,6 +202,7 @@ function closeCategoryMenu(elements) {
    elements.select.classList.remove("add-task__select--open");
    elements.select.setAttribute("aria-expanded", "false");
    setCategoryOpenState(elements, false);
+   restoreLastCategorySelection(elements);
 }
 
 function setCategoryValue(option, elements) {
@@ -204,8 +210,27 @@ function setCategoryValue(option, elements) {
    const value = option.dataset.value || label;
    elements.input.value = value;
    elements.valueLabel.textContent = label;
+   elements.input.dataset.lastValue = value;
+   elements.valueLabel.dataset.lastLabel = label;
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
    closeCategoryMenu(elements);
+}
+
+function resetCategoryPlaceholder(elements) {
+   const placeholder = elements.valueLabel.dataset.placeholder || elements.valueLabel.textContent;
+   elements.valueLabel.textContent = placeholder;
+   elements.valueLabel.dataset.placeholder = placeholder;
+   elements.input.value = "";
+   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function restoreLastCategorySelection(elements) {
+   const lastLabel = elements.valueLabel.dataset.lastLabel;
+   const lastValue = elements.input.dataset.lastValue;
+   if (!lastLabel || !lastValue) return;
+   elements.valueLabel.textContent = lastLabel;
+   elements.input.value = lastValue;
+   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
 function handleCategorySelectClick(event, elements) {
@@ -230,6 +255,11 @@ function initCategorySelect() {
    const elements = getCategoryElements();
    if (!isCategoryReady(elements)) return;
    elements.select.setAttribute("aria-expanded", "false");
+   elements.valueLabel.dataset.placeholder = elements.valueLabel.textContent;
+   if (elements.input.value) {
+      elements.input.dataset.lastValue = elements.input.value;
+      elements.valueLabel.dataset.lastLabel = elements.valueLabel.textContent;
+   }
    setupCategoryEvents(elements);
 }
 
@@ -237,6 +267,72 @@ function initCategorySelect() {
 function initTextareaResize() {
    const allTextareaWrappers = document.querySelectorAll(".add-task__input-field--textarea");
    allTextareaWrappers.forEach(setupTextareaResizeHandle);
+}
+
+// ===== CLEAR BUTTON =====
+
+function clearFormFields(container) {
+   const fields = container.querySelectorAll("input, textarea, select");
+   fields.forEach((field) => {
+      if (field.type === "checkbox" || field.type === "radio") {
+         field.checked = false;
+         return;
+      }
+      field.value = "";
+   });
+}
+
+function resetPriorityToMedium(container) {
+   const priorityField = container.querySelector(".add-task__priority-field");
+   if (!priorityField) return;
+   const allButtons = priorityField.querySelectorAll(".add-task__priority-option");
+   allButtons.forEach((btn) => btn.classList.remove("add-task__priority-option--active"));
+   const mediumButton = priorityField.querySelector(".add-task__priority-option--medium");
+   if (mediumButton) {
+      mediumButton.classList.add("add-task__priority-option--active");
+   }
+}
+
+function resetCategorySelect(container) {
+   const select = container.querySelector(".add-task__select--category");
+   if (!select) return;
+   const valueLabel = select.querySelector(".add-task__select-value");
+   const input = container.querySelector("#addTaskCategoryInput");
+   if (!valueLabel || !input) return;
+   const placeholder = valueLabel.dataset.placeholder || "Select task category";
+   valueLabel.textContent = placeholder;
+   valueLabel.dataset.placeholder = placeholder;
+   valueLabel.dataset.lastLabel = "";
+   input.value = "";
+   input.dataset.lastValue = "";
+   select.classList.remove("add-task__select--open");
+   select.setAttribute("aria-expanded", "false");
+   input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function resetValidationState(container) {
+   const allFields = container.querySelectorAll(".add-task__input-field--required");
+   allFields.forEach((field) => field.classList.remove("add-task__input-field--error"));
+   const createButton = container.querySelector(".add-task__button--create");
+   if (createButton) {
+      setButtonState(createButton, false);
+   }
+}
+
+function handleClearButtonClick(event, button) {
+   event.preventDefault();
+   const container = button.closest(".main_flex-instructions") || document;
+   clearFormFields(container);
+   resetCategorySelect(container);
+   resetPriorityToMedium(container);
+   resetValidationState(container);
+}
+
+function initClearButtons() {
+   const clearButtons = document.querySelectorAll(".add-task__button--cancel");
+   clearButtons.forEach((button) => {
+      button.addEventListener("click", (event) => handleClearButtonClick(event, button));
+   });
 }
 
 // ===== INIT =====
@@ -247,4 +343,5 @@ document.addEventListener("DOMContentLoaded", () => {
    initPriorityField();
    initCategorySelect();
    initTextareaResize();
+   initClearButtons();
 });
