@@ -205,11 +205,6 @@
 }
 
 @media (max-width: 1160px) {
-   .overview {
-      flex-direction: column;
-      gap: 24px;
-   }
-
    .overview__summary {
       gap: 24px;
    }

@@ -245,12 +245,6 @@ h2 {
       flex-direction: column;
       gap: 20px;
    }
-
-   .headline__dividingLine {
-      transform: rotate(90deg) translateY(-50%);
-      transform-origin: center;
-      order: 1;
-   }
 }
 
 @media (max-width: 980px) {
