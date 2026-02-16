@@ -223,6 +223,8 @@ h2 {
 }
 
 .headline {
+   width: 100%;
+   max-width: calc(1440px - 232px);
    display: flex;
    align-items: center;
 }
