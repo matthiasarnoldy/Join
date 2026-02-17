@@ -587,7 +587,7 @@
    border-top: none;
    border-radius: 0 0 10px 10px;
    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-   z-index: 1;
+   z-index: 0;
    opacity: 0;
    pointer-events: none;
    transform: scaleY(0);
@@ -602,10 +602,17 @@
 }
 
 .add-task__select-menu--assigned {
+   min-height: 294px;
    max-height: 294px;
    overflow-y: scroll;
    scrollbar-gutter: stable;
    scrollbar-color: #2b3647 #fff;
+   z-index: 0;
+}
+
+.add-task__select-wrapper--open .add-task__select-menu--assigned {
+   position: static;
+   margin-top: -10px;
 }
 
 .add-task__select-menu--assigned::-webkit-scrollbar {
@@ -766,6 +773,13 @@
    align-items: flex-end;
    z-index: 10;
    pointer-events: none;
+}
+
+.add-task--assigned-open .add-task__footer {
+   position: fixed;
+   left: 0;
+   right: 0;
+   bottom: 0;
 }
 
 .add-task__footer::before {
