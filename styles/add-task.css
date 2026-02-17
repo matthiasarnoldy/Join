@@ -544,6 +544,25 @@
    transition: all 100ms ease-in-out;
 }
 
+.add-task__select-input {
+   font-size: 20px;
+   font-weight: 400;
+   border: none;
+   background-color: transparent;
+   color: #2a3647;
+   flex: 1;
+   padding: 0;
+   margin: 0;
+}
+
+.add-task__select-input::placeholder {
+   color: #2a3647;
+}
+
+.add-task__select-input:focus {
+   outline: none;
+}
+
 .add-task__select:active {
    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
    transition: all 100ms ease-in-out;
@@ -623,6 +642,21 @@
    width: 42px;
    height: 42px;
    border: 2px solid #fff;
+   border-radius: 50%;
+   cursor: pointer;
+}
+
+.add-task__assigned-overflow {
+   font-size: 12px;
+   font-weight: 700;
+   background-color: transparent;
+   color: #2a3647;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 42px;
+   height: 42px;
+   border: 2px solid #2a3647;
    border-radius: 50%;
    cursor: pointer;
 }

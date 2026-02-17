@@ -323,14 +323,95 @@ function resetAssignedPlaceholder(elements) {
    elements.valueLabel.dataset.placeholder = placeholder;
    elements.input.value = "";
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
+   
+   // Show search input and hide value label
+   const searchInput = elements.select.querySelector(".add-task__select-input");
+   if (searchInput) {
+      searchInput.style.display = "block";
+      searchInput.value = "To: ";
+      
+      // Add event handlers to prevent deleting "To: "
+      searchInput.addEventListener("keydown", (e) => handleAssignedSearchKeydown(e, searchInput));
+      searchInput.addEventListener("input", (e) => handleAssignedSearchInput(e, searchInput));
+      
+      elements.valueLabel.style.display = "none";
+      
+      // Focus after "To: "
+      setTimeout(() => {
+         searchInput.setSelectionRange(4, 4);
+         searchInput.focus();
+      }, 0);
+   }
+}
+
+function handleAssignedSearchKeydown(e, input) {
+   // Prevent backspace if cursor is at or before position 4 (after "To: ")
+   if (e.key === "Backspace" && input.selectionStart <= 4) {
+      e.preventDefault();
+   }
+   // Prevent delete key if cursor is at or before position 4
+   if (e.key === "Delete" && input.selectionStart < 4) {
+      e.preventDefault();
+   }
+}
+
+function handleAssignedSearchInput(e, input) {
+   // Ensure "To: " is always at the beginning
+   if (!input.value.startsWith("To: ")) {
+      const searchText = input.value.replace(/^To: /, "");
+      input.value = "To: " + searchText;
+      input.setSelectionRange(4 + searchText.length, 4 + searchText.length);
+   }
+   
+   // Filter contacts based on search text
+   const searchText = input.value.substring(4).toLowerCase().trim();
+   const menu = input.closest(".add-task__select-wrapper")?.querySelector(".add-task__select-menu--assigned");
+   
+   if (menu) {
+      const options = menu.querySelectorAll(".add-task__select-option--assigned");
+      options.forEach((option) => {
+         const text = option.textContent.toLowerCase();
+         if (searchText === "" || text.includes(searchText)) {
+            option.style.display = "flex";
+         } else {
+            option.style.display = "none";
+         }
+      });
+   }
 }
 
 function restoreLastAssignedSelection(elements) {
+   // Hide search input and show value label
+   const searchInput = elements.select.querySelector(".add-task__select-input");
+   if (searchInput) {
+      searchInput.style.display = "none";
+      searchInput.value = "";
+      searchInput.removeEventListener("keydown", handleAssignedSearchKeydown);
+      searchInput.removeEventListener("input", handleAssignedSearchInput);
+   }
+   
+   // Show all contacts again
+   const menu = elements.menu;
+   if (menu) {
+      const options = menu.querySelectorAll(".add-task__select-option--assigned");
+      options.forEach((option) => {
+         option.style.display = "flex";
+      });
+   }
+   
    const lastLabel = elements.valueLabel.dataset.lastLabel;
    const lastValue = elements.input.dataset.lastValue;
-   if (!lastLabel || !lastValue) return;
-   elements.valueLabel.textContent = lastLabel;
-   elements.input.value = lastValue;
+   
+   if (lastLabel && lastValue) {
+      elements.valueLabel.textContent = lastLabel;
+      elements.input.value = lastValue;
+   } else {
+      // Show default placeholder if no selection exists
+      elements.valueLabel.textContent = "Select contacts to assign";
+      elements.input.value = "";
+   }
+   
+   elements.valueLabel.style.display = "block";
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
@@ -373,27 +454,47 @@ function updateAssignedInitials(elements) {
    // Clear container
    initialsContainer.innerHTML = "";
    
-   // Add initials for each selected contact
+   // Calculate how many initials fit in one line based on container width
+   // Each initial is 42px wide + 8px gap = 50px per element
+   const containerWidth = initialsContainer.offsetWidth;
+   const elementWidth = 50; // 42px + 8px gap
+   const totalSlots = Math.floor(containerWidth / elementWidth);
+   // Reserve one slot for "+" if there are more contacts than slots available
+   const maxDisplay = selected.length > totalSlots ? totalSlots - 1 : totalSlots;
+   let displayCount = 0;
+   
+   // Add initials that fit in the line
    selected.forEach((option) => {
-      const initials = option.querySelector(".add-task__option-initials");
-      if (initials) {
-         const initialsSpan = document.createElement("span");
-         initialsSpan.className = "add-task__assigned-initial";
-         initialsSpan.textContent = initials.textContent;
-         
-         // Add click handler to remove selection
-         initialsSpan.addEventListener("click", () => {
-            option.classList.remove("add-task__select-option--selected");
-            const checkbox = option.querySelector(".add-task__option-checkbox");
-            if (checkbox) {
-               checkbox.src = "./assets/icons/desktop/checkBox.svg";
-            }
-            updateAssignedInitials(elements);
-         });
-         
-         initialsContainer.appendChild(initialsSpan);
+      if (displayCount < maxDisplay) {
+         const initials = option.querySelector(".add-task__option-initials");
+         if (initials) {
+            const initialsSpan = document.createElement("span");
+            initialsSpan.className = "add-task__assigned-initial";
+            initialsSpan.textContent = initials.textContent;
+            
+            // Add click handler to remove selection
+            initialsSpan.addEventListener("click", () => {
+               option.classList.remove("add-task__select-option--selected");
+               const checkbox = option.querySelector(".add-task__option-checkbox");
+               if (checkbox) {
+                  checkbox.src = "./assets/icons/desktop/checkBox.svg";
+               }
+               updateAssignedInitials(elements);
+            });
+            
+            initialsContainer.appendChild(initialsSpan);
+            displayCount++;
+         }
       }
    });
+   
+   // Add "+" indicator if there are more selected than fit in the line
+   if (selected.length > displayCount) {
+      const plusSpan = document.createElement("span");
+      plusSpan.className = "add-task__assigned-overflow";
+      plusSpan.textContent = `+${selected.length - displayCount}`;
+      initialsContainer.appendChild(plusSpan);
+   }
    
    // Update wrapper padding and footer position based on whether contacts are selected and menu is closed
    if (wrapper) {
