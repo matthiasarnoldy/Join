@@ -602,6 +602,7 @@
 }
 
 .add-task__select-menu--assigned {
+   min-height: 294px;
    max-height: 294px;
    overflow-y: scroll;
    scrollbar-gutter: stable;
