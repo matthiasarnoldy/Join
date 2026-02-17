@@ -272,6 +272,7 @@ function getAssignedElements() {
       menu: document.getElementById("addTaskAssignedMenu"),
       input: document.getElementById("addTaskAssignedInput"),
       valueLabel: document.querySelector("#addTaskAssigned .add-task__select-value"),
+      initialsContainer: document.getElementById("addTaskAssignedInitials"),
       selectionGroup: select?.closest(".add-task__information-group--selection")
    };
 }
@@ -340,7 +341,43 @@ function handleAssignedOptionClick(event, elements) {
    event.stopPropagation();
    const option = event.target.closest(".add-task__select-option");
    if (!option) return;
-   setAssignedValue(option, elements);
+   
+   // Toggle selection state
+   const isSelected = option.classList.toggle("add-task__select-option--selected");
+   
+   // Update icon
+   const checkbox = option.querySelector(".add-task__option-checkbox");
+   if (checkbox) {
+      if (isSelected) {
+         checkbox.src = "./assets/icons/desktop/checkBox--checked.svg";
+      } else {
+         checkbox.src = "./assets/icons/desktop/checkBox.svg";
+      }
+   }
+   
+   // Update initials display
+   updateAssignedInitials(elements);
+}
+
+function updateAssignedInitials(elements) {
+   const selected = elements.menu.querySelectorAll(".add-task__select-option--selected");
+   const initialsContainer = elements.initialsContainer;
+   
+   if (!initialsContainer) return;
+   
+   // Clear container
+   initialsContainer.innerHTML = "";
+   
+   // Add initials for each selected contact
+   selected.forEach((option) => {
+      const initials = option.querySelector(".add-task__option-initials");
+      if (initials) {
+         const initialsSpan = document.createElement("span");
+         initialsSpan.className = "add-task__assigned-initial";
+         initialsSpan.textContent = initials.textContent;
+         initialsContainer.appendChild(initialsSpan);
+      }
+   });
 }
 
 function setupAssignedEvents(elements) {

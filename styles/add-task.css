@@ -563,6 +563,7 @@
    background-color: #fff;
    display: flex;
    flex-direction: column;
+   gap: 1px;
    list-style: none;
    border-top: none;
    border-radius: 0 0 10px 10px;
@@ -582,7 +583,7 @@
 }
 
 .add-task__select-menu--assigned {
-   max-height: 250px;
+   max-height: 294px;
    overflow-y: scroll;
    scrollbar-gutter: stable;
    scrollbar-color: #2b3647 #fff;
@@ -601,6 +602,27 @@
    border-radius: 4px;
 }
 
+.add-task__assigned-initials {
+   display: flex;
+   gap: 8px;
+   flex-wrap: wrap;
+   padding-top: 8px;
+}
+
+.add-task__assigned-initial {
+   font-size: 12px;
+   font-weight: 700;
+   background-color: #ff7a00;
+   color: #fff;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 42px;
+   height: 42px;
+   border: 2px solid #fff;
+   border-radius: 50%;
+}
+
 .add-task__selection-group--category-open .add-task__input-group--subtasks {
    position: relative;
    transform: translateY(90px);
@@ -608,7 +630,7 @@
 
 .add-task__information-group--selection.add-task__selection-group--assigned-open .add-task__selection-group {
    position: relative;
-   transform: translateY(250px);
+   transform: translateY(294px);
 }
 
 .add-task__select-option {
@@ -619,13 +641,11 @@
    display: flex;
    justify-content: space-between;
    align-items: center;
+   transition: all 100ms ease-in-out;
 }
 
-.add-task__option-checkbox {
-   width: 24px;
-   height: 24px;
-   display: block;
-   flex-shrink: 0;
+.add-task__select-option--assigned {
+   padding: 7px 16px;
 }
 
 .add-task__select-option:hover {
@@ -636,6 +656,35 @@
 .add-task__select-option:active {
    background-color: #d1d1d1;
    transition: all 100ms ease-in-out;
+}
+
+.add-task__select-option--selected {
+   background-color: #2a3647;
+   color: #fff;
+}
+
+.add-task__select-option--selected:hover {
+   background-color: #091931;
+}
+
+.add-task__option-content {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+}
+
+.add-task__option-initials {
+   font-size: 12px;
+   font-weight: 700;
+   width: 42px;
+   height: 42px;
+   background-color: #ff7a00;
+   color: #fff;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border: 2px solid #fff;
+   border-radius: 50%;
 }
 
 .add-task__input-group--required:last-child {
