@@ -295,6 +295,7 @@ function toggleAssignedMenu(elements) {
    }
    elements.select.setAttribute("aria-expanded", isOpen ? "true" : "false");
    setAssignedOpenState(elements, isOpen);
+   updateAssignedInitials(elements);
 }
 
 function closeAssignedMenu(elements) {
@@ -302,6 +303,7 @@ function closeAssignedMenu(elements) {
    elements.select.setAttribute("aria-expanded", "false");
    setAssignedOpenState(elements, false);
    restoreLastAssignedSelection(elements);
+   updateAssignedInitials(elements);
 }
 
 function setAssignedValue(option, elements) {
@@ -362,6 +364,9 @@ function handleAssignedOptionClick(event, elements) {
 function updateAssignedInitials(elements) {
    const selected = elements.menu.querySelectorAll(".add-task__select-option--selected");
    const initialsContainer = elements.initialsContainer;
+   const wrapper = elements.select?.closest(".add-task__select-wrapper");
+   const isMenuOpen = elements.select?.classList.contains("add-task__select--open");
+   const footer = document.querySelector(".add-task__footer");
    
    if (!initialsContainer) return;
    
@@ -375,9 +380,38 @@ function updateAssignedInitials(elements) {
          const initialsSpan = document.createElement("span");
          initialsSpan.className = "add-task__assigned-initial";
          initialsSpan.textContent = initials.textContent;
+         
+         // Add click handler to remove selection
+         initialsSpan.addEventListener("click", () => {
+            option.classList.remove("add-task__select-option--selected");
+            const checkbox = option.querySelector(".add-task__option-checkbox");
+            if (checkbox) {
+               checkbox.src = "./assets/icons/desktop/checkBox.svg";
+            }
+            updateAssignedInitials(elements);
+         });
+         
          initialsContainer.appendChild(initialsSpan);
       }
    });
+   
+   // Update wrapper padding and footer position based on whether contacts are selected and menu is closed
+   if (wrapper) {
+      if (selected.length > 0 && !isMenuOpen) {
+         wrapper.style.paddingBottom = "52px";
+      } else {
+         wrapper.style.paddingBottom = "0px";
+      }
+   }
+   
+   // Update footer position based on whether contacts are selected and menu is closed
+   if (footer) {
+      if (selected.length > 0 && !isMenuOpen) {
+         footer.style.transform = "translateY(-34px)";
+      } else {
+         footer.style.transform = "translateY(0)";
+      }
+   }
 }
 
 function setupAssignedEvents(elements) {
@@ -624,6 +658,58 @@ function clearSubtaskLists(container) {
    });
 }
 
+function resetAssignedSelect(container) {
+   const select = container.querySelector(".add-task__select--assigned");
+   if (!select) return;
+   const valueLabel = select.querySelector(".add-task__select-value");
+   const input = container.querySelector("#addTaskAssignedInput");
+   const initialsContainer = container.querySelector("#addTaskAssignedInitials");
+   const menu = container.querySelector("#addTaskAssignedMenu");
+   
+   // Reset all selected options
+   if (menu) {
+      const selectedOptions = menu.querySelectorAll(".add-task__select-option--selected");
+      selectedOptions.forEach((option) => {
+         option.classList.remove("add-task__select-option--selected");
+         const checkbox = option.querySelector(".add-task__option-checkbox");
+         if (checkbox) {
+            checkbox.src = "./assets/icons/desktop/checkBox.svg";
+         }
+      });
+   }
+   
+   // Reset placeholder
+   if (valueLabel) {
+      valueLabel.textContent = "Select contacts to assign";
+   }
+   
+   // Clear hidden input
+   if (input) {
+      input.value = "";
+   }
+   
+   // Clear initials
+   if (initialsContainer) {
+      initialsContainer.innerHTML = "";
+   }
+   
+   // Close menu
+   select.classList.remove("add-task__select--open");
+   select.setAttribute("aria-expanded", "false");
+   
+   // Reset footer position
+   const footer = container.querySelector(".add-task__footer");
+   if (footer) {
+      footer.style.transform = "translateY(0)";
+   }
+   
+   // Reset wrapper padding
+   const wrapper = select.closest(".add-task__select-wrapper");
+   if (wrapper) {
+      wrapper.style.paddingBottom = "0px";
+   }
+}
+
 function handleClearButtonClick(event, button) {
    event.preventDefault();
    const container = button.closest(".main_flex-instructions") || document;
@@ -632,6 +718,7 @@ function handleClearButtonClick(event, button) {
    resetCategorySelect(container);
    resetPriorityToMedium(container);
    resetValidationState(container);
+   resetAssignedSelect(container);
 }
 
 function initClearButtons() {

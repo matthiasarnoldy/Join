@@ -603,10 +603,13 @@
 }
 
 .add-task__assigned-initials {
+   position: absolute;
+   bottom: 0;
+   left: 0;
    display: flex;
    gap: 8px;
    flex-wrap: wrap;
-   padding-top: 8px;
+   width: 100%;
 }
 
 .add-task__assigned-initial {
@@ -621,6 +624,7 @@
    height: 42px;
    border: 2px solid #fff;
    border-radius: 50%;
+   cursor: pointer;
 }
 
 .add-task__selection-group--category-open .add-task__input-group--subtasks {
