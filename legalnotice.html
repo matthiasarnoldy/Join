@@ -3,12 +3,18 @@
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Join</title>
+      <title>Legal Notice</title>
 
       <link
-         rel="shortcut icon"
+         rel="icon"
          href="./assets/icons/desktop/logoFavicon.svg"
-         type="image/x-icon" />
+         type="image/svg+xml"
+         media="(prefers-color-scheme: light)" />
+      <link
+         rel="icon"
+         href="./assets/icons/desktop/logo.svg"
+         type="image/svg+xml"
+         media="(prefers-color-scheme: dark)" />
 
       <script src="./scripts/templates.js"></script>
       <script src="./scripts/buttons.js" defer></script>
@@ -82,15 +88,36 @@
                   <img
                      src="./assets/icons/desktop/help.svg"
                      alt="Help Icon"
-                     class="help__icon" />
-                  <span class="login__initials">SM</span>
+                     class="help__icon"
+                     id="help" />
+                  <span id="login__initials" class="login__initials">SM</span>
                </section>
             </div>
          </header>
-         <main class="main">
+         <div id="dropdownMenu" class="header__dropdown">
+            <ul class="header__dropdown-quicklinks">
+               <li class="header__dropdown-quicklink" id="dropdownHelp">
+                  Help
+               </li>
+               <li
+                  class="header__dropdown-quicklink"
+                  id="dropdownPrivacyPolicy">
+                  Privacy Policy
+               </li>
+               <li class="header__dropdown-quicklink" id="dropdownLegalNotice">
+                  Legal Notice
+               </li>
+               <li class="header__dropdown-quicklink" id="dropdownLog">
+                  Log out
+               </li>
+            </ul>
+         </div>
+         <main class="main content_max-width">
             <div class="main_flex-instructions">
                <section class="headline">
-                  <h1 class="headline__name">Legal Notice</h1>
+                  <h1 class="headline__name headline__legalinformation">
+                     Legal Notice
+                  </h1>
                </section>
                <section class="textcontent">
                   <div class="legal__imprint">
@@ -104,7 +131,12 @@
                      </ul>
                      <section class="legal__textwrapper">
                         <h4 class="legal__subheading">Exploring the board</h4>
-                        <p class="legal__text">Email: m.arnoldy@outlook.de</p>
+                        <p class="legal__text">
+                           Email:
+                           <span class="legal__text--secondary"
+                              >m.arnoldy@outlook.de</span
+                           >
+                        </p>
                      </section>
                   </div>
                   <section class="legal__textwrapper">

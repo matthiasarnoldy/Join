@@ -6,9 +6,15 @@
       <title>Join</title>
 
       <link
-         rel="shortcut icon"
+         rel="icon"
          href="./assets/icons/desktop/logoFavicon.svg"
-         type="image/x-icon" />
+         type="image/svg+xml"
+         media="(prefers-color-scheme: light)" />
+      <link
+         rel="icon"
+         href="./assets/icons/desktop/logo.svg"
+         type="image/svg+xml"
+         media="(prefers-color-scheme: dark)" />
 
       <script src="./scripts/template.js"></script>
       <script src="./scripts/buttons.js" defer></script>
@@ -72,21 +78,36 @@
       <section class="mainArea">
          <header class="header">
             <div class="header_flex-instructions topBar">
-               <img
-                  src="./assets/icons/desktop/Dark_Logo.svg"
-                  alt="Logo"
-                  class="logo__dark" />
                <span class="topBar__name">Kanban Project Management Tool</span>
                <section class="topBar__loginHelp">
                   <img
                      src="./assets/icons/desktop/help.svg"
                      alt="Help Icon"
-                     class="help__icon" />
-                  <span class="login__initials">SM</span>
+                     class="help__icon"
+                     id="help" />
+                  <span id="login__initials" class="login__initials">SM</span>
                </section>
             </div>
          </header>
-         <main class="main">
+         <div id="dropdownMenu" class="header__dropdown">
+            <ul class="header__dropdown-quicklinks">
+               <li class="header__dropdown-quicklink" id="dropdownHelp">
+                  Help
+               </li>
+               <li
+                  class="header__dropdown-quicklink"
+                  id="dropdownPrivacyPolicy">
+                  Privacy Policy
+               </li>
+               <li class="header__dropdown-quicklink" id="dropdownLegalNotice">
+                  Legal Notice
+               </li>
+               <li class="header__dropdown-quicklink" id="dropdownLog">
+                  Log out
+               </li>
+            </ul>
+         </div>
+         <main class="main content_max-width">
             <div class="main_flex-instructions">
                <section class="headline">
                   <div class="headline_summary">
@@ -199,15 +220,13 @@
                         <div class="tasks__card summary__card">
                            <span class="summary__number">5</span>
                            <span class="summary__text"
-                              >Tasks on <br />
-                              Board</span
+                              >Tasks on <br />Board</span
                            >
                         </div>
                         <div class="tasks__card summary__card">
                            <span class="summary__number">2</span>
                            <span class="summary__text"
-                              >Tasks in <br />
-                              Progress</span
+                              >Tasks in <br />Progress</span
                            >
                         </div>
                         <div class="tasks__card summary__card">

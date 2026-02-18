@@ -6,17 +6,27 @@
       <title>Join</title>
 
       <link
-         rel="shortcut icon"
+         rel="icon"
          href="./assets/icons/desktop/logoFavicon.svg"
-         type="image/x-icon" />
+         type="image/svg+xml"
+         media="(prefers-color-scheme: light)" />
+      <link
+         rel="icon"
+         href="./assets/icons/desktop/logo.svg"
+         type="image/svg+xml"
+         media="(prefers-color-scheme: dark)" />
 
       <script src="./scripts/templates.js"></script>
       <script src="./scripts/buttons.js" defer></script>
+      <script src="./scripts/date-picker.js" defer></script>
+      <script src="./scripts/add-task.js" defer></script>
       <script src="./script.js"></script>
+      <script src="./scripts/board.js"></script>
 
       <link rel="stylesheet" href="./styles/board.css" />
       <link rel="stylesheet" href="./styles/standard.css" />
       <link rel="stylesheet" href="./style.css" />
+      <link rel="stylesheet" href="./styles/add-task.css" />
    </head>
    <body>
       <nav class="navBar">
@@ -79,12 +89,31 @@
                   <img
                      src="./assets/icons/desktop/help.svg"
                      alt="Help Icon"
-                     class="help__icon" />
-                  <span class="login__initials">SM</span>
+                     class="help__icon"
+                     id="help" />
+                  <span id="login__initials" class="login__initials">SM</span>
                </section>
             </div>
          </header>
-         <main class="main">
+         <div id="dropdownMenu" class="header__dropdown">
+            <ul class="header__dropdown-quicklinks">
+               <li class="header__dropdown-quicklink" id="dropdownHelp">
+                  Help
+               </li>
+               <li
+                  class="header__dropdown-quicklink"
+                  id="dropdownPrivacyPolicy">
+                  Privacy Policy
+               </li>
+               <li class="header__dropdown-quicklink" id="dropdownLegalNotice">
+                  Legal Notice
+               </li>
+               <li class="header__dropdown-quicklink" id="dropdownLog">
+                  Log out
+               </li>
+            </ul>
+         </div>
+         <main class="main content_max-width">
             <div class="main_flex-instructions">
                <section class="headline">
                   <div class="headline_board">
@@ -107,7 +136,7 @@
                            </button>
                         </div>
 
-                        <button class="add-task-btn">
+                        <button onclick="openDialog()" class="add-task-btn">
                            <span>Add task</span>
                            <img
                               class="add-task-btn__icon"
@@ -286,6 +315,634 @@
                </section>
             </div>
          </main>
+         <dialog id="addTaskDialog" class="addtaskDialog">
+            <div class="main_flex-instructions">
+               <section class="headline headline--board">
+                  <div class="headline_tasks">
+                     <h1 class="headline__name">Add Tasks</h1>
+                     <button
+                        class="add-task__close-button"
+                        aria-label="Close Add Task Form"
+                        onclick="closeDialog()">
+                        <img
+                           src="./assets/icons/desktop/close.svg"
+                           alt="Close Icon"
+                           class="add-task__close-icon" />
+                     </button>
+                  </div>
+               </section>
+               <section class="add-task__form-information">
+                  <form class="add-task__overview">
+                     <section class="add-task__information-group">
+                        <section class="add-task__input-group">
+                           <label for="addTaskTitle" class="add-task__label">
+                              Title
+                              <span class="add-task__label--required">*</span>
+                           </label>
+                           <div
+                              class="add-task__input-field add-task__input-field--required">
+                              <input
+                                 type="text"
+                                 name="title"
+                                 id="addTaskTitle"
+                                 placeholder="Enter a title"
+                                 autocomplete="off"
+                                 class="add-task__input add-task__input--text add-task__input--title" />
+                              <span class="add-task__input--required"
+                                 >This field is required</span
+                              >
+                           </div>
+                        </section>
+                        <section class="add-task__input-group">
+                           <label
+                              for="addTaskDescription"
+                              class="add-task__label">
+                              Description
+                           </label>
+                           <div
+                              class="add-task__input-field add-task__input-field--textarea">
+                              <textarea
+                                 name="description"
+                                 id="addTaskDescription"
+                                 placeholder="Enter a description"
+                                 class="add-task__input add-task__input--textarea"></textarea>
+                              <img
+                                 src="./assets/icons/desktop/cursorChangingSize.svg"
+                                 alt=""
+                                 class="add-task__textarea-resize" />
+                              <span class="add-task__input--required"
+                                 >This field is required</span
+                              >
+                           </div>
+                        </section>
+                        <section class="add-task__input-group">
+                           <label for="addTaskDate" class="add-task__label">
+                              Due Date
+                              <span class="add-task__label--required">*</span>
+                           </label>
+                           <div
+                              class="add-task__input-field add-task__input-field--required">
+                              <div class="date-picker" id="datePicker">
+                                 <input
+                                    type="text"
+                                    name="date"
+                                    id="addTaskDate"
+                                    class="add-task__input add-task__input--date"
+                                    placeholder="dd/mm/yyyy"
+                                    autocomplete="off"
+                                    readonly />
+                                 <button
+                                    type="button"
+                                    class="date-picker__toggle"
+                                    aria-label="Open calendar"></button>
+                                 <div
+                                    class="date-picker__panel"
+                                    id="datePickerPanel"
+                                    aria-hidden="true">
+                                    <div class="date-picker__header">
+                                       <button
+                                          type="button"
+                                          class="date-picker__nav"
+                                          data-action="prev"
+                                          aria-label="Previous month">
+                                          ‹
+                                       </button>
+                                       <span
+                                          class="date-picker__month"
+                                          id="datePickerMonth"></span>
+                                       <button
+                                          type="button"
+                                          class="date-picker__nav"
+                                          data-action="next"
+                                          aria-label="Next month">
+                                          ›
+                                       </button>
+                                    </div>
+                                    <div class="date-picker__weekdays">
+                                       <span>Mo</span>
+                                       <span>Di</span>
+                                       <span>Mi</span>
+                                       <span>Do</span>
+                                       <span>Fr</span>
+                                       <span>Sa</span>
+                                       <span>So</span>
+                                    </div>
+                                    <div
+                                       class="date-picker__days"
+                                       id="datePickerDays"></div>
+                                 </div>
+                              </div>
+                              <span class="add-task__input--required"
+                                 >This field is required</span
+                              >
+                           </div>
+                        </section>
+                     </section>
+                     <img
+                        src="./assets/icons/desktop/addTask__dividingLine.svg"
+                        alt="Dividing Line"
+                        class="add-task__dividing-line" />
+                     <section
+                        class="add-task__information-group add-task__information-group--selection">
+                        <section class="add-task__input-group">
+                           <label class="add-task__label">Priority</label>
+                           <div
+                              class="add-task__priority-field"
+                              id="addTaskPriority">
+                              <section
+                                 class="add-task__priority-option add-task__priority-option--urgent">
+                                 <span class="add-task__priority-label"
+                                    >Urgent</span
+                                 >
+                                 <svg
+                                    class="add-task__priority-icon"
+                                    width="20"
+                                    height="15"
+                                    viewBox="0 0 20 15"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_156_921)">
+                                       <path
+                                          class="add-task__priority-icon--secondary"
+                                          d="M18.9043 14.5096C18.6696 14.51 18.4411 14.4351 18.2522 14.2961L10.0001 8.21288L1.74809 14.2961C1.63224 14.3816 1.50066 14.4435 1.36086 14.4783C1.22106 14.513 1.07577 14.5199 0.933305 14.4986C0.790837 14.4772 0.653973 14.428 0.530528 14.3538C0.407083 14.2796 0.299474 14.1818 0.213845 14.0661C0.128216 13.9503 0.0662437 13.8188 0.0314671 13.6791C-0.00330956 13.5394 -0.0102098 13.3943 0.0111604 13.2519C0.0543195 12.9644 0.21001 12.7058 0.443982 12.533L9.34809 5.96249C9.53679 5.8229 9.76536 5.74756 10.0001 5.74756C10.2349 5.74756 10.4635 5.8229 10.6522 5.96249L19.5563 12.533C19.7422 12.6699 19.8801 12.862 19.9503 13.0819C20.0204 13.3018 20.0193 13.5382 19.9469 13.7573C19.8746 13.9765 19.7349 14.1673 19.5476 14.3024C19.3604 14.4375 19.1352 14.51 18.9043 14.5096Z"
+                                          fill="#FF3D00" />
+                                       <path
+                                          class="add-task__priority-icon--secondary"
+                                          d="M18.9043 8.76057C18.6696 8.76097 18.4411 8.68612 18.2522 8.54702L10.0002 2.46386L1.7481 8.54702C1.51412 8.71983 1.22104 8.79269 0.93331 8.74956C0.645583 8.70643 0.386785 8.55086 0.213849 8.31706C0.0409137 8.08326 -0.0319941 7.79039 0.011165 7.50288C0.054324 7.21536 0.210015 6.95676 0.443986 6.78395L9.3481 0.213471C9.5368 0.0738799 9.76537 -0.00146484 10.0002 -0.00146484C10.2349 -0.00146484 10.4635 0.0738799 10.6522 0.213471L19.5563 6.78395C19.7422 6.92087 19.8801 7.11298 19.9503 7.33286C20.0204 7.55274 20.0193 7.78914 19.947 8.00832C19.8746 8.22751 19.7349 8.41826 19.5476 8.55335C19.3604 8.68844 19.1352 8.76096 18.9043 8.76057Z"
+                                          fill="#FF3D00" />
+                                    </g>
+                                    <defs>
+                                       <clipPath id="clip0_156_921">
+                                          <rect
+                                             width="20"
+                                             height="14.5098"
+                                             fill="white" />
+                                       </clipPath>
+                                    </defs>
+                                 </svg>
+                              </section>
+                              <section
+                                 class="add-task__priority-option add-task__priority-option--medium add-task__priority-option--active">
+                                 <span class="add-task__priority-label"
+                                    >Medium</span
+                                 >
+                                 <svg
+                                    class="add-task__priority-icon"
+                                    width="20"
+                                    height="8"
+                                    viewBox="0 0 20 8"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_156_928)">
+                                       <path
+                                          class="add-task__priority-icon--secondary"
+                                          d="M18.9041 7.45086H1.09589C0.805242 7.45086 0.526498 7.33456 0.320979 7.12755C0.11546 6.92054 0 6.63977 0 6.34701C0 6.05425 0.11546 5.77349 0.320979 5.56647C0.526498 5.35946 0.805242 5.24316 1.09589 5.24316H18.9041C19.1948 5.24316 19.4735 5.35946 19.679 5.56647C19.8845 5.77349 20 6.05425 20 6.34701C20 6.63977 19.8845 6.92054 19.679 7.12755C19.4735 7.33456 19.1948 7.45086 18.9041 7.45086Z"
+                                          fill="#FFA800" />
+                                       <path
+                                          class="add-task__priority-icon--secondary"
+                                          d="M18.9041 2.2077H1.09589C0.805242 2.2077 0.526498 2.0914 0.320979 1.88439C0.11546 1.67738 0 1.39661 0 1.10385C0 0.81109 0.11546 0.530322 0.320979 0.32331C0.526498 0.116298 0.805242 0 1.09589 0L18.9041 0C19.1948 0 19.4735 0.116298 19.679 0.32331C19.8845 0.530322 20 0.81109 20 1.10385C20 1.39661 19.8845 1.67738 19.679 1.88439C19.4735 2.0914 19.1948 2.2077 18.9041 2.2077Z"
+                                          fill="#FFA800" />
+                                    </g>
+                                    <defs>
+                                       <clipPath id="clip0_156_928">
+                                          <rect
+                                             width="20"
+                                             height="7.45098"
+                                             fill="white" />
+                                       </clipPath>
+                                    </defs>
+                                 </svg>
+                              </section>
+                              <section
+                                 class="add-task__priority-option add-task__priority-option--low">
+                                 <span class="add-task__priority-label"
+                                    >Low</span
+                                 >
+                                 <svg
+                                    class="add-task__priority-icon"
+                                    width="20"
+                                    height="15"
+                                    viewBox="0 0 20 15"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                       class="add-task__priority-icon--secondary"
+                                       d="M10 8.76077C9.7654 8.76118 9.53687 8.68634 9.34802 8.54726L0.444913 1.97752C0.329075 1.89197 0.231235 1.78445 0.15698 1.66111C0.0827245 1.53777 0.033508 1.40102 0.0121402 1.25868C-0.031014 0.971193 0.0418855 0.678356 0.214802 0.444584C0.387718 0.210811 0.646486 0.0552534 0.934181 0.0121312C1.22188 -0.0309911 1.51493 0.0418545 1.74888 0.214643L10 6.29712L18.2511 0.214643C18.367 0.129087 18.4985 0.0671675 18.6383 0.0324205C18.7781 -0.00232646 18.9234 -0.00922079 19.0658 0.0121312C19.2083 0.0334832 19.3451 0.0826633 19.4685 0.156864C19.592 0.231064 19.6996 0.328831 19.7852 0.444584C19.8708 0.560336 19.9328 0.691806 19.9676 0.831488C20.0023 0.97117 20.0092 1.11633 19.9879 1.25868C19.9665 1.40102 19.9173 1.53777 19.843 1.66111C19.7688 1.78445 19.6709 1.89197 19.5551 1.97752L10.652 8.54726C10.4631 8.68634 10.2346 8.76118 10 8.76077Z"
+                                       fill="#7AE229" />
+                                    <path
+                                       class="add-task__priority-icon--secondary"
+                                       d="M10 14.5093C9.7654 14.5097 9.53687 14.4349 9.34802 14.2958L0.444913 7.72606C0.210967 7.55327 0.0552944 7.29469 0.0121402 7.00721C-0.031014 6.71973 0.0418855 6.42689 0.214802 6.19312C0.387718 5.95935 0.646486 5.80379 0.934181 5.76067C1.22188 5.71754 1.51493 5.79039 1.74888 5.96318L10 12.0457L18.2511 5.96318C18.4851 5.79039 18.7781 5.71754 19.0658 5.76067C19.3535 5.80379 19.6123 5.95935 19.7852 6.19312C19.9581 6.42689 20.031 6.71973 19.9879 7.00721C19.9447 7.29469 19.789 7.55327 19.5551 7.72606L10.652 14.2958C10.4631 14.4349 10.2346 14.5097 10 14.5093Z"
+                                       fill="#7AE229" />
+                                 </svg>
+                              </section>
+                           </div>
+                        </section>
+                        <section class="add-task__input-group">
+                           <label for="addTaskAssigned" class="add-task__label">
+                              Assigned to
+                           </label>
+                           <div class="add-task__select-wrapper">
+                              <section
+                                 id="addTaskAssigned"
+                                 class="add-task__select add-task__select--assigned">
+                                 <span class="add-task__select-value"
+                                    >Select contacts to assign</span
+                                 >
+                                 <input
+                                    type="text"
+                                    id="addTaskAssignedSearch"
+                                    class="add-task__select-input"
+                                    placeholder="To: "
+                                    autocomplete="off"
+                                    style="display: none" />
+                                 <svg
+                                    class="add-task__select-arrow"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <mask
+                                       id="mask0_75597_14124"
+                                       style="mask-type: alpha"
+                                       maskUnits="userSpaceOnUse"
+                                       x="0"
+                                       y="0"
+                                       width="24"
+                                       height="24">
+                                       <rect
+                                          width="24"
+                                          height="24"
+                                          fill="#D9D9D9" />
+                                    </mask>
+                                    <g mask="url(#mask0_75597_14124)">
+                                       <path
+                                          d="M11.3005 14.3L8.70046 11.7C8.3838 11.3833 8.31296 11.0208 8.48796 10.6125C8.66296 10.2042 8.97546 10 9.42546 10H14.5755C15.0255 10 15.338 10.2042 15.513 10.6125C15.688 11.0208 15.6171 11.3833 15.3005 11.7L12.7005 14.3C12.6005 14.4 12.4921 14.475 12.3755 14.525C12.2588 14.575 12.1338 14.6 12.0005 14.6C11.8671 14.6 11.7421 14.575 11.6255 14.525C11.5088 14.475 11.4005 14.4 11.3005 14.3Z"
+                                          fill="#2A3647" />
+                                    </g>
+                                 </svg>
+                              </section>
+                              <input
+                                 type="hidden"
+                                 id="addTaskAssignedInput"
+                                 name="assigned" />
+                              <div
+                                 class="add-task__assigned-initials"
+                                 id="addTaskAssignedInitials"></div>
+                              <ul
+                                 class="add-task__select-menu add-task__select-menu--assigned"
+                                 id="addTaskAssignedMenu"
+                                 role="listbox">
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-1">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >MZ</span
+                                       >
+                                       Michael Zünd
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-2">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >YJ</span
+                                       >
+                                       Yannic Jundt
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >MA</span
+                                       >
+                                       Matthias Arnoldy
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-4">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C4</span
+                                       >
+                                       Contact 4
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-5">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C5</span
+                                       >
+                                       Contact 5
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-6">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C6</span
+                                       >
+                                       Contact 6
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C7</span
+                                       >
+                                       Contact 7
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C8</span
+                                       >
+                                       Contact 8
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C9</span
+                                       >
+                                       Contact 9
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >10</span
+                                       >
+                                       Contact 10
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >11</span
+                                       >
+                                       Contact 11
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >12</span
+                                       >
+                                       Contact 12
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                              </ul>
+                           </div>
+                        </section>
+                        <section class="add-task__selection-group">
+                           <section
+                              class="add-task__input-group add-task__input-group--required">
+                              <label class="add-task__label">
+                                 Category
+                                 <span class="add-task__label--required"
+                                    >*</span
+                                 >
+                              </label>
+                              <div
+                                 class="add-task__input-field add-task__input-field--required add-task__input-field--select">
+                                 <div class="add-task__select-wrapper">
+                                    <section
+                                       id="addTaskCategory"
+                                       class="add-task__select add-task__select--category">
+                                       <span class="add-task__select-value"
+                                          >Select task category</span
+                                       >
+                                       <svg
+                                          class="add-task__select-arrow"
+                                          width="24"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg">
+                                          <mask
+                                             id="mask0_75597_14125"
+                                             style="mask-type: alpha"
+                                             maskUnits="userSpaceOnUse"
+                                             x="0"
+                                             y="0"
+                                             width="24"
+                                             height="24">
+                                             <rect
+                                                width="24"
+                                                height="24"
+                                                fill="#D9D9D9" />
+                                          </mask>
+                                          <g mask="url(#mask0_75597_14125)">
+                                             <path
+                                                d="M11.3005 14.3L8.70046 11.7C8.3838 11.3833 8.31296 11.0208 8.48796 10.6125C8.66296 10.2042 8.97546 10 9.42546 10H14.5755C15.0255 10 15.338 10.2042 15.513 10.6125C15.688 11.0208 15.6171 11.3833 15.3005 11.7L12.7005 14.3C12.6005 14.4 12.4921 14.475 12.3755 14.525C12.2588 14.575 12.1338 14.6 12.0005 14.6C11.8671 14.6 11.7421 14.575 11.6255 14.525C11.5088 14.475 11.4005 14.4 11.3005 14.3Z"
+                                                fill="#2A3647" />
+                                          </g>
+                                       </svg>
+                                    </section>
+                                    <input
+                                       type="hidden"
+                                       id="addTaskCategoryInput"
+                                       name="category" />
+                                    <ul
+                                       class="add-task__select-menu add-task__select-menu--category"
+                                       id="addTaskCategoryMenu"
+                                       role="listbox">
+                                       <li
+                                          class="add-task__select-option"
+                                          data-value="technical">
+                                          Technical Task
+                                       </li>
+                                       <li
+                                          class="add-task__select-option"
+                                          data-value="user-story">
+                                          User Story
+                                       </li>
+                                    </ul>
+                                 </div>
+                                 <span class="add-task__input--required"
+                                    >This field is required</span
+                                 >
+                              </div>
+                           </section>
+                           <section
+                              class="add-task__input-group add-task__input-group--subtasks">
+                              <label
+                                 for="addTaskSubtasks"
+                                 class="add-task__label">
+                                 Subtasks
+                              </label>
+                              <div class="add-task__subtask-field">
+                                 <input
+                                    type="text"
+                                    id="addTaskSubtasks"
+                                    placeholder="Add new Subtask"
+                                    autocomplete="off"
+                                    class="add-task__input add-task__input--text add-task__input--subtasks" />
+                                 <div class="add-task__subtask-actions">
+                                    <button
+                                       type="button"
+                                       class="add-task__subtask-button"
+                                       data-action="clear">
+                                       <img
+                                          src="./assets/icons/desktop/close.svg"
+                                          alt=""
+                                          class="add-task__subtask-icon" />
+                                    </button>
+                                    <span
+                                       class="add-task__subtask-dividingline"></span>
+                                    <button
+                                       type="button"
+                                       class="add-task__subtask-button"
+                                       data-action="add">
+                                       <img
+                                          src="./assets/icons/desktop/check.svg"
+                                          alt=""
+                                          class="add-task__subtask-icon" />
+                                    </button>
+                                 </div>
+                              </div>
+                              <ul class="add-task__subtask-list"></ul>
+                           </section>
+                        </section>
+                     </section>
+                  </form>
+                  <section class="add-task__footer">
+                     <div class="add-task__required-hint">
+                        <span class="add-task__required-symbol">*</span>
+                        <span class="add-task__required-text"
+                           >This field is required</span
+                        >
+                     </div>
+                     <div class="add-task__form-buttons">
+                        <button
+                           class="add-task__button add-task__button--cancel">
+                           Clear
+                           <svg
+                              class="add-task__cancel"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg">
+                              <mask
+                                 id="mask0_75592_9957"
+                                 style="mask-type: alpha"
+                                 maskUnits="userSpaceOnUse"
+                                 x="0"
+                                 y="0"
+                                 width="24"
+                                 height="24">
+                                 <rect width="24" height="24" fill="#D9D9D9" />
+                              </mask>
+                              <g mask="url(#mask0_75592_9957)">
+                                 <path
+                                    class="add-task__cancel--secondary"
+                                    d="M11.9998 13.4L7.0998 18.3C6.91647 18.4834 6.68314 18.575 6.3998 18.575C6.11647 18.575 5.88314 18.4834 5.6998 18.3C5.51647 18.1167 5.4248 17.8834 5.4248 17.6C5.4248 17.3167 5.51647 17.0834 5.6998 16.9L10.5998 12L5.6998 7.10005C5.51647 6.91672 5.4248 6.68338 5.4248 6.40005C5.4248 6.11672 5.51647 5.88338 5.6998 5.70005C5.88314 5.51672 6.11647 5.42505 6.3998 5.42505C6.68314 5.42505 6.91647 5.51672 7.0998 5.70005L11.9998 10.6L16.8998 5.70005C17.0831 5.51672 17.3165 5.42505 17.5998 5.42505C17.8831 5.42505 18.1165 5.51672 18.2998 5.70005C18.4831 5.88338 18.5748 6.11672 18.5748 6.40005C18.5748 6.68338 18.4831 6.91672 18.2998 7.10005L13.3998 12L18.2998 16.9C18.4831 17.0834 18.5748 17.3167 18.5748 17.6C18.5748 17.8834 18.4831 18.1167 18.2998 18.3C18.1165 18.4834 17.8831 18.575 17.5998 18.575C17.3165 18.575 17.0831 18.4834 16.8998 18.3L11.9998 13.4Z"
+                                    fill="#2A3647" />
+                              </g>
+                           </svg>
+                        </button>
+                        <button
+                           class="add-task__button add-task__button--create">
+                           Create Task
+                           <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg">
+                              <mask
+                                 id="mask0_75592_9963"
+                                 style="mask-type: alpha"
+                                 maskUnits="userSpaceOnUse"
+                                 x="0"
+                                 y="0"
+                                 width="24"
+                                 height="24">
+                                 <rect width="24" height="24" fill="#D9D9D9" />
+                              </mask>
+                              <g mask="url(#mask0_75592_9963)">
+                                 <path
+                                    d="M9.55021 15.15L18.0252 6.675C18.2252 6.475 18.4627 6.375 18.7377 6.375C19.0127 6.375 19.2502 6.475 19.4502 6.675C19.6502 6.875 19.7502 7.1125 19.7502 7.3875C19.7502 7.6625 19.6502 7.9 19.4502 8.1L10.2502 17.3C10.0502 17.5 9.81687 17.6 9.55021 17.6C9.28354 17.6 9.05021 17.5 8.85021 17.3L4.55021 13C4.35021 12.8 4.25437 12.5625 4.26271 12.2875C4.27104 12.0125 4.37521 11.775 4.57521 11.575C4.77521 11.375 5.01271 11.275 5.28771 11.275C5.56271 11.275 5.80021 11.375 6.00021 11.575L9.55021 15.15Z"
+                                    fill="#fff" />
+                              </g>
+                           </svg>
+                        </button>
+                     </div>
+                  </section>
+               </section>
+            </div>
+         </dialog>
       </section>
    </body>
 </html>

@@ -6,12 +6,20 @@
       <title>Join</title>
 
       <link
-         rel="shortcut icon"
+         rel="icon"
          href="./assets/icons/desktop/logoFavicon.svg"
-         type="image/x-icon" />
+         type="image/svg+xml"
+         media="(prefers-color-scheme: light)" />
+      <link
+         rel="icon"
+         href="./assets/icons/desktop/logo.svg"
+         type="image/svg+xml"
+         media="(prefers-color-scheme: dark)" />
 
       <script src="./scripts/templates.js"></script>
       <script src="./scripts/buttons.js" defer></script>
+      <script src="./scripts/date-picker.js" defer></script>
+      <script src="./scripts/add-task.js" defer></script>
       <script src="./script.js"></script>
 
       <link rel="stylesheet" href="./styles/assets.css" />
@@ -80,16 +88,35 @@
                   <img
                      src="./assets/icons/desktop/help.svg"
                      alt="Help Icon"
-                     class="help__icon" />
-                  <span class="login__initials">SM</span>
+                     class="help__icon"
+                     id="help" />
+                  <span id="login__initials" class="login__initials">SM</span>
                </section>
             </div>
          </header>
-         <main class="main">
+         <div id="dropdownMenu" class="header__dropdown">
+            <ul class="header__dropdown-quicklinks">
+               <li class="header__dropdown-quicklink" id="dropdownHelp">
+                  Help
+               </li>
+               <li
+                  class="header__dropdown-quicklink"
+                  id="dropdownPrivacyPolicy">
+                  Privacy Policy
+               </li>
+               <li class="header__dropdown-quicklink" id="dropdownLegalNotice">
+                  Legal Notice
+               </li>
+               <li class="header__dropdown-quicklink" id="dropdownLog">
+                  Log out
+               </li>
+            </ul>
+         </div>
+         <main class="main content_max-width">
             <div class="main_flex-instructions">
                <section class="headline">
                   <div class="headline_tasks">
-                     <h1 class="headline__name">Add Tasks</h1>
+                     <h1 class="headline__name">Add Task</h1>
                   </div>
                </section>
                <section class="add-task__form-information">
@@ -107,6 +134,7 @@
                                  name="title"
                                  id="addTaskTitle"
                                  placeholder="Enter a title"
+                                 autocomplete="off"
                                  class="add-task__input add-task__input--text add-task__input--title" />
                               <span class="add-task__input--required"
                                  >This field is required</span
@@ -119,12 +147,17 @@
                               class="add-task__label">
                               Description
                            </label>
-                           <div class="add-task__input-field">
+                           <div
+                              class="add-task__input-field add-task__input-field--textarea">
                               <textarea
                                  name="description"
                                  id="addTaskDescription"
                                  placeholder="Enter a description"
                                  class="add-task__input add-task__input--textarea"></textarea>
+                              <img
+                                 src="./assets/icons/desktop/cursorChangingSize.svg"
+                                 alt=""
+                                 class="add-task__textarea-resize" />
                               <span class="add-task__input--required"
                                  >This field is required</span
                               >
@@ -137,11 +170,56 @@
                            </label>
                            <div
                               class="add-task__input-field add-task__input-field--required">
-                              <input
-                                 type="date"
-                                 name="date"
-                                 id="addTaskDate"
-                                 class="add-task__input add-task__input--date" />
+                              <div class="date-picker" id="datePicker">
+                                 <input
+                                    type="text"
+                                    name="date"
+                                    id="addTaskDate"
+                                    class="add-task__input add-task__input--date"
+                                    placeholder="dd/mm/yyyy"
+                                    autocomplete="off"
+                                    readonly />
+                                 <button
+                                    type="button"
+                                    class="date-picker__toggle"
+                                    aria-label="Open calendar"></button>
+                                 <div
+                                    class="date-picker__panel"
+                                    id="datePickerPanel"
+                                    aria-hidden="true">
+                                    <div class="date-picker__header">
+                                       <button
+                                          type="button"
+                                          class="date-picker__nav"
+                                          data-action="prev"
+                                          aria-label="Previous month">
+                                          ‹
+                                       </button>
+                                       <span
+                                          class="date-picker__month"
+                                          id="datePickerMonth"></span>
+                                       <button
+                                          type="button"
+                                          class="date-picker__nav"
+                                          data-action="next"
+                                          aria-label="Next month">
+                                          ›
+                                       </button>
+                                    </div>
+                                    <div class="date-picker__weekdays">
+                                       <span>Mo</span>
+                                       <span>Di</span>
+                                       <span>Mi</span>
+                                       <span>Do</span>
+                                       <span>Fr</span>
+                                       <span>Sa</span>
+                                       <span>So</span>
+                                    </div>
+                                    <div
+                                       class="date-picker__days"
+                                       id="datePickerDays"></div>
+                                 </div>
+                              </div>
                               <span class="add-task__input--required"
                                  >This field is required</span
                               >
@@ -251,37 +329,228 @@
                            <label for="addTaskAssigned" class="add-task__label">
                               Assigned to
                            </label>
-                           <section
-                              id="addTaskAssigned"
-                              class="add-task__select add-task__select--assigned">
-                              <span>Select contacts to assign</span>
-                              <svg
-                                 class="add-task__select-arrow"
-                                 width="24"
-                                 height="24"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                 <mask
-                                    id="mask0_75597_14124"
-                                    style="mask-type: alpha"
-                                    maskUnits="userSpaceOnUse"
-                                    x="0"
-                                    y="0"
+                           <div class="add-task__select-wrapper">
+                              <section
+                                 id="addTaskAssigned"
+                                 class="add-task__select add-task__select--assigned">
+                                 <span class="add-task__select-value"
+                                    >Select contacts to assign</span
+                                 >
+                                 <input
+                                    type="text"
+                                    id="addTaskAssignedSearch"
+                                    class="add-task__select-input"
+                                    placeholder="To: "
+                                    autocomplete="off"
+                                    style="display: none" />
+                                 <svg
+                                    class="add-task__select-arrow"
                                     width="24"
-                                    height="24">
-                                    <rect
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <mask
+                                       id="mask0_75597_14124"
+                                       style="mask-type: alpha"
+                                       maskUnits="userSpaceOnUse"
+                                       x="0"
+                                       y="0"
                                        width="24"
-                                       height="24"
-                                       fill="#D9D9D9" />
-                                 </mask>
-                                 <g mask="url(#mask0_75597_14124)">
-                                    <path
-                                       d="M11.3005 14.3L8.70046 11.7C8.3838 11.3833 8.31296 11.0208 8.48796 10.6125C8.66296 10.2042 8.97546 10 9.42546 10H14.5755C15.0255 10 15.338 10.2042 15.513 10.6125C15.688 11.0208 15.6171 11.3833 15.3005 11.7L12.7005 14.3C12.6005 14.4 12.4921 14.475 12.3755 14.525C12.2588 14.575 12.1338 14.6 12.0005 14.6C11.8671 14.6 11.7421 14.575 11.6255 14.525C11.5088 14.475 11.4005 14.4 11.3005 14.3Z"
-                                       fill="#2A3647" />
-                                 </g>
-                              </svg>
-                           </section>
+                                       height="24">
+                                       <rect
+                                          width="24"
+                                          height="24"
+                                          fill="#D9D9D9" />
+                                    </mask>
+                                    <g mask="url(#mask0_75597_14124)">
+                                       <path
+                                          d="M11.3005 14.3L8.70046 11.7C8.3838 11.3833 8.31296 11.0208 8.48796 10.6125C8.66296 10.2042 8.97546 10 9.42546 10H14.5755C15.0255 10 15.338 10.2042 15.513 10.6125C15.688 11.0208 15.6171 11.3833 15.3005 11.7L12.7005 14.3C12.6005 14.4 12.4921 14.475 12.3755 14.525C12.2588 14.575 12.1338 14.6 12.0005 14.6C11.8671 14.6 11.7421 14.575 11.6255 14.525C11.5088 14.475 11.4005 14.4 11.3005 14.3Z"
+                                          fill="#2A3647" />
+                                    </g>
+                                 </svg>
+                              </section>
+                              <input
+                                 type="hidden"
+                                 id="addTaskAssignedInput"
+                                 name="assigned" />
+                              <div
+                                 class="add-task__assigned-initials"
+                                 id="addTaskAssignedInitials"></div>
+                              <ul
+                                 class="add-task__select-menu add-task__select-menu--assigned"
+                                 id="addTaskAssignedMenu"
+                                 role="listbox">
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-1">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >MZ</span
+                                       >
+                                       Michael Zünd
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-2">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >YJ</span
+                                       >
+                                       Yannic Jundt
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >MA</span
+                                       >
+                                       Matthias Arnoldy
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-4">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C4</span
+                                       >
+                                       Contact 4
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-5">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C5</span
+                                       >
+                                       Contact 5
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-6">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C6</span
+                                       >
+                                       Contact 6
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C7</span
+                                       >
+                                       Contact 7
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C8</span
+                                       >
+                                       Contact 8
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >C9</span
+                                       >
+                                       Contact 9
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >10</span
+                                       >
+                                       Contact 10
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >11</span
+                                       >
+                                       Contact 11
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                                 <li
+                                    class="add-task__select-option add-task__select-option--assigned"
+                                    data-value="contact-3">
+                                    <div class="add-task__option-content">
+                                       <span class="add-task__option-initials"
+                                          >12</span
+                                       >
+                                       Contact 12
+                                    </div>
+                                    <img
+                                       src="./assets/icons/desktop/checkBox.svg"
+                                       alt=""
+                                       class="add-task__option-checkbox" />
+                                 </li>
+                              </ul>
+                           </div>
                         </section>
                         <section class="add-task__selection-group">
                            <section
@@ -293,54 +562,104 @@
                                  >
                               </label>
                               <div
-                                 class="add-task__input-field add-task__input-field--required">
-                                 <section
-                                    id="addTaskCategory"
-                                    class="add-task__select add-task__select--category">
-                                    <span>Select task category</span>
-                                    <svg
-                                       class="add-task__select-arrow"
-                                       width="24"
-                                       height="24"
-                                       viewBox="0 0 24 24"
-                                       fill="none"
-                                       xmlns="http://www.w3.org/2000/svg">
-                                       <mask
-                                          id="mask0_75597_14125"
-                                          style="mask-type: alpha"
-                                          maskUnits="userSpaceOnUse"
-                                          x="0"
-                                          y="0"
+                                 class="add-task__input-field add-task__input-field--required add-task__input-field--select">
+                                 <div class="add-task__select-wrapper">
+                                    <section
+                                       id="addTaskCategory"
+                                       class="add-task__select add-task__select--category">
+                                       <span class="add-task__select-value"
+                                          >Select task category</span
+                                       >
+                                       <svg
+                                          class="add-task__select-arrow"
                                           width="24"
-                                          height="24">
-                                          <rect
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg">
+                                          <mask
+                                             id="mask0_75597_14125"
+                                             style="mask-type: alpha"
+                                             maskUnits="userSpaceOnUse"
+                                             x="0"
+                                             y="0"
                                              width="24"
-                                             height="24"
-                                             fill="#D9D9D9" />
-                                       </mask>
-                                       <g mask="url(#mask0_75597_14125)">
-                                          <path
-                                             d="M11.3005 14.3L8.70046 11.7C8.3838 11.3833 8.31296 11.0208 8.48796 10.6125C8.66296 10.2042 8.97546 10 9.42546 10H14.5755C15.0255 10 15.338 10.2042 15.513 10.6125C15.688 11.0208 15.6171 11.3833 15.3005 11.7L12.7005 14.3C12.6005 14.4 12.4921 14.475 12.3755 14.525C12.2588 14.575 12.1338 14.6 12.0005 14.6C11.8671 14.6 11.7421 14.575 11.6255 14.525C11.5088 14.475 11.4005 14.4 11.3005 14.3Z"
-                                             fill="#2A3647" />
-                                       </g>
-                                    </svg>
-                                 </section>
+                                             height="24">
+                                             <rect
+                                                width="24"
+                                                height="24"
+                                                fill="#D9D9D9" />
+                                          </mask>
+                                          <g mask="url(#mask0_75597_14125)">
+                                             <path
+                                                d="M11.3005 14.3L8.70046 11.7C8.3838 11.3833 8.31296 11.0208 8.48796 10.6125C8.66296 10.2042 8.97546 10 9.42546 10H14.5755C15.0255 10 15.338 10.2042 15.513 10.6125C15.688 11.0208 15.6171 11.3833 15.3005 11.7L12.7005 14.3C12.6005 14.4 12.4921 14.475 12.3755 14.525C12.2588 14.575 12.1338 14.6 12.0005 14.6C11.8671 14.6 11.7421 14.575 11.6255 14.525C11.5088 14.475 11.4005 14.4 11.3005 14.3Z"
+                                                fill="#2A3647" />
+                                          </g>
+                                       </svg>
+                                    </section>
+                                    <input
+                                       type="hidden"
+                                       id="addTaskCategoryInput"
+                                       name="category" />
+                                    <ul
+                                       class="add-task__select-menu add-task__select-menu--category"
+                                       id="addTaskCategoryMenu"
+                                       role="listbox">
+                                       <li
+                                          class="add-task__select-option"
+                                          data-value="technical">
+                                          Technical Task
+                                       </li>
+                                       <li
+                                          class="add-task__select-option"
+                                          data-value="user-story">
+                                          User Story
+                                       </li>
+                                    </ul>
+                                 </div>
                                  <span class="add-task__input--required"
                                     >This field is required</span
                                  >
                               </div>
                            </section>
-                           <section class="add-task__input-group">
+                           <section
+                              class="add-task__input-group add-task__input-group--subtasks">
                               <label
                                  for="addTaskSubtasks"
                                  class="add-task__label">
                                  Subtasks
                               </label>
-                              <input
-                                 type="text"
-                                 id="addTaskSubtasks"
-                                 placeholder="Add new Subtask"
-                                 class="add-task__input add-task__input--text" />
+                              <div class="add-task__subtask-field">
+                                 <input
+                                    type="text"
+                                    id="addTaskSubtasks"
+                                    placeholder="Add new Subtask"
+                                    autocomplete="off"
+                                    class="add-task__input add-task__input--text add-task__input--subtasks" />
+                                 <div class="add-task__subtask-actions">
+                                    <button
+                                       type="button"
+                                       class="add-task__subtask-button"
+                                       data-action="clear">
+                                       <img
+                                          src="./assets/icons/desktop/close.svg"
+                                          alt=""
+                                          class="add-task__subtask-icon" />
+                                    </button>
+                                    <span
+                                       class="add-task__subtask-dividingline"></span>
+                                    <button
+                                       type="button"
+                                       class="add-task__subtask-button"
+                                       data-action="add">
+                                       <img
+                                          src="./assets/icons/desktop/check.svg"
+                                          alt=""
+                                          class="add-task__subtask-icon" />
+                                    </button>
+                                 </div>
+                              </div>
+                              <ul class="add-task__subtask-list"></ul>
                            </section>
                         </section>
                      </section>

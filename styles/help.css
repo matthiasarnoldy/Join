@@ -1,5 +1,6 @@
 .headline--help {
     justify-content: space-between;
+    padding: 110px 64px 48px 96px;
 }
 
 .headline__logo {
@@ -17,6 +18,7 @@
 }
 
 .textcontent {
+    padding: 0 64px 0 96px;
     display: flex;
     flex-direction: column;
     gap: 24px;
