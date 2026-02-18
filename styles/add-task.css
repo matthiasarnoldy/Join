@@ -5,6 +5,11 @@
    gap: 96px;
 }
 
+.mainArea,
+.main {
+   overflow: hidden;
+}
+
 .add-task__overview {
    display: flex;
    justify-content: space-between;

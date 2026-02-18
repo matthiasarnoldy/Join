@@ -417,6 +417,7 @@ function restoreLastAssignedSelection(elements) {
 
 function handleAssignedSelectClick(event, elements) {
    event.stopPropagation();
+   if (event.target.closest(".add-task__select-input")) return;
    toggleAssignedMenu(elements);
 }
 
@@ -518,7 +519,19 @@ function updateAssignedInitials(elements) {
 function setupAssignedEvents(elements) {
    elements.select.addEventListener("click", (event) => handleAssignedSelectClick(event, elements));
    elements.menu.addEventListener("click", (event) => handleAssignedOptionClick(event, elements));
-   document.addEventListener("click", () => closeAssignedMenu(elements));
+   const searchInput = elements.select.querySelector(".add-task__select-input");
+   if (searchInput) {
+      searchInput.addEventListener("click", (event) => event.stopPropagation());
+      searchInput.addEventListener("mousedown", (event) => event.stopPropagation());
+      searchInput.addEventListener("focus", () => {
+         const isOpen = elements.select.classList.contains("add-task__select--open");
+         if (!isOpen) toggleAssignedMenu(elements);
+      });
+   }
+   document.addEventListener("click", (event) => {
+      if (event.target.closest(".add-task__select-input")) return;
+      closeAssignedMenu(elements);
+   });
 }
 
 function initAssignedSelect() {
