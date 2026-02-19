@@ -121,6 +121,7 @@
                      <div class="board-actions">
                         <div class="find-task">
                            <input
+                              id="findTaskInput"
                               class="find-task__input"
                               type="text"
                               placeholder="Find Task"
@@ -149,7 +150,7 @@
                <section class="board-columns">
                   <div class="board-column">
                      <h2 class="board-column__title">To do</h2>
-                     <button class="board-column__add" aria-label="Add to do">
+                     <button class="board-column__add" data-status="todo" aria-label="Add to do">
                         <img
                            class="board-column__add-icon"
                            src="./assets/icons/desktop/plus button.svg"
@@ -160,6 +161,7 @@
                      <h2 class="board-column__title">In progress</h2>
                      <button
                         class="board-column__add"
+                        data-status="in-progress"
                         aria-label="Add in progress">
                         <img
                            class="board-column__add-icon"
@@ -171,6 +173,7 @@
                      <h2 class="board-column__title">Await feedback</h2>
                      <button
                         class="board-column__add"
+                        data-status="await-feedback"
                         aria-label="Add await feedback">
                         <img
                            class="board-column__add-icon"

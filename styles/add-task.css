@@ -496,6 +496,8 @@
    border-radius: 10px;
    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
    cursor: pointer;
+   min-width: 100px;
+   width: 100%;
 }
 
 .add-task__priority-option:hover {

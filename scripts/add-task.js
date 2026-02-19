@@ -1,163 +1,371 @@
-// ===== FORMULAR-VALIDIERUNG =====
+// ===== TASK SPEICHERN =====
 
-// Alle Pflichtfelder im Container finden
-function findRequiredFields(container) {
-   return Array.from(container.querySelectorAll(".add-task__input-field--required"));
+function getTaskStatus() {
+   const dialog = document.getElementById("addTaskDialog");
+   return dialog?.dataset.taskStatus || "todo";
 }
 
-// Input-Element aus Feld holen (input, textarea oder select)
-function getInputFromField(field) {
-   return field.querySelector("input, textarea, select");
+function getTaskTitle() {
+   const titleInput = document.querySelector("#addTaskTitle");
+   return titleInput?.value || "";
 }
 
-// Prüfen ob ein Feld ausgefüllt ist
-function isFieldFilled(field) {
-   const input = getInputFromField(field);
-   if (!input) return false;
-   return input.value.trim() !== ""; // Nicht leer
+function getTaskDescription() {
+   const descriptionInput = document.querySelector("#addTaskDescription");
+   return descriptionInput?.value || "";
 }
 
-// Button aktivieren/deaktivieren
-function setButtonState(button, allFieldsValid) {
-   if (allFieldsValid) {
-      button.classList.remove("is-disabled");
-      button.setAttribute("aria-disabled", "false");
+function getTaskDate() {
+   const dateInput = document.querySelector("#addTaskDate");
+   return dateInput?.value || "";
+}
+
+function getTaskPriority() {
+   const checkedPriority = document.querySelector('input[name="priority"]:checked');
+   return checkedPriority?.value || "medium";
+}
+
+function getTaskCategory() {
+   const categoryInput = document.getElementById("addTaskCategoryInput");
+   return categoryInput?.value?.trim() || "";
+}
+
+function getSelectedContacts() {
+   const selectedOptions = document.querySelectorAll(".add-task__select-option--selected");
+   const contacts = [];
+   
+   selectedOptions.forEach((option) => {
+      const initialsElement = option.querySelector(".add-task__option-initials");
+      const contactName = option.textContent.trim();
+      const contactValue = option.dataset.value || "";
+      const contactInitials = initialsElement?.textContent || "";
+      
+      contacts.push({
+         name: contactName,
+         initials: contactInitials,
+         value: contactValue
+      });
+   });
+   
+   return contacts;
+}
+
+function getSubtasksList() {
+   const subtaskItems = document.querySelectorAll(".add-task__subtask-item");
+   const subtasks = [];
+   
+   subtaskItems.forEach((item) => {
+      const textElement = item.querySelector(".add-task__subtask-text");
+      const subtaskText = textElement?.textContent || "";
+      
+      if (subtaskText) {
+         subtasks.push({
+            text: subtaskText,
+            completed: false
+         });
+      }
+   });
+   
+   return subtasks;
+}
+
+function createTaskData() {
+   return {
+      id: Date.now(),
+      title: getTaskTitle(),
+      description: getTaskDescription(),
+      date: getTaskDate(),
+      priority: getTaskPriority(),
+      category: getTaskCategory(),
+      assigned: getSelectedContacts(),
+      subtasks: getSubtasksList(),
+      status: getTaskStatus()
+   };
+}
+
+function loadTasksFromStorage() {
+   const tasksJson = sessionStorage.getItem("tasks") || "[]";
+   return JSON.parse(tasksJson);
+}
+
+function saveTasksToStorage(tasks) {
+   const tasksJson = JSON.stringify(tasks);
+   sessionStorage.setItem("tasks", tasksJson);
+}
+
+function addTaskToStorage(taskData) {
+   const allTasks = loadTasksFromStorage();
+   allTasks.push(taskData);
+   saveTasksToStorage(allTasks);
+}
+
+function isInDialog() {
+   const dialog = document.getElementById("addTaskDialog");
+   return dialog && dialog.open;
+}
+
+function createSuccessMessage() {
+   const messageDiv = document.createElement("div");
+   messageDiv.className = "task-success-message";
+   messageDiv.textContent = "Task added to board";
+   
+   messageDiv.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #4caf50;
+      color: white;
+      padding: 20px 40px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10000;
+   `;
+   
+   return messageDiv;
+}
+
+function showSuccessMessage() {
+   const message = createSuccessMessage();
+   document.body.appendChild(message);
+   
+   setTimeout(() => {
+      message.remove();
+   }, 1000);
+}
+
+function redirectAfterSave() {
+   if (isInDialog()) {
+      window.location.reload();
    } else {
-      button.classList.add("is-disabled");
-      button.setAttribute("aria-disabled", "true");
+      window.location.href = "./board.html";
    }
 }
 
-// Fehler anzeigen bei leeren Feldern
+function saveTaskToBoard() {
+   const taskData = createTaskData();
+   
+   addTaskToStorage(taskData);
+   showSuccessMessage();
+   
+   setTimeout(() => {
+      redirectAfterSave();
+   }, 1000);
+}
+
+// ===== FORMULAR-VALIDIERUNG =====
+
+function findRequiredFields() {
+   return document.querySelectorAll(".add-task__input-field--required");
+}
+
+function getFieldInput(field) {
+   return field.querySelector("input, textarea, select");
+}
+
+function isFieldEmpty(field) {
+   const input = getFieldInput(field);
+   if (!input) return true;
+   
+   const inputValue = input.value.trim();
+   return inputValue === "";
+}
+
+function isFieldFilled(field) {
+   return !isFieldEmpty(field);
+}
+
+function enableButton(button) {
+   button.classList.remove("is-disabled");
+   button.setAttribute("aria-disabled", "false");
+}
+
+function disableButton(button) {
+   button.classList.add("is-disabled");
+   button.setAttribute("aria-disabled", "true");
+}
+
+function updateButtonState(button, isValid) {
+   if (isValid) {
+      enableButton(button);
+   } else {
+      disableButton(button);
+   }
+}
+
+function showFieldError(field) {
+   field.classList.add("add-task__input-field--error");
+}
+
+function hideFieldError(field) {
+   field.classList.remove("add-task__input-field--error");
+}
+
 function showErrorsOnEmptyFields(fields) {
    fields.forEach((field) => {
-      if (!isFieldFilled(field)) {
-         field.classList.add("add-task__input-field--error");
+      if (isFieldEmpty(field)) {
+         showFieldError(field);
       }
    });
 }
 
-// Input-Handler für ein Feld
-function handleFieldInput(field, fields, button) {
-   field.classList.remove("add-task__input-field--error");
-   const allValid = fields.every(isFieldFilled);
-   setButtonState(button, allValid);
+function checkAllFieldsFilled(fields) {
+   return Array.from(fields).every(isFieldFilled);
 }
 
-// Live-Validierung: Bei jeder Eingabe prüfen
-function setupLiveValidation(fields, button) {
-   fields.forEach((field) => {
-      const input = getInputFromField(field);
-      if (!input) return;
-      input.addEventListener("input", () => handleFieldInput(field, fields, button));
+function handleFieldInput(field, allFields, button) {
+   hideFieldError(field);
+   
+   const allValid = checkAllFieldsFilled(allFields);
+   updateButtonState(button, allValid);
+}
+
+function addInputListener(field, allFields, button) {
+   const input = getFieldInput(field);
+   if (!input) return;
+   
+   input.addEventListener("input", () => {
+      handleFieldInput(field, allFields, button);
    });
 }
 
-// Button-Click Handler
-function handleCreateButtonClick(event, fields) {
-   if (fields.every(isFieldFilled)) return;
-   event.preventDefault();
-   showErrorsOnEmptyFields(fields);
+function setupLiveValidation(fields, button) {
+   fields.forEach((field) => {
+      addInputListener(field, fields, button);
+   });
 }
 
-// Create-Button vorbereiten
+function handleCreateButtonClick(event, fields) {
+   const allFilled = checkAllFieldsFilled(fields);
+   
+   if (!allFilled) {
+      event.preventDefault();
+      showErrorsOnEmptyFields(fields);
+      return;
+   }
+   
+   event.preventDefault();
+   saveTaskToBoard();
+}
+
 function setupCreateButton(button) {
    const form = button.closest("form") || document;
-   const fields = findRequiredFields(form);
-   if (fields.length === 0) return;
-   const allValid = fields.every(isFieldFilled);
-   setButtonState(button, allValid);
-   setupLiveValidation(fields, button);
-   button.addEventListener("click", (event) => handleCreateButtonClick(event, fields));
+   const requiredFields = form.querySelectorAll(".add-task__input-field--required");
+   
+   if (requiredFields.length === 0) return;
+   
+   const allValid = checkAllFieldsFilled(requiredFields);
+   updateButtonState(button, allValid);
+   setupLiveValidation(requiredFields, button);
+   
+   button.addEventListener("click", (event) => {
+      handleCreateButtonClick(event, requiredFields);
+   });
 }
 
-// Alle Create-Buttons initialisieren
 function initFormValidation() {
-   const allCreateButtons = document.querySelectorAll(".add-task__button--create");
-   allCreateButtons.forEach(setupCreateButton);
+   const createButtons = document.querySelectorAll(".add-task__button--create");
+   createButtons.forEach(setupCreateButton);
 }
 
-// ===== TEXTAREA VERGRÖSSERN/VERKLEINERN =====
+// ===== TEXTAREA RESIZE =====
 
-// Pixel-Wert aus String extrahieren ("120px" → 120)
-function extractPixels(cssValue) {
+function getPixelValue(cssValue) {
    return Number.parseFloat(cssValue) || 0;
 }
 
-// Wert zwischen Min und Max begrenzen
-function limitValue(value, min, max) {
+function clampValue(value, min, max) {
    if (value < min) return min;
    if (value > max) return max;
    return value;
 }
 
-// Min/Max-Höhe aus CSS holen
-function getTextareaLimits(textarea) {
+function getTextareaHeight(textarea) {
    const styles = getComputedStyle(textarea);
-   const minHeight = extractPixels(styles.minHeight) || 48;
-   const maxHeight = extractPixels(styles.maxHeight) || 10000;
+   const minHeight = getPixelValue(styles.minHeight) || 48;
+   const maxHeight = getPixelValue(styles.maxHeight) || 10000;
+   
    return { minHeight, maxHeight };
 }
 
-// Textarea-Höhe während Drag anpassen
-function resizeTextarea(moveEvent, startMouseY, startHeight, textarea, minHeight, maxHeight) {
-   const mouseDelta = moveEvent.clientY - startMouseY;
-   const newHeight = startHeight + mouseDelta;
-   const limitedHeight = limitValue(newHeight, minHeight, maxHeight);
-   textarea.style.height = `${limitedHeight}px`;
+function updateTextareaHeight(textarea, newHeight, minHeight, maxHeight) {
+   const clampedHeight = clampValue(newHeight, minHeight, maxHeight);
+   textarea.style.height = `${clampedHeight}px`;
 }
 
-// Resize starten (Maus gedrückt)
+function handleMouseMove(event, startY, startHeight, textarea, minHeight, maxHeight) {
+   const deltaY = event.clientY - startY;
+   const newHeight = startHeight + deltaY;
+   updateTextareaHeight(textarea, newHeight, minHeight, maxHeight);
+}
+
+function removeResizeListeners(moveHandler, upHandler) {
+   document.removeEventListener("mousemove", moveHandler);
+   document.removeEventListener("mouseup", upHandler);
+}
+
 function startTextareaResize(event, textarea) {
    event.preventDefault();
-   const { minHeight, maxHeight } = getTextareaLimits(textarea);
-   const startMouseY = event.clientY;
+   
+   const { minHeight, maxHeight } = getTextareaHeight(textarea);
+   const startY = event.clientY;
    const startHeight = textarea.offsetHeight;
    
-   const onMouseMove = (e) => resizeTextarea(e, startMouseY, startHeight, textarea, minHeight, maxHeight);
-   const onMouseUp = () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
+   const moveHandler = (e) => {
+      handleMouseMove(e, startY, startHeight, textarea, minHeight, maxHeight);
    };
-   document.addEventListener("mousemove", onMouseMove);
-   document.addEventListener("mouseup", onMouseUp);
+   
+   const upHandler = () => {
+      removeResizeListeners(moveHandler, upHandler);
+   };
+   
+   document.addEventListener("mousemove", moveHandler);
+   document.addEventListener("mouseup", upHandler);
 }
 
-// Resize-Handle für ein Textarea einrichten
-function setupTextareaResizeHandle(wrapper) {
+function setupTextareaResize(wrapper) {
    const textarea = wrapper.querySelector("textarea");
    const handle = wrapper.querySelector(".add-task__textarea-resize");
    
    if (!textarea || !handle) return;
    
-   // Handle klickbar machen
    handle.style.pointerEvents = "auto";
    
-   // Bei Maus-Klick auf Handle
    handle.addEventListener("mousedown", (event) => {
       startTextareaResize(event, textarea);
    });
 }
 
+function initTextareaResize() {
+   const wrappers = document.querySelectorAll(".add-task__input-field--textarea");
+   wrappers.forEach(setupTextareaResize);
+}
+
 // ===== PRIORITY FIELD =====
 
-// Click-Handler für einen Priority-Button
+function removeActiveFromAll(buttons) {
+   buttons.forEach(btn => {
+      btn.classList.remove("add-task__priority-option--active");
+   });
+}
+
+function setButtonActive(button) {
+   button.classList.add("add-task__priority-option--active");
+}
+
 function handlePriorityClick(event) {
    const clickedButton = event.target.closest(".add-task__priority-option");
    if (!clickedButton) return;
    
-   // Alle Priority-Buttons finden
    const field = clickedButton.closest(".add-task__priority-field");
    const allButtons = field.querySelectorAll(".add-task__priority-option");
    
-   // Entferne active-Klasse von allen
-   allButtons.forEach(btn => btn.classList.remove("add-task__priority-option--active"));
-   
-   // Füge active-Klasse zum geklickten Button hinzu
-   clickedButton.classList.add("add-task__priority-option--active");
+   removeActiveFromAll(allButtons);
+   setButtonActive(clickedButton);
 }
 
-// Priority-Feld initialisieren
 function initPriorityField() {
    const priorityField = document.getElementById("addTaskPriority");
    if (!priorityField) return;
@@ -167,70 +375,117 @@ function initPriorityField() {
 
 // ===== CATEGORY SELECT =====
 
+function getCategorySelect() {
+   return document.getElementById("addTaskCategory");
+}
+
+function getCategoryMenu() {
+   return document.getElementById("addTaskCategoryMenu");
+}
+
+function getCategoryInput() {
+   return document.getElementById("addTaskCategoryInput");
+}
+
+function getCategoryLabelElement() {
+   return document.querySelector("#addTaskCategory .add-task__select-value");
+}
+
 function getCategoryElements() {
-   const select = document.getElementById("addTaskCategory");
+   const select = getCategorySelect();
+   const selectionGroup = select?.closest(".add-task__selection-group");
+   
    return {
-      select,
-      menu: document.getElementById("addTaskCategoryMenu"),
-      input: document.getElementById("addTaskCategoryInput"),
-      valueLabel: document.querySelector("#addTaskCategory .add-task__select-value"),
-      selectionGroup: select?.closest(".add-task__selection-group")
+      select: select,
+      menu: getCategoryMenu(),
+      input: getCategoryInput(),
+      label: getCategoryLabelElement(),
+      group: selectionGroup
    };
 }
 
-function isCategoryReady(elements) {
-   return elements.select && elements.menu && elements.input && elements.valueLabel;
+function areCategoryElementsReady(elements) {
+   return elements.select && elements.menu && elements.input && elements.label;
 }
 
-function setCategoryOpenState(elements, isOpen) {
-   if (!elements.selectionGroup) return;
-   elements.selectionGroup.classList.toggle("add-task__selection-group--category-open", isOpen);
-}
-
-function toggleCategoryMenu(elements) {
-   const isOpen = elements.select.classList.toggle("add-task__select--open");
-   if (isOpen) {
-      resetCategoryPlaceholder(elements);
-   } else {
-      restoreLastCategorySelection(elements);
+function openCategoryMenu(elements) {
+   elements.select.classList.add("add-task__select--open");
+   elements.select.setAttribute("aria-expanded", "true");
+   
+   if (elements.group) {
+      elements.group.classList.add("add-task__selection-group--category-open");
    }
-   elements.select.setAttribute("aria-expanded", isOpen ? "true" : "false");
-   setCategoryOpenState(elements, isOpen);
 }
 
 function closeCategoryMenu(elements) {
    elements.select.classList.remove("add-task__select--open");
    elements.select.setAttribute("aria-expanded", "false");
-   setCategoryOpenState(elements, false);
-   restoreLastCategorySelection(elements);
+   
+   if (elements.group) {
+      elements.group.classList.remove("add-task__selection-group--category-open");
+   }
 }
 
-function setCategoryValue(option, elements) {
-   const label = option.textContent.trim();
-   const value = option.dataset.value || label;
-   elements.input.value = value;
-   elements.valueLabel.textContent = label;
-   elements.input.dataset.lastValue = value;
-   elements.valueLabel.dataset.lastLabel = label;
-   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
-   closeCategoryMenu(elements);
+function isCategoryMenuOpen(elements) {
+   return elements.select.classList.contains("add-task__select--open");
+}
+
+function toggleCategoryMenu(elements) {
+   if (isCategoryMenuOpen(elements)) {
+      closeCategoryMenu(elements);
+      restoreCategorySelection(elements);
+   } else {
+      openCategoryMenu(elements);
+      resetCategoryPlaceholder(elements);
+   }
+}
+
+function getCategoryPlaceholder(label) {
+   return label.dataset.placeholder || label.textContent;
 }
 
 function resetCategoryPlaceholder(elements) {
-   const placeholder = elements.valueLabel.dataset.placeholder || elements.valueLabel.textContent;
-   elements.valueLabel.textContent = placeholder;
-   elements.valueLabel.dataset.placeholder = placeholder;
+   const placeholder = getCategoryPlaceholder(elements.label);
+   
+   elements.label.textContent = placeholder;
+   elements.label.dataset.placeholder = placeholder;
    elements.input.value = "";
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
-function restoreLastCategorySelection(elements) {
-   const lastLabel = elements.valueLabel.dataset.lastLabel;
-   const lastValue = elements.input.dataset.lastValue;
-   if (!lastLabel || !lastValue) return;
-   elements.valueLabel.textContent = lastLabel;
+function getLastCategoryValue(input) {
+   return input.dataset.lastValue;
+}
+
+function getLastCategoryLabel(label) {
+   return label.dataset.lastLabel;
+}
+
+function restoreCategorySelection(elements) {
+   const lastValue = getLastCategoryValue(elements.input);
+   const lastLabel = getLastCategoryLabel(elements.label);
+   
+   if (!lastValue || !lastLabel) return;
+   
+   elements.label.textContent = lastLabel;
    elements.input.value = lastValue;
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function saveCategorySelection(option, elements) {
+   const optionValue = option.dataset.value;
+   const optionText = option.textContent.trim();
+   
+   elements.input.value = optionValue;
+   elements.label.textContent = optionText;
+   elements.input.dataset.lastValue = optionValue;
+   elements.label.dataset.lastLabel = optionText;
+   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function selectCategoryOption(option, elements) {
+   saveCategorySelection(option, elements);
+   closeCategoryMenu(elements);
 }
 
 function handleCategorySelectClick(event, elements) {
@@ -240,325 +495,499 @@ function handleCategorySelectClick(event, elements) {
 
 function handleCategoryOptionClick(event, elements) {
    event.stopPropagation();
+   
    const option = event.target.closest(".add-task__select-option");
    if (!option) return;
-   setCategoryValue(option, elements);
+   
+   selectCategoryOption(option, elements);
 }
 
-function setupCategoryEvents(elements) {
-   elements.select.addEventListener("click", (event) => handleCategorySelectClick(event, elements));
-   elements.menu.addEventListener("click", (event) => handleCategoryOptionClick(event, elements));
-   document.addEventListener("click", () => closeCategoryMenu(elements));
+function setupCategoryClickListeners(elements) {
+   elements.select.addEventListener("click", (event) => {
+      handleCategorySelectClick(event, elements);
+   });
+   
+   elements.menu.addEventListener("click", (event) => {
+      handleCategoryOptionClick(event, elements);
+   });
+   
+   document.addEventListener("click", () => {
+      closeCategoryMenu(elements);
+   });
 }
 
 function initCategorySelect() {
    const elements = getCategoryElements();
-   if (!isCategoryReady(elements)) return;
+   if (!areCategoryElementsReady(elements)) return;
+   
    elements.select.setAttribute("aria-expanded", "false");
-   elements.valueLabel.dataset.placeholder = elements.valueLabel.textContent;
+   elements.label.dataset.placeholder = elements.label.textContent;
+   
    if (elements.input.value) {
       elements.input.dataset.lastValue = elements.input.value;
-      elements.valueLabel.dataset.lastLabel = elements.valueLabel.textContent;
+      elements.label.dataset.lastLabel = elements.label.textContent;
    }
-   setupCategoryEvents(elements);
+   
+   setupCategoryClickListeners(elements);
 }
 
 // ===== ASSIGNED SELECT =====
 
+function getAssignedSelect() {
+   return document.getElementById("addTaskAssigned");
+}
+
+function getAssignedMenu() {
+   return document.getElementById("addTaskAssignedMenu");
+}
+
+function getAssignedInput() {
+   return document.getElementById("addTaskAssignedInput");
+}
+
+function getAssignedLabel() {
+   return document.querySelector("#addTaskAssigned .add-task__select-value");
+}
+
+function getInitialsContainer() {
+   return document.getElementById("addTaskAssignedInitials");
+}
+
 function getAssignedElements() {
-   const select = document.getElementById("addTaskAssigned");
+   const select = getAssignedSelect();
+   const selectionGroup = select?.closest(".add-task__information-group--selection");
+   
    return {
-      select,
-      menu: document.getElementById("addTaskAssignedMenu"),
-      input: document.getElementById("addTaskAssignedInput"),
-      valueLabel: document.querySelector("#addTaskAssigned .add-task__select-value"),
-      initialsContainer: document.getElementById("addTaskAssignedInitials"),
-      selectionGroup: select?.closest(".add-task__information-group--selection")
+      select: select,
+      menu: getAssignedMenu(),
+      input: getAssignedInput(),
+      label: getAssignedLabel(),
+      initials: getInitialsContainer(),
+      group: selectionGroup
    };
 }
 
-function isAssignedReady(elements) {
-   return elements.select && elements.menu && elements.input && elements.valueLabel;
+function areAssignedElementsReady(elements) {
+   return elements.select && elements.menu && elements.input && elements.label;
 }
 
-function setAssignedOpenState(elements, isOpen) {
-   if (!elements.selectionGroup) return;
-   elements.selectionGroup.classList.toggle("add-task__selection-group--assigned-open", isOpen);
-}
-
-function toggleAssignedMenu(elements) {
-   const isOpen = elements.select.classList.toggle("add-task__select--open");
-   if (isOpen) {
-      resetAssignedPlaceholder(elements);
-   } else {
-      restoreLastAssignedSelection(elements);
+function openAssignedMenu(elements) {
+   elements.select.classList.add("add-task__select--open");
+   elements.select.setAttribute("aria-expanded", "true");
+   
+   if (elements.group) {
+      elements.group.classList.add("add-task__selection-group--assigned-open");
    }
-   elements.select.setAttribute("aria-expanded", isOpen ? "true" : "false");
-   setAssignedOpenState(elements, isOpen);
-   updateAssignedInitials(elements);
+   
+   const searchInput = getSearchInput(elements.select);
+   if (searchInput) {
+      showSearchInput(searchInput, elements.label);
+      setupSearchListeners(searchInput, elements.menu);
+      searchInput.focus();
+   }
 }
 
 function closeAssignedMenu(elements) {
    elements.select.classList.remove("add-task__select--open");
    elements.select.setAttribute("aria-expanded", "false");
-   setAssignedOpenState(elements, false);
-   restoreLastAssignedSelection(elements);
-   updateAssignedInitials(elements);
+   
+   if (elements.group) {
+      elements.group.classList.remove("add-task__selection-group--assigned-open");
+   }
+   
+   // Suche verstecken und leeren
+   const searchInput = getSearchInput(elements.select);
+   if (searchInput) {
+      hideSearchInput(searchInput, elements.label);
+      searchInput.value = "";
+   }
+   
+   // Wenn keine Kontakte ausgewählt, Placeholder Text anzeigen
+   const selectedOptions = getSelectedOptions(elements.menu);
+   if (selectedOptions.length === 0) {
+      elements.label.textContent = "Select contacts to assign";
+      elements.input.value = "";
+   }
 }
 
-function setAssignedValue(option, elements) {
-   const label = option.textContent.trim();
-   const value = option.dataset.value || label;
-   elements.input.value = value;
-   elements.valueLabel.textContent = label;
-   elements.input.dataset.lastValue = value;
-   elements.valueLabel.dataset.lastLabel = label;
-   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
-   closeAssignedMenu(elements);
+function isAssignedMenuOpen(elements) {
+   return elements.select.classList.contains("add-task__select--open");
+}
+
+function getSearchInput(select) {
+   return select.querySelector(".add-task__select-input");
+}
+
+function showSearchInput(searchInput, label) {
+   searchInput.style.display = "block";
+   searchInput.value = "To: ";
+   label.style.display = "none";
+   
+   setTimeout(() => {
+      searchInput.setSelectionRange(4, 4);
+      searchInput.focus();
+   }, 0);
+}
+
+function hideSearchInput(searchInput, label) {
+   searchInput.style.display = "none";
+   searchInput.value = "";
+   label.style.display = "block";
+}
+
+function preventSearchDeletion(event, searchInput) {
+   const cursorPosition = searchInput.selectionStart;
+   
+   if (event.key === "Backspace" && cursorPosition <= 4) {
+      event.preventDefault();
+   }
+   
+   if (event.key === "Delete" && cursorPosition < 4) {
+      event.preventDefault();
+   }
+}
+
+function ensureSearchPrefix(searchInput) {
+   if (!searchInput.value.startsWith("To: ")) {
+      const searchText = searchInput.value.replace(/^To: /, "");
+      searchInput.value = "To: " + searchText;
+      
+      const cursorPos = 4 + searchText.length;
+      searchInput.setSelectionRange(cursorPos, cursorPos);
+   }
+}
+
+function getSearchText(searchInput) {
+   return searchInput.value.substring(4).toLowerCase().trim();
+}
+
+function filterContactOptions(searchInput, menu) {
+   const searchText = getSearchText(searchInput);
+   const options = menu.querySelectorAll(".add-task__select-option--assigned");
+   
+   options.forEach((option) => {
+      const optionText = option.textContent.toLowerCase();
+      const matches = searchText === "" || optionText.includes(searchText);
+      
+      option.style.display = matches ? "flex" : "none";
+   });
+}
+
+function handleSearchKeydown(event, searchInput) {
+   preventSearchDeletion(event, searchInput);
+}
+
+function handleSearchInput(event, searchInput, menu) {
+   ensureSearchPrefix(searchInput);
+   filterContactOptions(searchInput, menu);
+}
+
+function setupSearchListeners(searchInput, menu) {
+   searchInput.addEventListener("keydown", (e) => {
+      handleSearchKeydown(e, searchInput);
+   });
+   
+   searchInput.addEventListener("input", (e) => {
+      handleSearchInput(e, searchInput, menu);
+   });
 }
 
 function resetAssignedPlaceholder(elements) {
-   const placeholder = elements.valueLabel.dataset.placeholder || elements.valueLabel.textContent;
-   elements.valueLabel.textContent = placeholder;
-   elements.valueLabel.dataset.placeholder = placeholder;
+   const searchInput = getSearchInput(elements.select);
+   if (!searchInput) return;
+   
+   showSearchInput(searchInput, elements.label);
+   setupSearchListeners(searchInput, elements.menu);
+   
+   const placeholder = elements.label.dataset.placeholder || elements.label.textContent;
+   elements.label.textContent = placeholder;
+   elements.label.dataset.placeholder = placeholder;
    elements.input.value = "";
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
-   
-   // Show search input and hide value label
-   const searchInput = elements.select.querySelector(".add-task__select-input");
+}
+
+function showAllContacts(menu) {
+   const options = menu.querySelectorAll(".add-task__select-option--assigned");
+   options.forEach((option) => {
+      option.style.display = "flex";
+   });
+}
+
+function restoreAssignedSelection(elements) {
+   const searchInput = getSearchInput(elements.select);
    if (searchInput) {
-      searchInput.style.display = "block";
-      searchInput.value = "To: ";
-      
-      // Add event handlers to prevent deleting "To: "
-      searchInput.addEventListener("keydown", (e) => handleAssignedSearchKeydown(e, searchInput));
-      searchInput.addEventListener("input", (e) => handleAssignedSearchInput(e, searchInput));
-      
-      elements.valueLabel.style.display = "none";
-      
-      // Focus after "To: "
-      setTimeout(() => {
-         searchInput.setSelectionRange(4, 4);
-         searchInput.focus();
-      }, 0);
-   }
-}
-
-function handleAssignedSearchKeydown(e, input) {
-   // Prevent backspace if cursor is at or before position 4 (after "To: ")
-   if (e.key === "Backspace" && input.selectionStart <= 4) {
-      e.preventDefault();
-   }
-   // Prevent delete key if cursor is at or before position 4
-   if (e.key === "Delete" && input.selectionStart < 4) {
-      e.preventDefault();
-   }
-}
-
-function handleAssignedSearchInput(e, input) {
-   // Ensure "To: " is always at the beginning
-   if (!input.value.startsWith("To: ")) {
-      const searchText = input.value.replace(/^To: /, "");
-      input.value = "To: " + searchText;
-      input.setSelectionRange(4 + searchText.length, 4 + searchText.length);
+      hideSearchInput(searchInput, elements.label);
    }
    
-   // Filter contacts based on search text
-   const searchText = input.value.substring(4).toLowerCase().trim();
-   const menu = input.closest(".add-task__select-wrapper")?.querySelector(".add-task__select-menu--assigned");
+   showAllContacts(elements.menu);
    
-   if (menu) {
-      const options = menu.querySelectorAll(".add-task__select-option--assigned");
-      options.forEach((option) => {
-         const text = option.textContent.toLowerCase();
-         if (searchText === "" || text.includes(searchText)) {
-            option.style.display = "flex";
-         } else {
-            option.style.display = "none";
-         }
-      });
-   }
-}
-
-function restoreLastAssignedSelection(elements) {
-   // Hide search input and show value label
-   const searchInput = elements.select.querySelector(".add-task__select-input");
-   if (searchInput) {
-      searchInput.style.display = "none";
-      searchInput.value = "";
-      searchInput.removeEventListener("keydown", handleAssignedSearchKeydown);
-      searchInput.removeEventListener("input", handleAssignedSearchInput);
-   }
-   
-   // Show all contacts again
-   const menu = elements.menu;
-   if (menu) {
-      const options = menu.querySelectorAll(".add-task__select-option--assigned");
-      options.forEach((option) => {
-         option.style.display = "flex";
-      });
-   }
-   
-   const lastLabel = elements.valueLabel.dataset.lastLabel;
-   const lastValue = elements.input.dataset.lastValue;
-   
-   if (lastLabel && lastValue) {
-      elements.valueLabel.textContent = lastLabel;
-      elements.input.value = lastValue;
-   } else {
-      // Show default placeholder if no selection exists
-      elements.valueLabel.textContent = "Select contacts to assign";
-      elements.input.value = "";
-   }
-   
-   elements.valueLabel.style.display = "block";
+   const defaultText = "Select contacts to assign";
+   elements.label.textContent = defaultText;
+   elements.input.value = "";
+   elements.label.style.display = "block";
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function toggleAssignedMenu(elements) {
+   if (isAssignedMenuOpen(elements)) {
+      closeAssignedMenu(elements);
+   } else {
+      openAssignedMenu(elements);
+   }
+   
+   updateContactInitials(elements);
+}
+
+function isCheckboxChecked(checkbox) {
+   return checkbox.src.includes("checked");
+}
+
+function checkCheckbox(checkbox) {
+   checkbox.src = "./assets/icons/desktop/checkBox--checked.svg";
+}
+
+function uncheckCheckbox(checkbox) {
+   checkbox.src = "./assets/icons/desktop/checkBox.svg";
+}
+
+function toggleContactSelection(option) {
+   const isSelected = option.classList.toggle("add-task__select-option--selected");
+   const checkbox = option.querySelector(".add-task__option-checkbox");
+   
+   if (checkbox) {
+      if (isSelected) {
+         checkCheckbox(checkbox);
+      } else {
+         uncheckCheckbox(checkbox);
+      }
+   }
 }
 
 function handleAssignedSelectClick(event, elements) {
    event.stopPropagation();
-   if (event.target.closest(".add-task__select-input")) return;
+   
+   const clickedInput = event.target.closest(".add-task__select-input");
+   if (clickedInput) return;
+   
    toggleAssignedMenu(elements);
 }
 
 function handleAssignedOptionClick(event, elements) {
    event.stopPropagation();
+   
    const option = event.target.closest(".add-task__select-option");
    if (!option) return;
    
-   // Toggle selection state
-   const isSelected = option.classList.toggle("add-task__select-option--selected");
-   
-   // Update icon
-   const checkbox = option.querySelector(".add-task__option-checkbox");
-   if (checkbox) {
-      if (isSelected) {
-         checkbox.src = "./assets/icons/desktop/checkBox--checked.svg";
-      } else {
-         checkbox.src = "./assets/icons/desktop/checkBox.svg";
-      }
-   }
-   
-   // Update initials display
-   updateAssignedInitials(elements);
+   toggleContactSelection(option);
+   updateContactInitials(elements);
 }
 
-function updateAssignedInitials(elements) {
-   const selected = elements.menu.querySelectorAll(".add-task__select-option--selected");
-   const initialsContainer = elements.initialsContainer;
-   const wrapper = elements.select?.closest(".add-task__select-wrapper");
-   const isMenuOpen = elements.select?.classList.contains("add-task__select--open");
-   const footer = document.querySelector(".add-task__footer");
+function getContainerWidth(container) {
+   return container.offsetWidth;
+}
+
+function calculateMaxInitials(containerWidth) {
+   const initialWidth = 50; // 42px + 8px gap
+   const totalSlots = Math.floor(containerWidth / initialWidth);
+   return totalSlots;
+}
+
+function shouldShowOverflow(selectedCount, maxSlots) {
+   return selectedCount > maxSlots;
+}
+
+function getMaxDisplayCount(selectedCount, maxSlots) {
+   if (shouldShowOverflow(selectedCount, maxSlots)) {
+      return maxSlots - 1;
+   }
+   return maxSlots;
+}
+
+function getSelectedOptions(menu) {
+   return menu.querySelectorAll(".add-task__select-option--selected");
+}
+
+function createInitialElement(option, elements) {
+   const initialsText = option.querySelector(".add-task__option-initials")?.textContent;
+   if (!initialsText) return null;
    
-   if (!initialsContainer) return;
+   const initialSpan = document.createElement("span");
+   initialSpan.className = "add-task__assigned-initial";
+   initialSpan.textContent = initialsText;
    
-   // Clear container
-   initialsContainer.innerHTML = "";
+   initialSpan.addEventListener("click", () => {
+      removeContactSelection(option);
+      updateContactInitials(elements);
+   });
    
-   // Calculate how many initials fit in one line based on container width
-   // Each initial is 42px wide + 8px gap = 50px per element
-   const containerWidth = initialsContainer.offsetWidth;
-   const elementWidth = 50; // 42px + 8px gap
-   const totalSlots = Math.floor(containerWidth / elementWidth);
-   // Reserve one slot for "+" if there are more contacts than slots available
-   const maxDisplay = selected.length > totalSlots ? totalSlots - 1 : totalSlots;
+   return initialSpan;
+}
+
+function removeContactSelection(option) {
+   option.classList.remove("add-task__select-option--selected");
+   
+   const checkbox = option.querySelector(".add-task__option-checkbox");
+   if (checkbox) {
+      uncheckCheckbox(checkbox);
+   }
+}
+
+function createOverflowElement(remainingCount) {
+   const overflowSpan = document.createElement("span");
+   overflowSpan.className = "add-task__assigned-overflow";
+   overflowSpan.textContent = `+${remainingCount}`;
+   return overflowSpan;
+}
+
+function clearInitialsContainer(container) {
+   container.innerHTML = "";
+}
+
+function addInitialsToContainer(selectedOptions, container, maxDisplay, elements) {
    let displayCount = 0;
    
-   // Add initials that fit in the line
-   selected.forEach((option) => {
+   selectedOptions.forEach((option) => {
       if (displayCount < maxDisplay) {
-         const initials = option.querySelector(".add-task__option-initials");
-         if (initials) {
-            const initialsSpan = document.createElement("span");
-            initialsSpan.className = "add-task__assigned-initial";
-            initialsSpan.textContent = initials.textContent;
-            
-            // Add click handler to remove selection
-            initialsSpan.addEventListener("click", () => {
-               option.classList.remove("add-task__select-option--selected");
-               const checkbox = option.querySelector(".add-task__option-checkbox");
-               if (checkbox) {
-                  checkbox.src = "./assets/icons/desktop/checkBox.svg";
-               }
-               updateAssignedInitials(elements);
-            });
-            
-            initialsContainer.appendChild(initialsSpan);
+         const initialElement = createInitialElement(option, elements);
+         if (initialElement) {
+            container.appendChild(initialElement);
             displayCount++;
          }
       }
    });
    
-   // Add "+" indicator if there are more selected than fit in the line
-   if (selected.length > displayCount) {
-      const plusSpan = document.createElement("span");
-      plusSpan.className = "add-task__assigned-overflow";
-      plusSpan.textContent = `+${selected.length - displayCount}`;
-      initialsContainer.appendChild(plusSpan);
-   }
+   return displayCount;
+}
+
+function addOverflowIndicator(container, totalCount, displayedCount) {
+   const remainingCount = totalCount - displayedCount;
    
-   // Update wrapper padding and footer position based on whether contacts are selected and menu is closed
-   if (wrapper) {
-      if (selected.length > 0 && !isMenuOpen) {
-         wrapper.style.paddingBottom = "52px";
-      } else {
-         wrapper.style.paddingBottom = "0px";
-      }
-   }
-   
-   // Update footer position based on whether contacts are selected and menu is closed
-   if (footer) {
-      if (selected.length > 0 && !isMenuOpen) {
-         footer.style.transform = "translateY(-34px)";
-      } else {
-         footer.style.transform = "translateY(0)";
-      }
+   if (remainingCount > 0) {
+      const overflowElement = createOverflowElement(remainingCount);
+      container.appendChild(overflowElement);
    }
 }
 
-function setupAssignedEvents(elements) {
-   elements.select.addEventListener("click", (event) => handleAssignedSelectClick(event, elements));
-   elements.menu.addEventListener("click", (event) => handleAssignedOptionClick(event, elements));
-   const searchInput = elements.select.querySelector(".add-task__select-input");
-   if (searchInput) {
-      searchInput.addEventListener("click", (event) => event.stopPropagation());
-      searchInput.addEventListener("mousedown", (event) => event.stopPropagation());
-      searchInput.addEventListener("focus", () => {
-         const isOpen = elements.select.classList.contains("add-task__select--open");
-         if (!isOpen) toggleAssignedMenu(elements);
-      });
+function getSelectWrapper(select) {
+   return select?.closest(".add-task__select-wrapper");
+}
+
+function getFooter() {
+   return document.querySelector(".add-task__footer");
+}
+
+function hasSelectedContacts(selectedOptions) {
+   return selectedOptions.length > 0;
+}
+
+function updateWrapperPadding(wrapper, hasContacts, menuOpen) {
+   if (!wrapper) return;
+   
+   if (hasContacts && !menuOpen) {
+      wrapper.style.paddingBottom = "52px";
+   } else {
+      wrapper.style.paddingBottom = "0px";
    }
+}
+
+function updateFooterPosition(footer, hasContacts, menuOpen) {
+   if (!footer) return;
+   
+   if (hasContacts && !menuOpen) {
+      footer.style.transform = "translateY(-34px)";
+   } else {
+      footer.style.transform = "translateY(0)";
+   }
+}
+
+function updateContactInitials(elements) {
+   if (!elements.initials) return;
+   
+   const selectedOptions = getSelectedOptions(elements.menu);
+   const menuOpen = isAssignedMenuOpen(elements);
+   
+   clearInitialsContainer(elements.initials);
+   
+   const containerWidth = getContainerWidth(elements.initials);
+   const maxSlots = calculateMaxInitials(containerWidth);
+   const maxDisplay = getMaxDisplayCount(selectedOptions.length, maxSlots);
+   
+   const displayedCount = addInitialsToContainer(
+      selectedOptions,
+      elements.initials,
+      maxDisplay,
+      elements
+   );
+   
+   addOverflowIndicator(elements.initials, selectedOptions.length, displayedCount);
+   
+   const wrapper = getSelectWrapper(elements.select);
+   const footer = getFooter();
+   const hasContacts = hasSelectedContacts(selectedOptions);
+   
+   updateWrapperPadding(wrapper, hasContacts, menuOpen);
+   updateFooterPosition(footer, hasContacts, menuOpen);
+}
+
+function setupAssignedClickListeners(elements) {
+   elements.select.addEventListener("click", (event) => {
+      handleAssignedSelectClick(event, elements);
+   });
+   
+   elements.menu.addEventListener("click", (event) => {
+      handleAssignedOptionClick(event, elements);
+   });
+}
+
+function setupSearchClickListeners(elements) {
+   const searchInput = getSearchInput(elements.select);
+   if (!searchInput) return;
+   
+   searchInput.addEventListener("click", (e) => e.stopPropagation());
+   searchInput.addEventListener("mousedown", (e) => e.stopPropagation());
+   
+   searchInput.addEventListener("focus", () => {
+      if (!isAssignedMenuOpen(elements)) {
+         toggleAssignedMenu(elements);
+      }
+   });
+}
+
+function setupDocumentClickListener(elements) {
    document.addEventListener("click", (event) => {
-      if (event.target.closest(".add-task__select-input")) return;
+      const clickedInput = event.target.closest(".add-task__select-input");
+      if (clickedInput) return;
+      
       closeAssignedMenu(elements);
    });
 }
 
-function initAssignedSelect() {
-   const elements = getAssignedElements();
-   if (!isAssignedReady(elements)) return;
-   elements.select.setAttribute("aria-expanded", "false");
-   elements.valueLabel.dataset.placeholder = elements.valueLabel.textContent;
-   if (elements.input.value) {
-      elements.input.dataset.lastValue = elements.input.value;
-      elements.valueLabel.dataset.lastLabel = elements.valueLabel.textContent;
-   }
-   setupAssignedEvents(elements);
+function setupAssignedListeners(elements) {
+   setupAssignedClickListeners(elements);
+   setupSearchClickListeners(elements);
+   setupDocumentClickListener(elements);
 }
 
-// Alle Textareas mit Resize-Handle initialisieren
-function initTextareaResize() {
-   const allTextareaWrappers = document.querySelectorAll(".add-task__input-field--textarea");
-   allTextareaWrappers.forEach(setupTextareaResizeHandle);
+function initAssignedSelect() {
+   const elements = getAssignedElements();
+   if (!areAssignedElementsReady(elements)) return;
+   
+   elements.select.setAttribute("aria-expanded", "false");
+   elements.label.dataset.placeholder = elements.label.textContent;
+   
+   if (elements.input.value) {
+      elements.input.dataset.lastValue = elements.input.value;
+      elements.label.dataset.lastLabel = elements.label.textContent;
+   }
+   
+   setupAssignedListeners(elements);
 }
 
 // ===== SUBTASKS =====
 
-function addSubtaskItem(list, value) {
-   const item = document.createElement("li");
-   item.className = "add-task__subtask-item";
-   item.innerHTML = `
-      <span class="add-task__subtask-text">${value}</span>
+function createSubtaskHTML(subtaskText) {
+   return `
+      <span class="add-task__subtask-text">${subtaskText}</span>
       <div class="add-task__subtask-item-actions">
          <button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--edit" data-action="edit">
             <img src="./assets/icons/desktop/subtask__pencil.svg" alt="" class="add-task__subtask-item-icon" />
@@ -575,276 +1004,326 @@ function addSubtaskItem(list, value) {
          </button>
       </div>
    `;
+}
+
+function createSubtaskItem(subtaskText) {
+   const item = document.createElement("li");
+   item.className = "add-task__subtask-item";
+   item.innerHTML = createSubtaskHTML(subtaskText);
+   return item;
+}
+
+function deleteSubtaskItem(item) {
+   item.remove();
+}
+
+function setupSubtaskDeleteButton(item, button) {
+   button.addEventListener("click", () => {
+      deleteSubtaskItem(item);
+   });
+}
+
+function setupSubtaskEditButton(item, button, textElement, checkButton) {
+   button.addEventListener("click", () => {
+      enableSubtaskEdit(item, textElement, checkButton);
+   });
+}
+
+function setupSubtaskDoubleClick(item, textElement, checkButton) {
+   textElement.addEventListener("dblclick", () => {
+      enableSubtaskEdit(item, textElement, checkButton);
+   });
+}
+
+function createEditInput(currentText) {
+   const input = document.createElement("input");
+   input.type = "text";
+   input.className = "add-task__subtask-input";
+   input.value = currentText;
+   return input;
+}
+
+function replaceTextWithInput(textElement, inputElement) {
+   textElement.replaceWith(inputElement);
+   inputElement.focus();
+   inputElement.select();
+}
+
+function createTextElement(text) {
+   const span = document.createElement("span");
+   span.className = "add-task__subtask-text";
+   span.textContent = text;
+   return span;
+}
+
+function replaceInputWithText(inputElement, textElement) {
+   inputElement.replaceWith(textElement);
+}
+
+function reattachEditListeners(item, textElement, checkButton) {
+   setupSubtaskDoubleClick(item, textElement, checkButton);
    
-   const textSpan = item.querySelector(".add-task__subtask-text");
+   const editButton = item.querySelector(".add-task__subtask-item-button[data-action='edit']");
+   const newEditButton = editButton.cloneNode(true);
+   editButton.replaceWith(newEditButton);
+   
+   setupSubtaskEditButton(item, newEditButton, textElement, checkButton);
+}
+
+function saveSubtaskEdit(item, inputElement, checkButton) {
+   const newText = inputElement.value.trim();
+   
+   if (newText) {
+      const newTextElement = createTextElement(newText);
+      replaceInputWithText(inputElement, newTextElement);
+      item.classList.remove("add-task__subtask-item--editing");
+      reattachEditListeners(item, newTextElement, checkButton);
+   } else {
+      inputElement.focus();
+   }
+}
+
+function cancelSubtaskEdit(item, inputElement, originalText, checkButton) {
+   const newTextElement = createTextElement(originalText);
+   replaceInputWithText(inputElement, newTextElement);
+   item.classList.remove("add-task__subtask-item--editing");
+   reattachEditListeners(item, newTextElement, checkButton);
+}
+
+function setupEditKeyboardEvents(item, inputElement, originalText, checkButton) {
+   inputElement.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+         saveSubtaskEdit(item, inputElement, checkButton);
+      } else if (e.key === "Escape") {
+         cancelSubtaskEdit(item, inputElement, originalText, checkButton);
+      }
+   });
+}
+
+function setupEditBlurEvent(item, inputElement, checkButton) {
+   inputElement.addEventListener("blur", () => {
+      setTimeout(() => {
+         if (item.classList.contains("add-task__subtask-item--editing")) {
+            saveSubtaskEdit(item, inputElement, checkButton);
+         }
+      }, 100);
+   });
+}
+
+function setupCheckButtonListener(checkButton, item, inputElement) {
+   const checkHandler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      saveSubtaskEdit(item, inputElement, checkButton);
+   };
+   
+   checkButton.addEventListener("click", checkHandler);
+}
+
+function enableSubtaskEdit(item, textElement, checkButton) {
+   const originalText = textElement.textContent;
+   item.classList.add("add-task__subtask-item--editing");
+   
+   const inputElement = createEditInput(originalText);
+   replaceTextWithInput(textElement, inputElement);
+   
+   setupCheckButtonListener(checkButton, item, inputElement);
+   setupEditBlurEvent(item, inputElement, checkButton);
+   setupEditKeyboardEvents(item, inputElement, originalText, checkButton);
+}
+
+function setupSubtaskListeners(item) {
+   const textElement = item.querySelector(".add-task__subtask-text");
    const deleteButton = item.querySelector(".add-task__subtask-item-button[data-action='delete']");
    const deleteEditButton = item.querySelector(".add-task__subtask-item-button[data-action='delete-edit']");
    const checkButton = item.querySelector(".add-task__subtask-item-button[data-action='check']");
    const editButton = item.querySelector(".add-task__subtask-item-button[data-action='edit']");
    
-   // Delete button handler (normal mode)
-   deleteButton.addEventListener("click", () => {
-      item.remove();
-   });
-   
-   // Delete button handler (edit mode)
-   deleteEditButton.addEventListener("click", (e) => {
-      e.stopPropagation();
-      item.remove();
-   });
-   
-   // Edit button handler
-   editButton.addEventListener("click", () => {
-      enableEditMode(item, textSpan, checkButton);
-   });
-   
-   // Double-click to edit on text
-   textSpan.addEventListener("dblclick", () => {
-      enableEditMode(item, textSpan, checkButton);
-   });
-   
+   setupSubtaskDeleteButton(item, deleteButton);
+   setupSubtaskDeleteButton(item, deleteEditButton);
+   setupSubtaskEditButton(item, editButton, textElement, checkButton);
+   setupSubtaskDoubleClick(item, textElement, checkButton);
+}
+
+function addSubtaskToList(list, subtaskText) {
+   const item = createSubtaskItem(subtaskText);
+   setupSubtaskListeners(item);
    list.prepend(item);
 }
 
-function enableEditMode(item, textSpan, checkButton) {
-   const currentText = textSpan.textContent;
-   item.classList.add("add-task__subtask-item--editing");
-   
-   const input = document.createElement("input");
-   input.type = "text";
-   input.className = "add-task__subtask-input";
-   input.value = currentText;
-   
-   textSpan.replaceWith(input);
-   input.focus();
-   input.select();
-   
-   function reattachListeners(newSpan) {
-      // Re-attach dblclick listener
-      newSpan.addEventListener("dblclick", () => {
-         enableEditMode(item, newSpan, checkButton);
-      });
-      
-      // Re-attach edit button listener
-      const editButton = item.querySelector(".add-task__subtask-item-button[data-action='edit']");
-      editButton.replaceWith(editButton.cloneNode(true));
-      const newEditButton = item.querySelector(".add-task__subtask-item-button[data-action='edit']");
-      newEditButton.addEventListener("click", () => {
-         enableEditMode(item, newSpan, checkButton);
-      });
-   }
-   
-   function saveEdit() {
-      const newText = input.value.trim();
-      if (newText) {
-         const newSpan = document.createElement("span");
-         newSpan.className = "add-task__subtask-text";
-         newSpan.textContent = newText;
-         input.replaceWith(newSpan);
-         item.classList.remove("add-task__subtask-item--editing");
-         
-         reattachListeners(newSpan);
-      } else {
-         input.focus();
-      }
-   }
-   
-   // Check button handler for saving
-   const checkClickHandler = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      saveEdit();
-   };
-   checkButton.addEventListener("click", checkClickHandler);
-   
-   const originalSaveEdit = saveEdit;
-   saveEdit = function() {
-      checkButton.removeEventListener("click", checkClickHandler);
-      originalSaveEdit();
-   };
-   
-   input.addEventListener("blur", (e) => {
-      // Delay blur to allow button clicks to register first
-      setTimeout(() => {
-         if (item.classList.contains("add-task__subtask-item--editing")) {
-            saveEdit();
-         }
-      }, 100);
-   });
-   input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-         saveEdit();
-      } else if (e.key === "Escape") {
-         checkButton.removeEventListener("click", checkClickHandler);
-         const newSpan = document.createElement("span");
-         newSpan.className = "add-task__subtask-text";
-         newSpan.textContent = currentText;
-         input.replaceWith(newSpan);
-         item.classList.remove("add-task__subtask-item--editing");
-         
-         reattachListeners(newSpan);
-      }
-   });
-}
-
-function handleSubtaskClear(input) {
+function clearSubtaskInput(input) {
    input.value = "";
    input.focus();
 }
 
-function handleSubtaskAdd(input, list) {
-   const value = input.value.trim();
-   if (!value) return;
-   addSubtaskItem(list, value);
-   input.value = "";
-   input.focus();
+function addSubtaskFromInput(input, list) {
+   const inputValue = input.value.trim();
+   if (!inputValue) return;
+   
+   addSubtaskToList(list, inputValue);
+   clearSubtaskInput(input);
 }
 
-function setupSubtaskGroup(group) {
+function setupSubtaskButtons(group) {
    const input = group.querySelector(".add-task__input--subtasks");
    const list = group.querySelector(".add-task__subtask-list");
    const clearButton = group.querySelector(".add-task__subtask-button[data-action='clear']");
    const addButton = group.querySelector(".add-task__subtask-button[data-action='add']");
+   
    if (!input || !list || !clearButton || !addButton) return;
-   clearButton.addEventListener("click", () => handleSubtaskClear(input));
-   addButton.addEventListener("click", () => handleSubtaskAdd(input, list));
+   
+   clearButton.addEventListener("click", () => {
+      clearSubtaskInput(input);
+   });
+   
+   addButton.addEventListener("click", () => {
+      addSubtaskFromInput(input, list);
+   });
 }
 
 function initSubtaskControls() {
    const groups = document.querySelectorAll(".add-task__input-group--subtasks");
-   groups.forEach(setupSubtaskGroup);
+   groups.forEach(setupSubtaskButtons);
 }
 
 // ===== CLEAR BUTTON =====
 
-function clearFormFields(container) {
-   const fields = container.querySelectorAll("input, textarea, select");
-   fields.forEach((field) => {
-      if (field.type === "checkbox" || field.type === "radio") {
-         field.checked = false;
-         return;
+function clearAllInputs(container) {
+   const inputs = container.querySelectorAll("input, textarea, select");
+   
+   inputs.forEach((input) => {
+      if (input.type === "checkbox" || input.type === "radio") {
+         input.checked = false;
+      } else {
+         input.value = "";
       }
-      field.value = "";
    });
 }
 
-function resetPriorityToMedium(container) {
+function resetPriority(container) {
    const priorityField = container.querySelector(".add-task__priority-field");
    if (!priorityField) return;
+   
    const allButtons = priorityField.querySelectorAll(".add-task__priority-option");
-   allButtons.forEach((btn) => btn.classList.remove("add-task__priority-option--active"));
+   removeActiveFromAll(allButtons);
+   
    const mediumButton = priorityField.querySelector(".add-task__priority-option--medium");
    if (mediumButton) {
-      mediumButton.classList.add("add-task__priority-option--active");
+      setButtonActive(mediumButton);
    }
 }
 
-function resetCategorySelect(container) {
+function resetCategory(container) {
    const select = container.querySelector(".add-task__select--category");
    if (!select) return;
-   const valueLabel = select.querySelector(".add-task__select-value");
+   
+   const label = select.querySelector(".add-task__select-value");
    const input = container.querySelector("#addTaskCategoryInput");
-   if (!valueLabel || !input) return;
-   const placeholder = valueLabel.dataset.placeholder || "Select task category";
-   valueLabel.textContent = placeholder;
-   valueLabel.dataset.placeholder = placeholder;
-   valueLabel.dataset.lastLabel = "";
+   if (!label || !input) return;
+   
+   const placeholder = label.dataset.placeholder || "Select task category";
+   label.textContent = placeholder;
+   label.dataset.placeholder = placeholder;
+   label.dataset.lastLabel = "";
    input.value = "";
    input.dataset.lastValue = "";
+   
    select.classList.remove("add-task__select--open");
    select.setAttribute("aria-expanded", "false");
    input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
-function resetValidationState(container) {
-   const allFields = container.querySelectorAll(".add-task__input-field--required");
-   allFields.forEach((field) => field.classList.remove("add-task__input-field--error"));
-   const createButton = container.querySelector(".add-task__button--create");
-   if (createButton) {
-      setButtonState(createButton, false);
-   }
-}
-
-function clearSubtaskLists(container) {
+function clearSubtasks(container) {
    const lists = container.querySelectorAll(".add-task__subtask-list");
    lists.forEach((list) => {
       list.innerHTML = "";
    });
 }
 
-function resetAssignedSelect(container) {
+function resetAssigned(container) {
    const select = container.querySelector(".add-task__select--assigned");
    if (!select) return;
-   const valueLabel = select.querySelector(".add-task__select-value");
+   
+   const menu = container.querySelector("#addTaskAssignedMenu");
+   const label = select.querySelector(".add-task__select-value");
    const input = container.querySelector("#addTaskAssignedInput");
    const initialsContainer = container.querySelector("#addTaskAssignedInitials");
-   const menu = container.querySelector("#addTaskAssignedMenu");
    
-   // Reset all selected options
    if (menu) {
       const selectedOptions = menu.querySelectorAll(".add-task__select-option--selected");
       selectedOptions.forEach((option) => {
          option.classList.remove("add-task__select-option--selected");
          const checkbox = option.querySelector(".add-task__option-checkbox");
          if (checkbox) {
-            checkbox.src = "./assets/icons/desktop/checkBox.svg";
+            uncheckCheckbox(checkbox);
          }
       });
    }
    
-   // Reset placeholder
-   if (valueLabel) {
-      valueLabel.textContent = "Select contacts to assign";
+   if (label) {
+      label.textContent = "Select contacts to assign";
    }
    
-   // Clear hidden input
    if (input) {
       input.value = "";
    }
    
-   // Clear initials
    if (initialsContainer) {
       initialsContainer.innerHTML = "";
    }
    
-   // Close menu
    select.classList.remove("add-task__select--open");
    select.setAttribute("aria-expanded", "false");
    
-   // Reset footer position
-   const footer = container.querySelector(".add-task__footer");
-   if (footer) {
-      footer.style.transform = "translateY(0)";
-   }
+   const wrapper = getSelectWrapper(select);
+   const footer = getFooter();
    
-   // Reset wrapper padding
-   const wrapper = select.closest(".add-task__select-wrapper");
    if (wrapper) {
       wrapper.style.paddingBottom = "0px";
    }
+   
+   if (footer) {
+      footer.style.transform = "translateY(0)";
+   }
 }
 
-function handleClearButtonClick(event, button) {
+function resetValidation(container) {
+   const fields = container.querySelectorAll(".add-task__input-field--required");
+   fields.forEach(hideFieldError);
+   
+   const createButton = container.querySelector(".add-task__button--create");
+   if (createButton) {
+      disableButton(createButton);
+   }
+}
+
+function handleClearClick(event, button) {
    event.preventDefault();
+   
    const container = button.closest(".main_flex-instructions") || document;
-   clearFormFields(container);
-   clearSubtaskLists(container);
-   resetCategorySelect(container);
-   resetPriorityToMedium(container);
-   resetValidationState(container);
-   resetAssignedSelect(container);
+   
+   clearAllInputs(container);
+   clearSubtasks(container);
+   resetCategory(container);
+   resetPriority(container);
+   resetValidation(container);
+   resetAssigned(container);
+}
+
+function setupClearButton(button) {
+   button.addEventListener("click", (event) => {
+      handleClearClick(event, button);
+   });
 }
 
 function initClearButtons() {
    const clearButtons = document.querySelectorAll(".add-task__button--cancel");
-   clearButtons.forEach((button) => {
-      button.addEventListener("click", (event) => handleClearButtonClick(event, button));
-   });
+   clearButtons.forEach(setupClearButton);
 }
 
 // ===== INIT =====
 
-document.addEventListener("DOMContentLoaded", () => {
+function initAllFeatures() {
    initDatePicker();
    initFormValidation();
    initPriorityField();
@@ -853,4 +1332,6 @@ document.addEventListener("DOMContentLoaded", () => {
    initTextareaResize();
    initClearButtons();
    initSubtaskControls();
-});
+}
+
+document.addEventListener("DOMContentLoaded", initAllFeatures);
