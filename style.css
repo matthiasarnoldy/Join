@@ -69,7 +69,7 @@ h2 {
    display: flex;
    align-items: center;
    flex-direction: column;
-   z-index: 1;
+   z-index: 3;
 }
 
 .navBar__logo {
@@ -161,6 +161,10 @@ h2 {
 .header {
    background-color: #fff;
    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.1));
+   width: 100%;
+   position: fixed;
+   top: 0;
+   z-index: 1;
 }
 
 .header_flex-instructions {
