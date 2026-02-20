@@ -146,51 +146,35 @@
                      </div>
                   </div>
                </section>
-               <section class="board-columns">
-                  <div class="board-column">
-                     <h2 class="board-column__title">To do</h2>
-                     <button class="board-column__add" aria-label="Add to do">
-                        <img
-                           class="board-column__add-icon"
-                           src="./assets/icons/desktop/plus button.svg"
-                           alt="" />
-                     </button>
-                  </div>
-                  <div class="board-column">
-                     <h2 class="board-column__title">In progress</h2>
-                     <button
-                        class="board-column__add"
-                        aria-label="Add in progress">
-                        <img
-                           class="board-column__add-icon"
-                           src="./assets/icons/desktop/plus button.svg"
-                           alt="" />
-                     </button>
-                  </div>
-                  <div class="board-column">
-                     <h2 class="board-column__title">Await feedback</h2>
-                     <button
-                        class="board-column__add"
-                        aria-label="Add await feedback">
-                        <img
-                           class="board-column__add-icon"
-                           src="./assets/icons/desktop/plus button.svg"
-                           alt="" />
-                     </button>
-                  </div>
-                  <div class="board-column">
-                     <h2 class="board-column__title">Done</h2>
-                     <span
-                        class="board-column__placeholder"
-                        aria-hidden="true"></span>
-                  </div>
-               </section>
+
                <section class="board-task-grid">
                   <!-- Example task cards -->
                   <div class="board-task-column" id="column-todo">
+                     <div class="board-column">
+                        <h2 class="board-column__title">To do</h2>
+                        <button
+                           class="board-column__add"
+                           aria-label="Add to do">
+                           <img
+                              class="board-column__add-icon"
+                              src="./assets/icons/desktop/plus button.svg"
+                              alt="" />
+                        </button>
+                     </div>
                      <div class="board-task-placeholder">No tasks To do</div>
                   </div>
                   <div class="board-task-column" id="column-in-progress">
+                     <div class="board-column">
+                        <h2 class="board-column__title">In progress</h2>
+                        <button
+                           class="board-column__add"
+                           aria-label="Add in progress">
+                           <img
+                              class="board-column__add-icon"
+                              src="./assets/icons/desktop/plus button.svg"
+                              alt="" />
+                        </button>
+                     </div>
                      <article class="task-card">
                         <span class="task-card__label">User Story</span>
                         <h3 class="task-card__title">
@@ -224,6 +208,17 @@
                      </article>
                   </div>
                   <div class="board-task-column" id="column-await-feedback">
+                     <div class="board-column">
+                        <h2 class="board-column__title">Await feedback</h2>
+                        <button
+                           class="board-column__add"
+                           aria-label="Add await feedback">
+                           <img
+                              class="board-column__add-icon"
+                              src="./assets/icons/desktop/plus button.svg"
+                              alt="" />
+                        </button>
+                     </div>
                      <article class="task-card">
                         <span class="task-card__label task-card__label--teal"
                            >Technical Task</span
@@ -278,6 +273,12 @@
                      </article>
                   </div>
                   <div class="board-task-column" id="column-done">
+                     <div class="board-column">
+                        <h2 class="board-column__title">Done</h2>
+                        <span
+                           class="board-column__placeholder"
+                           aria-hidden="true"></span>
+                     </div>
                      <article class="task-card">
                         <span class="task-card__label task-card__label--teal"
                            >Technical Task</span
