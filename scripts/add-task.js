@@ -378,164 +378,6 @@ function setButtonActive(button) {
    button.classList.add("add-task__priority-option--active");
 }
 
-// ===== CATEGORY SELECT =====
-
-function getCategorySelect() {
-   return document.getElementById("addTaskCategory");
-}
-
-function getCategoryMenu() {
-   return document.getElementById("addTaskCategoryMenu");
-}
-
-function getCategoryInput() {
-   return document.getElementById("addTaskCategoryInput");
-}
-
-function getCategoryLabelElement() {
-   return document.querySelector("#addTaskCategory .add-task__select-value");
-}
-
-function getCategoryElements() {
-   const select = getCategorySelect();
-   const selectionGroup = select?.closest(".add-task__selection-group");
-   
-   return {
-      select: select,
-      menu: getCategoryMenu(),
-      input: getCategoryInput(),
-      label: getCategoryLabelElement(),
-      group: selectionGroup
-   };
-}
-
-function areCategoryElementsReady(elements) {
-   return elements.select && elements.menu && elements.input && elements.label;
-}
-
-function openCategoryMenu(elements) {
-   elements.select.classList.add("add-task__select--open");
-   elements.select.setAttribute("aria-expanded", "true");
-   
-   if (elements.group) {
-      elements.group.classList.add("add-task__selection-group--category-open");
-   }
-}
-
-function closeCategoryMenu(elements) {
-   elements.select.classList.remove("add-task__select--open");
-   elements.select.setAttribute("aria-expanded", "false");
-   
-   if (elements.group) {
-      elements.group.classList.remove("add-task__selection-group--category-open");
-   }
-}
-
-function isCategoryMenuOpen(elements) {
-   return elements.select.classList.contains("add-task__select--open");
-}
-
-function toggleCategoryMenu(elements) {
-   if (isCategoryMenuOpen(elements)) {
-      closeCategoryMenu(elements);
-      restoreCategorySelection(elements);
-   } else {
-      openCategoryMenu(elements);
-      resetCategoryPlaceholder(elements);
-   }
-}
-
-function getCategoryPlaceholder(label) {
-   return label.dataset.placeholder || label.textContent;
-}
-
-function resetCategoryPlaceholder(elements) {
-   const placeholder = getCategoryPlaceholder(elements.label);
-   
-   elements.label.textContent = placeholder;
-   elements.label.dataset.placeholder = placeholder;
-   elements.input.value = "";
-   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
-}
-
-function getLastCategoryValue(input) {
-   return input.dataset.lastValue;
-}
-
-function getLastCategoryLabel(label) {
-   return label.dataset.lastLabel;
-}
-
-function restoreCategorySelection(elements) {
-   const lastValue = getLastCategoryValue(elements.input);
-   const lastLabel = getLastCategoryLabel(elements.label);
-   
-   if (!lastValue || !lastLabel) return;
-   
-   elements.label.textContent = lastLabel;
-   elements.input.value = lastValue;
-   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
-}
-
-function saveCategorySelection(option, elements) {
-   const optionValue = option.dataset.value;
-   const optionText = option.textContent.trim();
-   
-   elements.input.value = optionValue;
-   elements.label.textContent = optionText;
-   elements.input.dataset.lastValue = optionValue;
-   elements.label.dataset.lastLabel = optionText;
-   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
-}
-
-function selectCategoryOption(option, elements) {
-   saveCategorySelection(option, elements);
-   closeCategoryMenu(elements);
-}
-
-function handleCategorySelectClick(event, elements) {
-   event.stopPropagation();
-   toggleCategoryMenu(elements);
-}
-
-function handleCategoryOptionClick(event, elements) {
-   event.stopPropagation();
-   
-   const option = event.target.closest(".add-task__select-option");
-   if (!option) return;
-   
-   selectCategoryOption(option, elements);
-}
-
-function setupCategoryClickListeners(elements) {
-   elements.select.addEventListener("click", (event) => {
-      handleCategorySelectClick(event, elements);
-   });
-   
-   elements.menu.addEventListener("click", (event) => {
-      handleCategoryOptionClick(event, elements);
-   });
-   
-   document.addEventListener("click", () => {
-      closeCategoryMenu(elements);
-   });
-}
-
-function initCategorySelect() {
-   const elements = getCategoryElements();
-   if (!areCategoryElementsReady(elements)) return;
-   
-   elements.select.setAttribute("aria-expanded", "false");
-   elements.label.dataset.placeholder = elements.label.textContent;
-   
-   if (elements.input.value) {
-      elements.input.dataset.lastValue = elements.input.value;
-      elements.label.dataset.lastLabel = elements.label.textContent;
-   }
-   
-   setupCategoryClickListeners(elements);
-}
-
 // ===== ASSIGNED SELECT =====
 
 function getAssignedSelect() {
@@ -560,20 +402,28 @@ function getInitialsContainer() {
 
 function getAssignedElements() {
    const select = getAssignedSelect();
-   const selectionGroup = select?.closest(".add-task__information-group--selection");
+   if (!select) return null;
+   
+   const menu = getAssignedMenu();
+   if (!menu) return null;
+   
+   const input = getAssignedInput();
+   if (!input) return null;
+   
+   const label = getAssignedLabel();
+   if (!label) return null;
+   
+   const initials = getInitialsContainer();
+   const selectionGroup = select.closest(".add-task__information-group--selection");
    
    return {
-      select: select,
-      menu: getAssignedMenu(),
-      input: getAssignedInput(),
-      label: getAssignedLabel(),
-      initials: getInitialsContainer(),
+      select,
+      menu,
+      input,
+      label,
+      initials,
       group: selectionGroup
    };
-}
-
-function areAssignedElementsReady(elements) {
-   return elements.select && elements.menu && elements.input && elements.label;
 }
 
 function openAssignedMenu(elements) {
@@ -975,7 +825,7 @@ function setupAssignedListeners(elements) {
 
 function initAssignedSelect() {
    const elements = getAssignedElements();
-   if (!areAssignedElementsReady(elements)) return;
+   if (!elements) return;
    
    elements.select.setAttribute("aria-expanded", "false");
    elements.label.dataset.placeholder = elements.label.textContent;
@@ -1193,9 +1043,30 @@ function initSubtaskControls() {
 
 // ===== CLEAR BUTTON =====
 
+function initClearButtons() {
+   const clearButtons = document.querySelectorAll(".add-task__button--cancel");
+   clearButtons.forEach(setupClearButton);
+}
+
+function setupClearButton(button) {
+   button.addEventListener("click", (event) => {
+      handleClearClick(event, button);
+   });
+}
+
+function handleClearClick(event, button) {
+   event.preventDefault();
+   const container = button.closest(".main_flex-instructions") || document;
+   clearAllInputs(container);
+   resetPriority(container);
+   resetAssigned(container);
+   resetCategory(container);
+   clearSubtasks(container);
+   resetValidation(container);
+}
+
 function clearAllInputs(container) {
    const inputs = container.querySelectorAll("input, textarea, select");
-   
    inputs.forEach((input) => {
       if (input.type === "checkbox" || input.type === "radio") {
          input.checked = false;
@@ -1208,31 +1079,81 @@ function clearAllInputs(container) {
 function resetPriority(container) {
    const priorityField = container.querySelector(".add-task__priority-field");
    if (!priorityField) return;
-   
    const allButtons = priorityField.querySelectorAll(".add-task__priority-option");
    removeActiveFromAll(allButtons);
-   
    const mediumButton = priorityField.querySelector(".add-task__priority-option--medium");
    if (mediumButton) {
       setButtonActive(mediumButton);
    }
 }
 
+function resetAssigned(container) {
+   const select = container.querySelector(".add-task__select--assigned");
+   if (!select) return;
+   resetAssignedOptions(container.querySelector("#addTaskAssignedMenu"));
+   resetAssignedLabel(select.querySelector(".add-task__select-value"));
+   resetAssignedInput(container.querySelector("#addTaskAssignedInput"));
+   resetAssignedInitials(container.querySelector("#addTaskAssignedInitials"));
+   resetAssignedMenuState(select);
+   resetAssignedSpacing(select);
+}
+
+function resetAssignedOptions(menu) {
+   if (!menu) return;
+   const selectedOptions = menu.querySelectorAll(".add-task__select-option--selected");
+   selectedOptions.forEach((option) => {
+      option.classList.remove("add-task__select-option--selected");
+      const checkbox = option.querySelector(".add-task__option-checkbox");
+      if (checkbox) {
+         uncheckCheckbox(checkbox);
+      }
+   });
+}
+
+function resetAssignedLabel(label) {
+   if (!label) return;
+   label.textContent = "Select contacts to assign";
+}
+
+function resetAssignedInput(input) {
+   if (!input) return;
+   input.value = "";
+}
+
+function resetAssignedInitials(initialsContainer) {
+   if (!initialsContainer) return;
+   initialsContainer.innerHTML = "";
+}
+
+function resetAssignedMenuState(select) {
+   if (!select) return;
+   select.classList.remove("add-task__select--open");
+   select.setAttribute("aria-expanded", "false");
+}
+
+function resetAssignedSpacing(select) {
+   const wrapper = getSelectWrapper(select);
+   const footer = getFooter();
+   if (wrapper) {
+      wrapper.style.paddingBottom = "0px";
+   }
+   if (footer) {
+      footer.style.transform = "translateY(0)";
+   }
+}
+
 function resetCategory(container) {
    const select = container.querySelector(".add-task__select--category");
    if (!select) return;
-   
    const label = select.querySelector(".add-task__select-value");
    const input = container.querySelector("#addTaskCategoryInput");
    if (!label || !input) return;
-   
    const placeholder = label.dataset.placeholder || "Select task category";
    label.textContent = placeholder;
    label.dataset.placeholder = placeholder;
    label.dataset.lastLabel = "";
    input.value = "";
    input.dataset.lastValue = "";
-   
    select.classList.remove("add-task__select--open");
    select.setAttribute("aria-expanded", "false");
    input.dispatchEvent(new Event("input", { bubbles: true }));
@@ -1245,83 +1166,11 @@ function clearSubtasks(container) {
    });
 }
 
-function resetAssigned(container) {
-   const select = container.querySelector(".add-task__select--assigned");
-   if (!select) return;
-   
-   const menu = container.querySelector("#addTaskAssignedMenu");
-   const label = select.querySelector(".add-task__select-value");
-   const input = container.querySelector("#addTaskAssignedInput");
-   const initialsContainer = container.querySelector("#addTaskAssignedInitials");
-   
-   if (menu) {
-      const selectedOptions = menu.querySelectorAll(".add-task__select-option--selected");
-      selectedOptions.forEach((option) => {
-         option.classList.remove("add-task__select-option--selected");
-         const checkbox = option.querySelector(".add-task__option-checkbox");
-         if (checkbox) {
-            uncheckCheckbox(checkbox);
-         }
-      });
-   }
-   
-   if (label) {
-      label.textContent = "Select contacts to assign";
-   }
-   
-   if (input) {
-      input.value = "";
-   }
-   
-   if (initialsContainer) {
-      initialsContainer.innerHTML = "";
-   }
-   
-   select.classList.remove("add-task__select--open");
-   select.setAttribute("aria-expanded", "false");
-   
-   const wrapper = getSelectWrapper(select);
-   const footer = getFooter();
-   
-   if (wrapper) {
-      wrapper.style.paddingBottom = "0px";
-   }
-   
-   if (footer) {
-      footer.style.transform = "translateY(0)";
-   }
-}
-
 function resetValidation(container) {
    const fields = container.querySelectorAll(".add-task__input-field--required");
    fields.forEach(hideFieldError);
-   
    const createButton = container.querySelector(".add-task__button--create");
    if (createButton) {
       disableButton(createButton);
    }
-}
-
-function handleClearClick(event, button) {
-   event.preventDefault();
-   
-   const container = button.closest(".main_flex-instructions") || document;
-   
-   clearAllInputs(container);
-   clearSubtasks(container);
-   resetCategory(container);
-   resetPriority(container);
-   resetValidation(container);
-   resetAssigned(container);
-}
-
-function setupClearButton(button) {
-   button.addEventListener("click", (event) => {
-      handleClearClick(event, button);
-   });
-}
-
-function initClearButtons() {
-   const clearButtons = document.querySelectorAll(".add-task__button--cancel");
-   clearButtons.forEach(setupClearButton);
 }
