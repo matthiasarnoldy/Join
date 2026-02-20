@@ -1,3 +1,16 @@
+document.addEventListener("DOMContentLoaded", initAllFeatures);
+
+function initAllFeatures() {
+   initDatePicker();
+   initFormValidation();
+   initPriorityField();
+   initCategorySelect();
+   initAssignedSelect();
+   initTextareaResize();
+   initClearButtons();
+   initSubtaskControls();
+}
+
 // ===== TASK SPEICHERN =====
 
 function getTaskStatus() {
@@ -107,22 +120,16 @@ function isInDialog() {
 function createSuccessMessage() {
    const messageDiv = document.createElement("div");
    messageDiv.className = "task-success-message";
-   messageDiv.textContent = "Task added to board";
-   
-   messageDiv.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #4caf50;
-      color: white;
-      padding: 20px 40px;
-      border-radius: 10px;
-      font-size: 18px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 10000;
-   `;
+   const messageText = document.createElement("span");
+   messageText.className = "task-success-message__text";
+   messageText.textContent = "Task added to board";
+
+   const messageIcon = document.createElement("img");
+   messageIcon.className = "task-success-message__icon";
+   messageIcon.src = "./assets/icons/desktop/board.svg";
+   messageIcon.alt = "Board";
+
+   messageDiv.append(messageText, messageIcon);
    
    return messageDiv;
 }
@@ -130,6 +137,9 @@ function createSuccessMessage() {
 function showSuccessMessage() {
    const message = createSuccessMessage();
    document.body.appendChild(message);
+   requestAnimationFrame(() => {
+      message.classList.add("task-success-message--visible");
+   });
    
    setTimeout(() => {
       message.remove();
@@ -148,6 +158,12 @@ function saveTaskToBoard() {
    const taskData = createTaskData();
    
    addTaskToStorage(taskData);
+   if (isInDialog()) {
+      sessionStorage.setItem("showTaskSuccess", "true");
+      redirectAfterSave();
+      return;
+   }
+
    showSuccessMessage();
    
    setTimeout(() => {
@@ -272,27 +288,45 @@ function initFormValidation() {
 
 // ===== TEXTAREA RESIZE =====
 
-function getPixelValue(cssValue) {
-   return Number.parseFloat(cssValue) || 0;
+function initTextareaResize() {
+   const wrappers = document.querySelectorAll(".add-task__input-field--textarea");
+   wrappers.forEach(setupTextareaResize);
 }
 
-function clampValue(value, min, max) {
-   if (value < min) return min;
-   if (value > max) return max;
-   return value;
+function setupTextareaResize(wrapper) {
+   const textarea = wrapper.querySelector("textarea");
+   const handle = wrapper.querySelector(".add-task__textarea-resize");
+   if (!textarea || !handle) return;
+   handle.style.pointerEvents = "auto";
+   handle.addEventListener("mousedown", (event) => {
+      startTextareaResize(event, textarea);
+   });
+}
+
+function startTextareaResize(event, textarea) {
+   event.preventDefault();
+   const { minHeight, maxHeight } = getTextareaHeight(textarea);
+   const startY = event.clientY;
+   const startHeight = textarea.offsetHeight;
+   const moveHandler = (e) => {
+      handleMouseMove(e, startY, startHeight, textarea, minHeight, maxHeight);
+   };
+   const upHandler = () => {
+      removeResizeListeners(moveHandler, upHandler);
+   };
+   document.addEventListener("mousemove", moveHandler);
+   document.addEventListener("mouseup", upHandler);
 }
 
 function getTextareaHeight(textarea) {
    const styles = getComputedStyle(textarea);
    const minHeight = getPixelValue(styles.minHeight) || 48;
-   const maxHeight = getPixelValue(styles.maxHeight) || 10000;
-   
+   const maxHeight = getPixelValue(styles.maxHeight) || 1000;
    return { minHeight, maxHeight };
 }
 
-function updateTextareaHeight(textarea, newHeight, minHeight, maxHeight) {
-   const clampedHeight = clampValue(newHeight, minHeight, maxHeight);
-   textarea.style.height = `${clampedHeight}px`;
+function getPixelValue(cssValue) {
+   return Number.parseFloat(cssValue) || 0;
 }
 
 function handleMouseMove(event, startY, startHeight, textarea, minHeight, maxHeight) {
@@ -301,76 +335,47 @@ function handleMouseMove(event, startY, startHeight, textarea, minHeight, maxHei
    updateTextareaHeight(textarea, newHeight, minHeight, maxHeight);
 }
 
+function updateTextareaHeight(textarea, newHeight, minHeight, maxHeight) {
+   const clampedHeight = clampValue(newHeight, minHeight, maxHeight);
+   textarea.style.height = `${clampedHeight}px`;
+}
+
+function clampValue(value, min, max) {
+   if (value < min) return min;
+   if (value > max) return max;
+   return value;
+}
+
 function removeResizeListeners(moveHandler, upHandler) {
    document.removeEventListener("mousemove", moveHandler);
    document.removeEventListener("mouseup", upHandler);
 }
 
-function startTextareaResize(event, textarea) {
-   event.preventDefault();
-   
-   const { minHeight, maxHeight } = getTextareaHeight(textarea);
-   const startY = event.clientY;
-   const startHeight = textarea.offsetHeight;
-   
-   const moveHandler = (e) => {
-      handleMouseMove(e, startY, startHeight, textarea, minHeight, maxHeight);
-   };
-   
-   const upHandler = () => {
-      removeResizeListeners(moveHandler, upHandler);
-   };
-   
-   document.addEventListener("mousemove", moveHandler);
-   document.addEventListener("mouseup", upHandler);
-}
-
-function setupTextareaResize(wrapper) {
-   const textarea = wrapper.querySelector("textarea");
-   const handle = wrapper.querySelector(".add-task__textarea-resize");
-   
-   if (!textarea || !handle) return;
-   
-   handle.style.pointerEvents = "auto";
-   
-   handle.addEventListener("mousedown", (event) => {
-      startTextareaResize(event, textarea);
-   });
-}
-
-function initTextareaResize() {
-   const wrappers = document.querySelectorAll(".add-task__input-field--textarea");
-   wrappers.forEach(setupTextareaResize);
-}
-
 // ===== PRIORITY FIELD =====
 
-function removeActiveFromAll(buttons) {
-   buttons.forEach(btn => {
-      btn.classList.remove("add-task__priority-option--active");
+function initPriorityField() {
+   const priorityField = document.getElementById("addTaskPriority");
+   if (!priorityField) return;
+   priorityField.addEventListener("click", handlePriorityClick);
+}
+
+function handlePriorityClick(clickEvent) {
+   const clickedButton = clickEvent.target.closest(".add-task__priority-option");
+   if (!clickedButton) return;
+   const field = clickedButton.closest(".add-task__priority-field");
+   const priorityButtons = field.querySelectorAll(".add-task__priority-option");
+   removeActiveFromAll(priorityButtons);
+   setButtonActive(clickedButton);
+}
+
+function removeActiveFromAll(priorityButtons) {
+   priorityButtons.forEach(button => {
+      button.classList.remove("add-task__priority-option--active");
    });
 }
 
 function setButtonActive(button) {
    button.classList.add("add-task__priority-option--active");
-}
-
-function handlePriorityClick(event) {
-   const clickedButton = event.target.closest(".add-task__priority-option");
-   if (!clickedButton) return;
-   
-   const field = clickedButton.closest(".add-task__priority-field");
-   const allButtons = field.querySelectorAll(".add-task__priority-option");
-   
-   removeActiveFromAll(allButtons);
-   setButtonActive(clickedButton);
-}
-
-function initPriorityField() {
-   const priorityField = document.getElementById("addTaskPriority");
-   if (!priorityField) return;
-   
-   priorityField.addEventListener("click", handlePriorityClick);
 }
 
 // ===== CATEGORY SELECT =====
@@ -1320,18 +1325,3 @@ function initClearButtons() {
    const clearButtons = document.querySelectorAll(".add-task__button--cancel");
    clearButtons.forEach(setupClearButton);
 }
-
-// ===== INIT =====
-
-function initAllFeatures() {
-   initDatePicker();
-   initFormValidation();
-   initPriorityField();
-   initCategorySelect();
-   initAssignedSelect();
-   initTextareaResize();
-   initClearButtons();
-   initSubtaskControls();
-}
-
-document.addEventListener("DOMContentLoaded", initAllFeatures);

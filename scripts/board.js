@@ -230,4 +230,12 @@ document.addEventListener("DOMContentLoaded", () => {
    loadTasksFromSession();
    setupColumnAddButtons();
    setupTaskSearch();
+
+   const shouldShowSuccess = sessionStorage.getItem("showTaskSuccess");
+   if (shouldShowSuccess === "true") {
+      sessionStorage.removeItem("showTaskSuccess");
+      if (typeof showSuccessMessage === "function") {
+         showSuccessMessage();
+      }
+   }
 });
