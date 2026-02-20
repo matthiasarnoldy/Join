@@ -32,6 +32,10 @@ body {
    justify-content: left;
 }
 
+.hidden {
+   display: none;
+}
+
 .content_max-width {
    max-width: 1440px;
    display: flex;
@@ -164,7 +168,7 @@ h2 {
    width: 100%;
    position: fixed;
    top: 0;
-   z-index: 1;
+   z-index: 4;
 }
 
 .header_flex-instructions {
@@ -307,6 +311,7 @@ h2 {
       width: 100%;
       padding-bottom: 0;
       bottom: 0;
+      z-index: 3;
    }
 
    .navBar__logo {

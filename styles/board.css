@@ -373,6 +373,7 @@ dialog::backdrop {
    .board-task-grid {
       flex-direction: column;
       gap: 32px;
+      padding-bottom: 100px;
    }
 
    .board-task-column {
