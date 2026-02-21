@@ -204,5 +204,12 @@ function initDatePicker() {
    if (!isPickerReady(elements)) return;
    const pickerState = createPickerState();
    initializeCalendar(pickerState, elements.monthLabel, elements.daysContainer);
+   // Reset selected date when input is cleared so previously selected day is not shown
+   elements.input.addEventListener("input", () => {
+      if (!elements.input.value || elements.input.value.trim() === "") {
+         pickerState.selectedDate = null;
+         drawCalendar(pickerState.currentDate, pickerState.today, pickerState.selectedDate, elements.monthLabel, elements.daysContainer);
+      }
+   });
    setupPickerEvents(elements, pickerState);
 }
