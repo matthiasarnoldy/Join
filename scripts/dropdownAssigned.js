@@ -8,20 +8,9 @@ const ASSIGNED_PLACEHOLDER_TEXT = "Select contacts to assign";
 function getAssignedElements() {
    const select = document.getElementById("addTaskAssigned");
    if (!select) return null;
-   const menu = document.getElementById("addTaskAssignedMenu");
-   const input = document.getElementById("addTaskAssignedInput");
-   const label = select.querySelector(".add-task__select-value");
-   const initials = document.getElementById("addTaskAssignedInitials");
-   const selectionGroup = select.closest(".add-task__information-group--selection");
+   const menu = document.getElementById("addTaskAssignedMenu"), input = document.getElementById("addTaskAssignedInput"), label = select.querySelector(".add-task__select-value"), initials = document.getElementById("addTaskAssignedInitials"), selectionGroup = select.closest(".add-task__information-group--selection");
    if (!menu || !input || !label) return null;
-   return {
-      select,
-      menu,
-      input,
-      label,
-      initials,
-      group: selectionGroup
-   };
+   return { select, menu, input, label, initials, group: selectionGroup };
 }
 
 function openAssignedMenu(elements) {
@@ -38,24 +27,27 @@ function openAssignedMenu(elements) {
    }
 }
 
-function closeAssignedMenu(elements) {
-   elements.select.classList.remove(ASSIGNED_OPEN_CLASS);
-   elements.select.setAttribute("aria-expanded", "false");
-   if (elements.group) {
-      elements.group.classList.remove("add-task__selection-group--assigned-open");
-   }
-   // Suche verstecken und leeren
+function clearSearchAndReset(elements) {
    const searchInput = getSearchInput(elements.select);
-   if (searchInput) {
-      hideSearchInput(searchInput, elements.label);
-      searchInput.value = "";
-   }
-   // Wenn keine Kontakte ausgewählt, Placeholder Text anzeigen
+   if (!searchInput) return;
+   hideSearchInput(searchInput, elements.label);
+   searchInput.value = "";
+}
+
+function resetAssignedPlaceholderIfEmpty(elements) {
    const selectedOptions = getSelectedOptions(elements.menu);
    if (selectedOptions.length === 0) {
       elements.label.textContent = ASSIGNED_PLACEHOLDER_TEXT;
       elements.input.value = "";
    }
+}
+
+function closeAssignedMenu(elements) {
+   elements.select.classList.remove(ASSIGNED_OPEN_CLASS);
+   elements.select.setAttribute("aria-expanded", "false");
+   if (elements.group) elements.group.classList.remove("add-task__selection-group--assigned-open");
+   clearSearchAndReset(elements);
+   resetAssignedPlaceholderIfEmpty(elements);
 }
 
 function isAssignedMenuOpen(elements) {
@@ -234,21 +226,26 @@ function clearInitialsContainer(container) {
    container.innerHTML = "";
 }
 
+function createInitialElementFromOption(option, elements) {
+   const initialsText = option.querySelector(".add-task__option-initials")?.textContent;
+   if (!initialsText) return null;
+   const temp = document.createElement("div");
+   temp.innerHTML = createInitialHTML(initialsText);
+   const initialElement = temp.firstElementChild;
+   if (!initialElement) return null;
+   initialElement.addEventListener("click", () => {
+      removeContactSelection(option);
+      updateContactInitials(elements);
+   });
+   return initialElement;
+}
+
 function addInitialsToContainer(selectedOptions, container, maxDisplay, elements) {
    let displayCount = 0;
    selectedOptions.forEach((option) => {
       if (displayCount >= maxDisplay) return;
-      const initialsText = option.querySelector(".add-task__option-initials")?.textContent;
-      if (!initialsText) return;
-      const html = createInitialHTML(initialsText);
-      const temp = document.createElement("div");
-      temp.innerHTML = html;
-      const initialElement = temp.firstElementChild;
+      const initialElement = createInitialElementFromOption(option, elements);
       if (!initialElement) return;
-      initialElement.addEventListener("click", () => {
-         removeContactSelection(option);
-         updateContactInitials(elements);
-      });
       container.appendChild(initialElement);
       displayCount++;
    });
@@ -329,33 +326,44 @@ function updateContactInitials(elements) {
    updateFooterPosition(footer, hasContacts, params.menuOpen);
 }
 
-function setupAssignedListeners(elements) {
-   if (!elements) return;
-   // click on select (open/close)
+function setupSelectClickListener(elements) {
    elements.select.addEventListener("click", (event) => {
       event.stopPropagation();
       const clickedInput = event.target.closest(".add-task__select-input");
       if (!clickedInput) toggleAssignedMenu(elements);
    });
-   // option clicks
+}
+
+function setupMenuClickListener(elements) {
    elements.menu.addEventListener("click", (event) => {
       handleAssignedOptionClick(event, elements);
    });
-   // search input interactions
+}
+
+function setupSearchInputListenersForAssigned(elements) {
    const searchInput = getSearchInput(elements.select);
-   if (searchInput) {
-      searchInput.addEventListener("click", (e) => e.stopPropagation());
-      searchInput.addEventListener("mousedown", (e) => e.stopPropagation());
-      searchInput.addEventListener("focus", () => {
-         if (!isAssignedMenuOpen(elements)) toggleAssignedMenu(elements);
-      });
-   }
-   // document click closes the menu
+   if (!searchInput) return;
+   searchInput.addEventListener("click", (e) => e.stopPropagation());
+   searchInput.addEventListener("mousedown", (e) => e.stopPropagation());
+   searchInput.addEventListener("focus", () => {
+      if (!isAssignedMenuOpen(elements)) toggleAssignedMenu(elements);
+   });
+}
+
+function setupDocumentCloseListener(elements) {
    document.addEventListener("click", (event) => {
       const clickedInput = event.target.closest(".add-task__select-input");
       if (clickedInput) return;
       closeAssignedMenu(elements);
    });
+}
+
+function setupAssignedListeners(elements) {
+   if (!elements) return;
+   setupSelectClickListener(elements);
+   setupMenuClickListener(elements);
+   setupSearchInputListenersForAssigned(elements);
+   setupDocumentCloseListener(elements);
 }
 
 function initAssignedSelect() {

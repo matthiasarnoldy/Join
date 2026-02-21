@@ -36,59 +36,50 @@ function setupColumnAddButtons() {
 
 // ===== TASK SUCHE =====
 
+function setCardVisibility(card, shouldShow) {
+   card.style.display = shouldShow ? "" : "none";
+}
+
 function filterTasks(searchTerm) {
    const allCards = document.querySelectorAll(".task-card");
-   const lowerSearchTerm = searchTerm.toLowerCase().trim();
-   
+   const lowerSearchTerm = String(searchTerm || "").toLowerCase().trim();
    if (lowerSearchTerm === "") {
-      // Alle Tasks anzeigen wenn Suche leer ist
-      allCards.forEach(card => {
-         card.style.display = "";
-      });
+      allCards.forEach(card => setCardVisibility(card, true));
       updatePlaceholders();
       return;
    }
-   
-   // Tasks filtern basierend auf Titel
    allCards.forEach(card => {
       const title = card.querySelector(".task-card__title")?.textContent.toLowerCase() || "";
-      
-      if (title.includes(lowerSearchTerm)) {
-         card.style.display = "";
-      } else {
-         card.style.display = "none";
-      }
+      setCardVisibility(card, title.includes(lowerSearchTerm));
    });
-   
    updatePlaceholders();
+}
+
+function ensurePlaceholderExists(column) {
+   let placeholder = column.querySelector(".board-task-placeholder");
+   if (!placeholder) {
+      placeholder = document.createElement("div");
+      placeholder.className = "board-task-placeholder";
+      placeholder.textContent = "No tasks found";
+      column.insertBefore(placeholder, column.firstChild);
+   }
+   return placeholder;
+}
+
+function processColumnPlaceholder(column) {
+   const visibleCards = Array.from(column.querySelectorAll(".task-card")).filter(card => card.style.display !== "none");
+   if (visibleCards.length === 0) {
+      const placeholder = ensurePlaceholderExists(column);
+      placeholder.style.display = "";
+   } else {
+      const placeholder = column.querySelector(".board-task-placeholder");
+      if (placeholder) placeholder.style.display = "none";
+   }
 }
 
 function updatePlaceholders() {
    const columns = document.querySelectorAll(".board-task-column");
-   
-   columns.forEach(column => {
-      const visibleCards = Array.from(column.querySelectorAll(".task-card")).filter(
-         card => card.style.display !== "none"
-      );
-      
-      let placeholder = column.querySelector(".board-task-placeholder");
-      
-      if (visibleCards.length === 0) {
-         // Placeholder anzeigen wenn keine sichtbaren Tasks
-         if (!placeholder) {
-            placeholder = document.createElement("div");
-            placeholder.className = "board-task-placeholder";
-            placeholder.textContent = "No tasks found";
-            column.insertBefore(placeholder, column.firstChild);
-         }
-         placeholder.style.display = "";
-      } else {
-         // Placeholder verstecken wenn Tasks vorhanden
-         if (placeholder) {
-            placeholder.style.display = "none";
-         }
-      }
-   });
+   columns.forEach(processColumnPlaceholder);
 }
 
 function setupTaskSearch() {
@@ -121,108 +112,61 @@ function getCategoryLabel(category) {
    return labels[categoryStr] || categoryStr;
 }
 
+function buildAvatarsHTML(taskData) {
+   if (!taskData.assigned || taskData.assigned.length === 0) return "";
+   const avatarWidth = 32, overlap = 8, available = 220;
+   const maxAvatars = Math.floor((available - avatarWidth) / (avatarWidth - overlap)) + 1;
+   const total = taskData.assigned.length;
+   const displayCount = total > maxAvatars ? maxAvatars - 1 : total;
+   const colors = ["orange", "teal", "purple"];
+   let html = "";
+   for (let i = 0; i < displayCount; i++) {
+      const color = colors[i % colors.length];
+      html += `<span class="avatar avatar--${color}">${taskData.assigned[i].initials}</span>`;
+   }
+   const remaining = total - displayCount;
+   if (remaining > 0) html += `<span class="avatar avatar--overflow">+${remaining}</span>`;
+   return html;
+}
+
+// Subtask and card HTML are provided by template.js (pure HTML, no logic)
+
 function createTaskCard(taskData) {
    const card = document.createElement("article");
    card.className = "task-card";
    card.dataset.taskId = taskData.id;
-   
    const categoryClass = taskData.category === "technical" ? "task-card__label--teal" : "";
-   const hasSubtasks = taskData.subtasks.length > 0;
-   const completedSubtasks = taskData.subtasks.filter(s => s.completed).length;
-   const subtaskProgress = hasSubtasks ? (completedSubtasks / taskData.subtasks.length) * 100 : 0;
-   
-   let avatarsHTML = "";
-   if (taskData.assigned && taskData.assigned.length > 0) {
-      // Calculate how many avatars fit based on available width
-      // Avatar width: 32px, overlap: -8px
-      // Available width: 220px
-      // First avatar: 32px, each additional: 24px (32px - 8px overlap)
-      const avatarWidth = 32;
-      const overlapWidth = 8;
-      const availableWidth = 220;
-      
-      // Calculate max avatars that fit
-      // Formula: 32 + (n-1) * 24 <= 220
-      // If overflow indicator needed, reserve space: 32 + (n-1) * 24 + 24 <= 220
-      const maxAvatars = Math.floor((availableWidth - avatarWidth) / (avatarWidth - overlapWidth)) + 1;
-      
-      const totalContacts = taskData.assigned.length;
-      const displayCount = totalContacts > maxAvatars ? maxAvatars - 1 : totalContacts;
-      
-      // Display avatars that fit
-      for (let i = 0; i < displayCount; i++) {
-         const contact = taskData.assigned[i];
-         const colors = ["orange", "teal", "purple"];
-         const color = colors[i % colors.length];
-         avatarsHTML += `<span class="avatar avatar--${color}">${contact.initials}</span>`;
-      }
-      
-      // Add overflow indicator if there are more contacts
-      if (totalContacts > displayCount) {
-         const remaining = totalContacts - displayCount;
-         avatarsHTML += `<span class="avatar avatar--overflow">+${remaining}</span>`;
-      }
-   }
-   
-   let subtasksHTML = "";
-   if (hasSubtasks) {
-      subtasksHTML = `
-         <div class="task-card__progress">
-            <div class="task-card__progress-track">
-               <div class="task-card__progress-bar" style="width: ${subtaskProgress}%"></div>
-            </div>
-            <span class="task-card__progress-text">${completedSubtasks}/${taskData.subtasks.length} Subtasks</span>
-         </div>
-      `;
-   }
-   
-   card.innerHTML = `
-      <span class="task-card__label ${categoryClass}">${getCategoryLabel(taskData.category)}</span>
-      <h3 class="task-card__title">${taskData.title}</h3>
-      <p class="task-card__description">${taskData.description}</p>
-      ${subtasksHTML}
-      <div class="task-card__meta">
-         <div class="task-card__avatars">
-            ${avatarsHTML}
-         </div>
-         <img class="task-card__priority" src="${getPriorityIcon(taskData.priority)}" alt="Priority" />
-      </div>
-   `;
-   
+   const completedSubtasks = (taskData.subtasks || []).filter(s => s.completed).length;
+   const subtaskProgress = (taskData.subtasks && taskData.subtasks.length) ? (completedSubtasks / taskData.subtasks.length) * 100 : 0;
+   const avatarsHTML = buildAvatarsHTML(taskData);
+   const subtasksHTML = (typeof taskCardSubtasksHTML === 'function' && taskData.subtasks && taskData.subtasks.length) ? taskCardSubtasksHTML(completedSubtasks, taskData.subtasks.length, subtaskProgress) : "";
+   const priorityIcon = getPriorityIcon(taskData.priority);
+   const categoryLabel = getCategoryLabel(taskData.category);
+   const useTemplate = typeof taskCardHTML === 'function';
+   card.innerHTML = useTemplate ? taskCardHTML(categoryClass, categoryLabel, taskData.title, taskData.description, subtasksHTML, avatarsHTML, priorityIcon) : `<span class="task-card__label ${categoryClass}">${categoryLabel}</span><h3 class="task-card__title">${taskData.title}</h3><p class="task-card__description">${taskData.description}</p>${subtasksHTML}<div class="task-card__meta"><div class="task-card__avatars">${avatarsHTML}</div><img class="task-card__priority" src="${priorityIcon}" alt="Priority" /></div>`;
    return card;
+}
+
+function addTaskToColumn(taskData, columns) {
+   if (taskData.category && typeof taskData.category !== 'string') taskData.category = String(taskData.category);
+   const column = columns[taskData.status];
+   if (!column) return;
+   const placeholder = column.querySelector(".board-task-placeholder");
+   if (placeholder) placeholder.remove();
+   const card = createTaskCard(taskData);
+   column.appendChild(card);
 }
 
 function loadTasksFromSession() {
    const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
-   
-   if (tasks.length === 0) return;
-   
+   if (!tasks || tasks.length === 0) return;
    const columns = {
       "todo": document.getElementById("column-todo"),
       "in-progress": document.getElementById("column-in-progress"),
       "await-feedback": document.getElementById("column-await-feedback"),
       "done": document.getElementById("column-done")
    };
-   
-   // Tasks zu den entsprechenden Spalten hinzufügen
-   tasks.forEach(taskData => {
-      // Sicherstellen dass category ein String ist
-      if (taskData.category && typeof taskData.category !== 'string') {
-         taskData.category = String(taskData.category);
-      }
-      
-      const column = columns[taskData.status];
-      if (column) {
-         // Placeholder entfernen falls vorhanden
-         const placeholder = column.querySelector(".board-task-placeholder");
-         if (placeholder) {
-            placeholder.remove();
-         }
-         
-         const card = createTaskCard(taskData);
-         column.appendChild(card);
-      }
-   });
+   tasks.forEach(taskData => addTaskToColumn(taskData, columns));
 }
 
 // Tasks beim Laden der Seite anzeigen
