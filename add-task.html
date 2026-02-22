@@ -16,13 +16,16 @@
          type="image/svg+xml"
          media="(prefers-color-scheme: dark)" />
 
-      <script src="./scripts/templates.js"></script>
-      <script src="./scripts/buttons.js" defer></script>
-      <script src="./scripts/date-picker.js" defer></script>
-      <script src="./scripts/add-task.js" defer></script>
       <script src="./script.js"></script>
+      <script src="./scripts/saveTask.js"></script>
+      <script src="./scripts/add-task.js"></script>
+      <script src="./scripts/template.js"></script>
+      <script src="./scripts/date-picker.js"></script>
+      <script src="./scripts/dropdownCategory.js"></script>
+      <script src="./scripts/dropdownAssigned.js"></script>
+      <script src="./scripts/add-taskAssets.js"></script>
+      <script src="./scripts/buttons.js" defer></script>
 
-      <link rel="stylesheet" href="./styles/assets.css" />
       <link rel="stylesheet" href="./styles/standard.css" />
       <link rel="stylesheet" href="./styles/add-task.css" />
       <link rel="stylesheet" href="./style.css" />
@@ -326,7 +329,7 @@
                            </div>
                         </section>
                         <section class="add-task__input-group">
-                           <label for="addTaskAssigned" class="add-task__label">
+                           <label for="addTaskAssignedInput" class="add-task__label">
                               Assigned to
                            </label>
                            <div class="add-task__select-wrapper">
@@ -555,7 +558,7 @@
                         <section class="add-task__selection-group">
                            <section
                               class="add-task__input-group add-task__input-group--required">
-                              <label class="add-task__label">
+                              <label for="addTaskCategoryInput" class="add-task__label">
                                  Category
                                  <span class="add-task__label--required"
                                     >*</span

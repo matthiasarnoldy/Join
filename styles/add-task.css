@@ -496,6 +496,8 @@
    border-radius: 10px;
    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
    cursor: pointer;
+   min-width: 100px;
+   width: 100%;
 }
 
 .add-task__priority-option:hover {
@@ -864,6 +866,39 @@
    background-color: #f6f7f8;
    color: #2a3647;
    border: 1px solid #2a3647;
+}
+
+.task-success-message {
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%) translateY(100vh);
+   opacity: 0;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 16px;
+   background: #2a3647;
+   color: #fff;
+   padding: 20px 40px;
+   border-radius: 10px;
+   font-size: 18px;
+   font-weight: 600;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+   z-index: 10000;
+   transition: all 100ms ease-in-out;
+}
+
+.task-success-message--visible {
+   opacity: 1;
+   transform: translate(-50%, -50%);
+}
+
+.task-success-message__icon {
+   width: 24px;
+   height: 24px;
+   filter: brightness(0) invert(1);
+   flex-shrink: 0;
 }
 
 .add-task__cancel--secondary {

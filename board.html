@@ -16,12 +16,16 @@
          type="image/svg+xml"
          media="(prefers-color-scheme: dark)" />
 
-      <script src="./scripts/templates.js"></script>
-      <script src="./scripts/buttons.js" defer></script>
-      <script src="./scripts/date-picker.js" defer></script>
-      <script src="./scripts/add-task.js" defer></script>
       <script src="./script.js"></script>
+      <script src="./scripts/saveTask.js"></script>
       <script src="./scripts/board.js"></script>
+      <script src="./scripts/add-task.js"></script>
+      <script src="./scripts/template.js"></script>
+      <script src="./scripts/date-picker.js"></script>
+      <script src="./scripts/dropdownCategory.js"></script>
+      <script src="./scripts/dropdownAssigned.js"></script>
+      <script src="./scripts/add-taskAssets.js"></script>
+      <script src="./scripts/buttons.js" defer></script>
 
       <link rel="stylesheet" href="./styles/board.css" />
       <link rel="stylesheet" href="./styles/standard.css" />
@@ -121,6 +125,7 @@
                      <div class="board-actions">
                         <div class="find-task">
                            <input
+                              id="findTaskInput"
                               class="find-task__input"
                               type="text"
                               placeholder="Find Task"
@@ -149,7 +154,7 @@
                <section class="board-columns">
                   <div class="board-column">
                      <h2 class="board-column__title">To do</h2>
-                     <button class="board-column__add" aria-label="Add to do">
+                     <button class="board-column__add" data-status="todo" aria-label="Add to do">
                         <img
                            class="board-column__add-icon"
                            src="./assets/icons/desktop/plus button.svg"
@@ -160,6 +165,7 @@
                      <h2 class="board-column__title">In progress</h2>
                      <button
                         class="board-column__add"
+                        data-status="in-progress"
                         aria-label="Add in progress">
                         <img
                            class="board-column__add-icon"
@@ -171,6 +177,7 @@
                      <h2 class="board-column__title">Await feedback</h2>
                      <button
                         class="board-column__add"
+                        data-status="await-feedback"
                         aria-label="Add await feedback">
                         <img
                            class="board-column__add-icon"
@@ -538,7 +545,7 @@
                            </div>
                         </section>
                         <section class="add-task__input-group">
-                           <label for="addTaskAssigned" class="add-task__label">
+                           <label for="addTaskAssignedInput" class="add-task__label">
                               Assigned to
                            </label>
                            <div class="add-task__select-wrapper">
@@ -767,7 +774,7 @@
                         <section class="add-task__selection-group">
                            <section
                               class="add-task__input-group add-task__input-group--required">
-                              <label class="add-task__label">
+                              <label for="addTaskCategoryInput" class="add-task__label">
                                  Category
                                  <span class="add-task__label--required"
                                     >*</span
