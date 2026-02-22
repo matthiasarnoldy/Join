@@ -120,7 +120,6 @@
 }
 
 .board-column {
-   width: 244px;
    display: flex;
    align-items: center;
    justify-content: space-between;
@@ -375,5 +374,17 @@ dialog::backdrop {
    .task-card__description,
    .task-card__progress-text {
       overflow-wrap: anywhere;
+   }
+}
+
+@media (max-width: 1080px) {
+   .board-task-grid {
+      flex-direction: column;
+      gap: 32px;
+      padding-bottom: 100px;
+   }
+
+   .board-task-column {
+      width: 100%;
    }
 }
