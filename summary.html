@@ -25,7 +25,7 @@
       <link rel="stylesheet" href="./styles/standard.css" />
       <link rel="stylesheet" href="./style.css" />
    </head>
-   <body onload="summary()">
+   <body>
       <nav class="navBar">
          <header class="navBar__logo logo">
             <img
@@ -161,7 +161,7 @@
                               </g>
                            </svg>
                            <div class="priority__card">
-                              <span class="summary__number">2</span>
+                              <span class="summary__number" id="backlogCount">0</span>
                               <span class="summary__text">In Backlog</span>
                            </div>
                         </div>
@@ -188,7 +188,7 @@
                                  stroke-linejoin="round" />
                            </svg>
                            <div class="priority__card">
-                              <span class="summary__number">1</span>
+                              <span class="summary__number" id="doneCount">0</span>
                               <span class="summary__text">Done</span>
                            </div>
                         </div>
@@ -200,7 +200,7 @@
                               alt="Urgent"
                               class="urgent__icon" />
                            <div class="priority__card">
-                              <span class="summary__number">5</span>
+                              <span class="summary__number" id="urgentCount">0</span>
                               <span class="priority__text summary__text"
                                  >Urgent</span
                               >
@@ -211,25 +211,25 @@
                            alt="Dividing Line"
                            class="urgent__dividingLine" />
                         <div class="urgent__date">
-                           <span class="date__number">February 06, 2026</span>
+                           <span class="date__number" id="upcomingDeadline">-</span>
                            <span class="date__deadline">Upcoming Deadline</span>
                         </div>
                      </div>
                      <div class="summary__tasks tasks">
                         <div class="tasks__card summary__card">
-                           <span class="summary__number">5</span>
+                           <span class="summary__number" id="tasksOnBoardCount">0</span>
                            <span class="summary__text"
                               >Tasks on <br />Board</span
                            >
                         </div>
                         <div class="tasks__card summary__card">
-                           <span class="summary__number">2</span>
+                           <span class="summary__number" id="tasksInProgressCount">0</span>
                            <span class="summary__text"
                               >Tasks in <br />Progress</span
                            >
                         </div>
                         <div class="tasks__card summary__card">
-                           <span class="summary__number">2</span>
+                           <span class="summary__number" id="awaitingFeedbackCount">0</span>
                            <span class="summary__text">Awaiting Feedback</span>
                         </div>
                      </div>

@@ -42,7 +42,17 @@ function getBasicInputs() {
    const title = document.querySelector("#addTaskTitle")?.value || "";
    const description = document.querySelector("#addTaskDescription")?.value || "";
    const date = document.querySelector("#addTaskDate")?.value || "";
-   const priority = document.querySelector('input[name="priority"]:checked')?.value || "medium";
+   const activeButton = document.querySelector(".add-task__priority-option--active");
+   let priority = "medium";
+   if (activeButton) {
+      if (activeButton.classList.contains("add-task__priority-option--urgent")) {
+         priority = "urgent";
+      } else if (activeButton.classList.contains("add-task__priority-option--medium")) {
+         priority = "medium";
+      } else if (activeButton.classList.contains("add-task__priority-option--low")) {
+         priority = "low";
+      }
+   }
    const category = document.getElementById("addTaskCategoryInput")?.value?.trim() || "";
    return { title, description, date, priority, category };
 }
