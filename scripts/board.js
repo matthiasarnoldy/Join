@@ -96,8 +96,8 @@ function setupTaskSearch() {
 
 function getPriorityIcon(priority) {
    const icons = {
-      urgent: "./assets/icons/desktop/Priority rot.svg",
-      medium: "./assets/icons/desktop/Priority orange.svg",
+      urgent: "./assets/icons/desktop/Priority orange.svg",
+      medium: "./assets/icons/desktop/Priority gleich.svg",
       low: "./assets/icons/desktop/Priority green.svg"
    };
    return icons[priority] || icons.medium;
