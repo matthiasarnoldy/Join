@@ -2,7 +2,6 @@
 .board-actions {
    display: flex;
    align-items: center;
-   gap: 32px;
    width: 100%;
    justify-content: space-between;
    flex-direction: row;
@@ -24,6 +23,22 @@
    width: 100%;
    justify-content: flex-end;
 }
+
+.board-controls--desktop {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+   width: 100%;
+   justify-content: flex-end;
+}
+
+.board-controls--mobile {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+   width: 100%;
+   justify-content: flex-end;
+}
 /* Find Task Search */
 .find-task {
    height: 48px;
@@ -35,6 +50,8 @@
    border: 1px solid #a8a8a8;
    border-radius: 10px;
    box-shadow: 0 0 4px rgba(0, 0, 0, 0.08);
+   width: 100%;
+   max-width: 320px;
 }
 
 .find-task--mobile {
@@ -52,7 +69,6 @@
 }
 
 .find-task__input {
-   width: 280px;
    height: 32px;
    border: none;
    outline: none;
@@ -191,9 +207,15 @@
 
 .board-task-column {
    flex: 1 1 0;
-   min-width: 0;
    width: auto;
    display: flex;
+   flex-direction: column;
+   gap: 16px;
+}
+
+.board-task-directory {
+   display: flex;
+   align-items: center;
    flex-direction: column;
    gap: 16px;
 }
@@ -220,10 +242,12 @@
    padding: 10px;
    display: flex;
    flex-direction: column;
+   justify-content: space-between;
    gap: 16px;
    border-radius: 24px;
    background: #ffffff;
    box-shadow: 0 0 10px 3px #00000014;
+   width: 100%;
 }
 
 .task-card__label {
@@ -257,6 +281,7 @@
    font-weight: 400;
    line-height: 1.2;
    color: #a8a8a8;
+   height: 38px;
 }
 
 .task-card__progress {
@@ -299,8 +324,7 @@
 }
 
 .task-card__avatars {
-   width: 220px;
-   height: 32px;
+   width: 100%;
    display: flex;
    align-items: center;
    justify-content: flex-start;
@@ -371,6 +395,15 @@ dialog::backdrop {
 }
 
 @media (max-width: 1230px) {
+   .headline_board {
+      padding: 110px 32px 48px 32px;
+   }
+
+   .board-task-grid {
+      padding: 0 32px 0 32px;
+      gap: 16px;
+   }
+
    .board-task-grid {
       gap: 20px;
    }
@@ -382,15 +415,9 @@ dialog::backdrop {
    }
 
    .board-task-placeholder,
-   .task-card,
-   .task-card__meta,
-   .task-card__avatars {
+   .task-card__meta {
       width: 100%;
       max-width: 100%;
-   }
-
-   .task-card__progress {
-      display: none;
    }
 
    .task-card__title,
@@ -401,6 +428,10 @@ dialog::backdrop {
 }
 
 @media (max-width: 1080px) {
+   .board-column__title {
+      font-size: 27px;
+   }
+
    .board-task-grid {
       flex-direction: column;
       gap: 32px;
@@ -411,15 +442,40 @@ dialog::backdrop {
       width: 100%;
    }
 
+   .board-task-directory {
+      flex-direction: row;
+      overflow: visible;
+   }
+
+   .board-task-directory-scroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 10px 8px;
+      box-sizing: border-box;
+   }
+
+   .board-task-directory-scroll::-webkit-scrollbar {
+      display: none;
+   }
+
    .add-task-btn span {
       display: none;
    }
 
    .find-task--mobile {
-      display: block;
+      display: flex;
+      justify-content: space-between;
    }
 
    .find-task {
       display: none;
+   }
+
+   .task-card {
+      width: 252px;
+      min-width: 252px;
    }
 }

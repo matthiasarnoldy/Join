@@ -37,7 +37,6 @@ body {
 }
 
 .content_max-width {
-   max-width: 1440px;
    display: flex;
    justify-content: space-between;
 }
@@ -266,7 +265,7 @@ h2 {
 
 .main_flex-instructions {
    width: 100%;
-   max-width: 1440px;
+   max-width: calc(1440px - 232px);
 }
 
 .headline {

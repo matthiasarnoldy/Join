@@ -149,22 +149,23 @@ function createTaskCard(taskData) {
 
 function addTaskToColumn(taskData, columns) {
    if (taskData.category && typeof taskData.category !== 'string') taskData.category = String(taskData.category);
-   const column = columns[taskData.status];
-   if (!column) return;
-   const placeholder = column.querySelector(".board-task-placeholder");
+   const taskDirectory = columns[taskData.status];
+   if (!taskDirectory) return;
+   const column = taskDirectory.closest(".board-task-column");
+   const placeholder = column ? column.querySelector(".board-task-placeholder") : null;
    if (placeholder) placeholder.remove();
    const card = createTaskCard(taskData);
-   column.appendChild(card);
+   taskDirectory.appendChild(card);
 }
 
 function loadTasksFromSession() {
    const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
    if (!tasks || tasks.length === 0) return;
    const columns = {
-      "todo": document.getElementById("column-todo"),
-      "in-progress": document.getElementById("column-in-progress"),
-      "await-feedback": document.getElementById("column-await-feedback"),
-      "done": document.getElementById("column-done")
+      "todo": document.getElementById("TodoTask"),
+      "in-progress": document.getElementById("InProgressTask"),
+      "await-feedback": document.getElementById("AwaitTask"),
+      "done": document.getElementById("DoneTask")
    };
    tasks.forEach(taskData => addTaskToColumn(taskData, columns));
 }
