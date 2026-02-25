@@ -79,7 +79,15 @@ function handleContactClick(e) {
   const item = e.target.closest('.contact-item');
   if (!item) return;
 
-  selectedContactId = item.dataset.id;
+  const clickedContactId = item.dataset.id;
+  if (selectedContactId == clickedContactId) {
+    selectedContactId = null;
+    document.getElementById('detail-view').classList.add('d-none');
+    renderContacts();
+    return;
+  }
+
+  selectedContactId = clickedContactId;
   const data = getJoinData();
   const contact = data.contacts.find(c => c.id == selectedContactId);
   
