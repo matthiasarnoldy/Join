@@ -89,7 +89,6 @@ function handleContactClick(e) {
 
 
 function showDetail(contact) {
-  document.getElementById('detail-empty').classList.add('d-none');
   const view = document.getElementById('detail-view');
   view.classList.remove('d-none');
 
@@ -137,7 +136,6 @@ function deleteContact() {
   
   selectedContactId = null;
   document.getElementById('detail-view').classList.add('d-none');
-  document.getElementById('detail-empty').classList.remove('d-none');
   renderContacts();
 }
 
