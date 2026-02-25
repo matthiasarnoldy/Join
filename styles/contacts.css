@@ -14,7 +14,7 @@
    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
    background: white;
    overflow-y: auto;
-   padding: 20px;
+   padding: 32px 24px;
 }
 
 #btn-add-contact {
@@ -24,7 +24,21 @@
    color: white;
    border-radius: 10px;
    cursor: pointer;
-   margin-bottom: 20px;
+   margin: 22px 0;
+   height: 56px;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   gap: 16px;
+   font-family: "Inter";
+   font-size: 21px;
+   font-weight: 700;
+}
+
+#btn-add-contact .btn-add-contact__icon {
+   width: 32px;
+   height: 32px;
+   display: block;
 }
 
 .group-header {
