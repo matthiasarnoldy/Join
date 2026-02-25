@@ -23,7 +23,7 @@ body {
     padding: 20px;
 }
 
-#btn-add-contact {
+.btn-add-contact {
     width: 100%;
     padding: 12px;
     background: var(--primary);
