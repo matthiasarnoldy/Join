@@ -79,8 +79,15 @@
 /* Details Rechts */
 .contacts-detail {
    flex-grow: 1;
-   padding: 60px;
+   padding: 0 60px;
    background: #f6f7f8;
+}
+
+.contacts-detail__empty-headline {
+   display: flex;
+   align-items: center;
+   gap: 30px;
+   padding: 110px 64px 48px 0;
 }
 
 .initials-big {
@@ -145,4 +152,11 @@ input {
 }
 .d-none {
    display: none !important;
+}
+
+@media (max-width: 1080px) {
+   .contacts-detail__empty-headline {
+      padding: 32px 0 24px 0;
+      justify-content: center;
+   }
 }
