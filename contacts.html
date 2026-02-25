@@ -119,13 +119,15 @@
                <div class="main-container">
                   <!-- LINKER BEREICH: LISTE -->
                   <section class="contacts-list">
-                     <button id="btn-add-contact" onclick="openOverlay()">
-                        <span>Add new contact</span>
-                        <img
-                           class="btn-add-contact__icon"
-                           src="./assets/icons/desktop/person_add.svg"
-                           alt="" />
-                     </button>
+                     <div class="contacts-list__header">
+                        <button id="btn-add-contact" onclick="openOverlay()">
+                           <span>Add new contact</span>
+                           <img
+                              class="btn-add-contact__icon"
+                              src="./assets/icons/desktop/person_add.svg"
+                              alt="" />
+                        </button>
+                     </div>
                      <div id="contacts-list-content">
                         <!-- Wird per JS gerendert -->
                      </div>
