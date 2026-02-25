@@ -140,24 +140,6 @@
 }
 
 /* Board Columns */
-.board-headline {
-   width: 1208px;
-   max-width: 100%;
-   padding: 0px 0 0 96px;
-}
-
-.board-columns {
-   margin-top: 48px;
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
-   width: 100%;
-   max-width: calc(1440px - 232px);
-   padding: 0 64px 0 64px;
-   gap: 26px;
-   box-sizing: border-box;
-}
-
 .board-column {
    display: flex;
    align-items: center;
@@ -430,17 +412,11 @@ dialog::backdrop {
 
    .board-task-grid {
       padding: 0 32px 0 32px;
-      gap: 16px;
-   }
-
-   .board-task-grid {
       gap: 20px;
    }
 
    .board-task-column {
-      flex: 1 1 0;
       min-width: 0;
-      width: auto;
    }
 
    .board-task-placeholder,
