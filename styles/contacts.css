@@ -14,13 +14,13 @@
    overflow: hidden;
 }
 
-.main-container {
+.contact-container {
    display: flex;
    width: 100%;
-   flex: 1;
+
    min-height: 0;
    height: 100%;
-   align-items: stretch;
+   margin-top: 96px;
 }
 
 /* Liste Links */
@@ -191,10 +191,10 @@ input {
 }
 
 @media (max-width: 1080px) {
-   .main_flex-instructions {
-      height: calc(100vh - 80px);
+   .contact-container {
+      margin-top: 80px;
+      margin-bottom: 80px;
    }
-
    .contacts-list__header {
       padding: 20px 16px 0;
    }
