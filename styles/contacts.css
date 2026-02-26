@@ -280,11 +280,6 @@ input {
 .d-none {
    display: none;
 }
-@media (max-width: 1300px) {
-   .headline__description {
-      display: none;
-   }
-}
 
 @media (max-width: 1080px) {
    .contact-container {
