@@ -266,6 +266,7 @@ h2 {
 .main_flex-instructions {
    width: 100%;
    max-width: calc(1440px - 232px);
+   height: 100vh;
 }
 
 .headline {
