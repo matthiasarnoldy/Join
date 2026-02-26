@@ -117,67 +117,101 @@
                   </div>
                </section>
                <div class="main-container">
-        <!-- LINKER BEREICH: LISTE -->
-        <section class="contacts-list">
-            <button id="btn-add-contact" class="btn-add-contact" onclick="openOverlay()">Add new contact +</button>
-            <div id="contacts-list-content">
-                <!-- Wird per JS gerendert -->
-            </div>
-        </section>
+                  <!-- LINKER BEREICH: LISTE -->
+                  <section class="contacts-list">
+                     <div class="contacts-list__header">
+                        <button id="btn-add-contact" onclick="openOverlay()">
+                           <span>Add new contact</span>
+                           <img
+                              class="btn-add-contact__icon"
+                              src="./assets/icons/desktop/person_add.svg"
+                              alt="" />
+                        </button>
+                     </div>
+                     <div id="contacts-list-content">
+                        <!-- Wird per JS gerendert -->
+                     </div>
+                  </section>
 
-        <!-- RECHTER BEREICH: DETAILS -->
-        <section class="contacts-detail">
-            <div id="detail-empty">
-                <p>Wähle einen Kontakt aus der Liste aus.</p>
-            </div>
+                  <!-- RECHTER BEREICH: DETAILS -->
+                  <section class="contacts-detail">
+                     <div id="detail-empty">
+                        <div class="headline_summary contacts-detail__empty-headline">
+                           <h1 class="headline__name">Contacts</h1>
+                           <img
+                              src="./assets/icons/desktop/headline__dividingLine.svg"
+                              alt=""
+                              class="headline__dividingLine" />
+                           <h3 class="headline__description">Better with a team</h3>
+                        </div>
+                     </div>
 
-            <div id="detail-view" class="d-none">
-                <div class="detail-header">
-                    <div id="detail-initials" class="initials-big"></div>
-                    <div>
-                        <h1 id="detail-name"></h1>
-                        <button id="btn-delete" class="delete-link">Delete Contact</button>
-                    </div>
-                </div>
-                <div class="detail-info">
-                    <h3>Contact Information</h3>
-                    <p><strong>Email:</strong> <a id="detail-email" href=""></a></p>
-                    <p><strong>Phone:</strong> <span id="detail-phone"></span></p>
-                </div>
-            </div>
-        </section>
-    </div>
+                     <div id="detail-view" class="d-none">
+                        <div class="detail-header">
+                           <div id="detail-initials" class="initials-big"></div>
+                           <div>
+                              <h1 id="detail-name"></h1>
+                              <button id="btn-delete" class="delete-link">
+                                 Delete Contact
+                              </button>
+                           </div>
+                        </div>
+                        <div class="detail-info">
+                           <h3>Contact Information</h3>
+                           <p>
+                              <strong>Email:</strong>
+                              <a id="detail-email" href=""></a>
+                           </p>
+                           <p>
+                              <strong>Phone:</strong>
+                              <span id="detail-phone"></span>
+                           </p>
+                        </div>
+                     </div>
+                  </section>
+               </div>
 
-    <!-- ADD CONTACT OVERLAY -->
-    <div id="overlay" class="overlay d-none" onclick="closeOverlay()">
-        <div class="overlay-content" onclick="event.stopPropagation()">
-            <h2>Add Contact</h2>
-            <form id="contact-form">
-                <input type="text" id="add-name" placeholder="Name">
-                <input type="text" id="add-email" placeholder="Email">
-                <input type="text" id="add-phone" placeholder="Phone">
-                <div id="contactFormError" class="error"></div>
-                <div class="form-actions">
-                    <button type="button" onclick="closeOverlay()">Cancel</button>
-                    <button type="submit">Create contact</button>
-                </div>
-            </form>
-        </div>
-    </div>
+               <!-- ADD CONTACT OVERLAY -->
+               <div
+                  id="overlay"
+                  class="overlay d-none"
+                  onclick="closeOverlay()">
+                  <div
+                     class="overlay-content"
+                     onclick="event.stopPropagation()">
+                     <h2>Add Contact</h2>
+                     <form id="contact-form">
+                        <input type="text" id="add-name" placeholder="Name" />
+                        <input type="text" id="add-email" placeholder="Email" />
+                        <input type="text" id="add-phone" placeholder="Phone" />
+                        <div id="contactFormError" class="error"></div>
+                        <div class="form-actions">
+                           <button type="button" onclick="closeOverlay()">
+                              Cancel
+                           </button>
+                           <button type="submit">Create contact</button>
+                        </div>
+                     </form>
+                  </div>
+               </div>
 
-    <!-- SCRIPTS (Wichtig: app.js vor contacts.js) -->
-    <script src="./scripts/app.js"></script>
-    <script src="./scripts/contacts.js"></script>
+               <!-- SCRIPTS (Wichtig: app.js vor contacts.js) -->
+               <script src="./scripts/app.js"></script>
+               <script src="./scripts/contacts.js"></script>
 
-    <script>
-        // Kleine Helper für das Overlay (direkt hier oder in contacts.js)
-        function openOverlay() { document.getElementById('overlay').classList.remove('d-none'); }
-        function closeOverlay() { 
-            document.getElementById('overlay').classList.add('d-none');
-            document.getElementById('contact-form').reset();
-            document.getElementById('contactFormError').innerText = "";
-        }
-    </script>
+               <script>
+                  // Kleine Helper für das Overlay (direkt hier oder in contacts.js)
+                  function openOverlay() {
+                     document
+                        .getElementById("overlay")
+                        .classList.remove("d-none");
+                  }
+                  function closeOverlay() {
+                     document.getElementById("overlay").classList.add("d-none");
+                     document.getElementById("contact-form").reset();
+                     document.getElementById("contactFormError").innerText = "";
+                  }
+               </script>
             </div>
          </main>
       </section>

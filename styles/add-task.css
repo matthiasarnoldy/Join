@@ -619,10 +619,6 @@
    z-index: 0;
 }
 
-.add-task__select-wrapper--open .add-task__select-menu--assigned {
-   position: static;
-   margin-top: -10px;
-}
 
 .add-task__select-menu--assigned::-webkit-scrollbar {
    width: 8px;
@@ -784,12 +780,6 @@
    pointer-events: none;
 }
 
-.add-task--assigned-open .add-task__footer {
-   position: fixed;
-   left: 0;
-   right: 0;
-   bottom: 0;
-}
 
 .add-task__footer::before {
    content: "";
