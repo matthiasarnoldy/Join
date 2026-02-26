@@ -1,0 +1,119 @@
+body {
+    background-color: #f6f7f8;
+}
+
+.splash__logo {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 274px;
+    height: auto;
+    background: white;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    animation: splash__logo--animation 500ms 200ms ease-in-out forwards;
+}
+
+.splash__logo--image {
+    width: 100%;
+}
+
+.main-content {
+    width: 100%;
+    opacity: 1;
+    transition: opacity 500ms;
+}
+
+.main-content.hidden {
+    opacity: 0;
+}
+
+.header__flex-instructions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.login__signup {
+    padding: 80px 77px;
+    display: flex;
+    align-items: center;
+    gap: 35px;
+}
+
+.login__button {
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px;
+    background-color: #2a3647;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 100ms ease-in-out;
+}
+
+.login__button:hover {
+   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   background-color: #29abe2;
+   transition: all 100ms ease-in-out;
+}
+
+.login__button--login {
+   font-size: 21px;
+   font-weight: 700;
+}
+
+.login__button:active {
+   background-color: #091931;
+   transition: all 100ms ease-in-out;
+}
+
+.main-content main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    /* min-height: calc(100vh - 200px); */
+}
+
+.login__window {
+    padding: 48px 115px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+    border-radius: 30px;
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+}
+
+.login__headline {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.login__headline--line {
+    width: 150px;
+}
+
+.login__formular {
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes splash__logo--animation {
+    0% {
+        top: 50%;
+        left: 50%;
+        width: 274px;
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        top: 80px;
+        left: 80px;
+        width: 100px;
+        transform: translate(0, 0);
+    }
+}
