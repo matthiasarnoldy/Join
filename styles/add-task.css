@@ -1,5 +1,5 @@
 .add-task__form-information {
-   padding: 0 136px 0 96px;
+   padding: 0 136px 0 64px;
    display: flex;
    flex-direction: column;
    gap: 96px;
@@ -16,7 +16,7 @@
 }
 
 .headline_tasks {
-   padding: 110px 64px 48px 96px;
+   padding: 110px 64px 48px 64px;
    display: flex;
    align-items: center;
    justify-content: space-between;
@@ -934,7 +934,7 @@
    }
 
    .add-task__form-information {
-      padding: 0 96px 0 96px;
+      padding: 0 96px 0 64px;
    }
 }
 

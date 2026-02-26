@@ -114,8 +114,8 @@
 
 /* Details Rechts */
 .contacts-detail {
-   padding: 0 60px;
-   width: calc(100% - 232px);
+   padding-left: 65px;
+   width: calc(100% - 450px);
 }
 
 .contacts-detail__empty-headline {
@@ -280,7 +280,7 @@ input {
 .d-none {
    display: none;
 }
-@media (max-width: 1300) {
+@media (max-width: 1300px) {
    .headline__description {
       display: none;
    }
