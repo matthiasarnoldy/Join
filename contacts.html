@@ -136,34 +136,57 @@
                            <h1 class="headline__name">Contacts</h1>
                            <img
                               src="./assets/icons/desktop/headline__dividingLine.svg"
-                              alt=""
-                              class="headline__dividingLine" />
+                              alt="line"
+                              class="vertical_line" />
                            <h3 class="headline__description">
                               Better with a team
                            </h3>
+                           <img
+                              class="horizontal_line"
+                              src="./assets/icons/desktop/Vector 5.svg"
+                              alt="Line" />
                         </div>
                      </div>
 
-                     <div id="detail-view" class="d-none">
+                     <div id="detail-view" class="detail-view d-none">
                         <div class="detail-header">
                            <div id="detail-initials" class="initials-big"></div>
-                           <div>
-                              <h1 id="detail-name"></h1>
-                              <button id="btn-delete" class="delete-link">
-                                 Delete Contact
-                              </button>
+                           <div class="detail-meta">
+                              <h2 id="detail-name"></h2>
+                              <div class="detail-actions">
+                                 <button
+                                    type="button"
+                                    id="btn-edit"
+                                    class="detail-action detail-action--edit">
+                                    <img
+                                       src="./assets/icons/desktop/subtask__pencil.svg"
+                                       alt=""
+                                       class="detail-action__icon" />
+                                    <span>Edit</span>
+                                 </button>
+                                 <button
+                                    type="button"
+                                    id="btn-delete"
+                                    class="detail-action delete-link">
+                                    <img
+                                       src="./assets/icons/desktop/subtask__trash.svg"
+                                       alt=""
+                                       class="detail-action__icon" />
+                                    <span>Delete</span>
+                                 </button>
+                              </div>
                            </div>
                         </div>
                         <div class="detail-info">
                            <h3>Contact Information</h3>
-                           <p>
-                              <strong>Email:</strong>
+                           <div class="detail-info-item">
+                              <strong>Email</strong>
                               <a id="detail-email" href=""></a>
-                           </p>
-                           <p>
-                              <strong>Phone:</strong>
+                           </div>
+                           <div class="detail-info-item">
+                              <strong>Phone</strong>
                               <span id="detail-phone"></span>
-                           </p>
+                           </div>
                         </div>
                      </div>
                   </section>

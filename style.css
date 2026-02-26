@@ -276,13 +276,32 @@ h2 {
    align-items: center;
 }
 
-.headline__dividingLine {
-   height: 59px;
+.vertical_line {
+}
+
+.horizontal_line {
+   display: none;
 }
 
 .headline__description {
    font-size: 27px;
    font-weight: 400;
+}
+
+@media (max-width: 1300px) {
+   .horizontal_line {
+      display: block;
+   }
+
+   .headline_summary {
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+   }
+
+   .vertical_line {
+      display: none;
+   }
 }
 
 @media (max-width: 1080px) {
