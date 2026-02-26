@@ -114,9 +114,8 @@
 
 /* Details Rechts */
 .contacts-detail {
-   flex-grow: 1;
    padding: 0 60px;
-   background: #f6f7f8;
+   width: calc(100% - 232px);
 }
 
 .contacts-detail__empty-headline {
