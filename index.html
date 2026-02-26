@@ -44,9 +44,15 @@
                     <img src="./assets/icons/desktop/login__dividingLine.svg" alt="Dividing Line" class="login__headline--line">
                 </div>
                 <form action="#" class="login__formular">
-                    <input type="text" class="login__input login__input--email">
+                    <div class="login__input-field">
+                        <input type="email" class="login__input login__input--email" autocomplete="off" placeholder="Email">
+                        <img src="./assets/icons/desktop/mail.svg" alt="" class="login__email-icon" />
+                    </div>
                     <div class="login__inputFieldError">
-                        <input type="password" class="login__input login__input--password">
+                        <div class="login__input-field">
+                            <input type="password" class="login__input login__input--password" autocomplete="off" placeholder="Password">
+                            <img src="./assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
+                        </div>
                         <span class="login__input--required">
                             This field is required
                         </span>
@@ -58,8 +64,11 @@
                 </div>
             </div>
         </main>
-        <footer>
-            <div class="content_max-width footer_flex-instructions"></div>
+        <footer class="login__legalinformation">
+            <p class="login__legalInformation" id="nav-Privacy-Policy">
+                Privacy Policy
+            </p>
+            <p class="login__legalInformation" id="nav-Legal-Notice">Legal Notice</p>
         </footer>
     </div>
 </body>
