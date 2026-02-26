@@ -7,6 +7,6 @@ function initLogin() {
 function setMainOpacity() {
     const mainContent = document.getElementById('main-content');
     setTimeout(() => {
-        mainContent.classList.remove('hidden');
+        mainContent.classList.add('main-content--opacity');
     }, 500);
 }

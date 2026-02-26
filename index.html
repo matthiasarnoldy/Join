@@ -26,9 +26,9 @@
 </head>
 <body>
     <div class="splash__logo">
-        <img src="./assets/icons/desktop/logoWithoutBg.svg" alt="Join Logo" class="splash__logo--image">
+        <img src="./assets/icons/desktop/Dark_Logo.svg" alt="Join Logo" class="splash__logo--image">
     </div>
-    <div id="main-content" class="main-content hidden">
+    <div id="main-content" class="main-content">
         <header>
             <div class="header__flex-instructions">
                 <div class="login__signup">
@@ -45,8 +45,17 @@
                 </div>
                 <form action="#" class="login__formular">
                     <input type="text" class="login__input login__input--email">
-                    <input type="password" class="login__input login__input--password">
+                    <div class="login__inputFieldError">
+                        <input type="password" class="login__input login__input--password">
+                        <span class="login__input--required">
+                            This field is required
+                        </span>
+                    </div>
                 </form>
+                <div class="login__buttonArea">
+                    <button id="login-button" class="login__button--login login__button button">Log in</button>
+                    <button id="guest-login-button" class="login__button--login login__button--guest button">Guest Log in</button>
+                </div>
             </div>
         </main>
         <footer>
