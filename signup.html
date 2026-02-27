@@ -26,42 +26,52 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="splash__logo">
-        <img src="./assets/icons/desktop/Dark_Logo.svg" alt="Join Logo" class="splash__logo--image">
-    </div>
-    <div id="main-content" class="main-content">
+    <div class="main-content--signup">
         <header>
-            <div class="header__flex-instructions">
-                <div class="login__signup">
-                    <p class="login__signup--question">Not a Join User?</p>
-                    <button id="signup-button" class="login__button button">Sign Up</button>
-                </div>
-            </div>
+            <img src="./assets/icons/desktop/Dark_Logo.svg" alt="Logo" class="main-content--signup-logo">
         </header>
         <main>
             <div class="login__window">
                 <div class="login__headline">
-                    <h1 class="login__header">Log in</h1>
+                    <img
+                        id="signup__arrowBack"
+                        src="./assets/icons/desktop/arrowBack.svg"
+                        alt="Arrow Back"
+                        class="signup__arrowBack" />
+                    <h1 class="login__header">Sign up</h1>
                     <img src="./assets/icons/desktop/login__dividingLine.svg" alt="Dividing Line" class="login__headline--line">
                 </div>
                 <form action="#" class="login__formular">
                     <div class="login__input-field">
+                        <input type="text" class="login__input login__input--email" autocomplete="off" placeholder="Name">
+                        <img src="./assets/icons/desktop/person.svg" alt="" class="login__email-icon" />
+                    </div>
+                    <div class="login__input-field">
                         <input type="email" class="login__input login__input--email" autocomplete="off" placeholder="Email">
                         <img src="./assets/icons/desktop/mail.svg" alt="" class="login__email-icon" />
                     </div>
+                    <div class="login__input-field">
+                        <input type="password" class="login__input login__input--password" autocomplete="off" placeholder="Password">
+                        <img src="./assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
+                    </div>
                     <div class="login__inputFieldError">
                         <div class="login__input-field">
-                            <input type="password" class="login__input login__input--password" autocomplete="off" placeholder="Password">
+                            <input type="password" class="login__input login__input--password" autocomplete="off" placeholder="Confirm Password">
                             <img src="./assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
                         </div>
                         <span class="login__input--required">
                             This field is required
                         </span>
                     </div>
+                    <div class="signup__privacy-checkbox">
+                        <input type="checkbox" id="privacy-policy" class="signup__checkbox">
+                        <label for="privacy-policy" class="signup__checkbox-label">
+                            I accept the <a href="./privacy-Policy.html" class="signup__privacy-link">Privacy Policy</a>
+                        </label>
+                    </div>
                 </form>
                 <div class="login__buttonArea">
-                    <button id="login-button" class="login__button--login login__button button">Log in</button>
-                    <button id="guest-login-button" class="login__button--login login__button--guest button">Guest Log in</button>
+                    <button id="login-button" class="login__button--login login__button button">Sign up</button>
                 </div>
             </div>
         </main>

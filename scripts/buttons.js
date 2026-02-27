@@ -16,6 +16,8 @@ const dropdownPrivacyPolicy = document.getElementById("dropdownPrivacyPolicy");
 const dropdownLegalNotice = document.getElementById("dropdownLegalNotice");
 const dropdownLog = document.getElementById("dropdownLog");
 const arrowBack = document.getElementById("help__arrowBack");
+const signupButton = document.getElementById("signup-button");
+const signupArrowBack = document.getElementById("signup__arrowBack");
 
 // Function to set the active navigation item based on the clicked button
 function setActiveNav(clickedItem) {
@@ -140,3 +142,17 @@ document.addEventListener("click", (event) => {
       location.href = "./board.html";
    }
 });
+
+// Redirect to signup page when clicking the sign up button
+if (signupButton) {
+   signupButton.addEventListener("click", () => {
+      location.href = "./signup.html";
+   });
+}
+
+// Redirect back when clicking the arrow back button in the signup page
+if (signupArrowBack) {
+   signupArrowBack.addEventListener("click", () => {
+      window.history.back();
+   });
+}
