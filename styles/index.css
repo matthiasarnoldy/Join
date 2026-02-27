@@ -120,6 +120,17 @@ body {
    padding: 15px 24px;
 }
 
+.login__button:disabled {
+   opacity: 0.5;
+   cursor: not-allowed;
+   pointer-events: none;
+}
+
+.login__button:disabled:hover {
+   background-color: #2a3647;
+   filter: none;
+}
+
 .login__button--guest {
     background-color: transparent;
     color: #2a3647;
@@ -264,6 +275,32 @@ body {
     display: flex;
     justify-content: center;
     gap: 8px;
+    align-items: center;
+}
+
+.signup__checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    background-image: url('../assets/icons/desktop/checkBox.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.signup__checkbox:checked {
+    background-image: url('../assets/icons/desktop/checkBox--checked-dark.svg');
+}
+
+.signup__checkbox-label {
+    cursor: pointer;
+}
+
+.signup__privacy-link {
+    color: #29abe2;
 }
 
 @keyframes splash__logo--animation {
