@@ -123,6 +123,40 @@ h2 {
    background-color: #091931;
 }
 
+.navBar__backToLogin {
+   padding: 8px 56px;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   transition: all 100ms ease-in;
+   background: none;
+   border: none;
+   color: #fff;
+   width: 100%;
+   box-sizing: border-box;
+   justify-content: flex-start;
+   cursor: pointer;
+}
+
+.navBar__backToLogin:hover {
+   background-color: #2a3d59;
+}
+
+.navBar__backToLogin-icon {
+   width: 24px;
+   height: 24px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.navBar__backToLogin-text {
+   color: #fff;
+   font-family: "Inter";
+   font-size: 16px;
+   font-weight: 400;
+}
+
 .navBar__legalInformation {
    width: 100%;
    height: 100%;
@@ -168,6 +202,7 @@ h2 {
    position: fixed;
    top: 0;
    z-index: 4;
+   min-height: 96px;
 }
 
 .header_flex-instructions {
