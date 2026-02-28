@@ -440,7 +440,10 @@ dialog::backdrop {
    .board-task-grid {
       flex-direction: column;
       gap: 32px;
-      padding-bottom: 100px;
+      padding-bottom: 150px;
+      max-height: calc(100vh - 260px);
+      overflow-y: auto;
+      overflow-x: hidden;
    }
 
    .board-task-column {
