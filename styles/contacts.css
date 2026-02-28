@@ -390,3 +390,14 @@ input {
       justify-content: center;
    }
 }
+
+@media (max-width: 800px) {
+   .contacts-detail {
+      display: none;
+   }
+
+   .contacts-list {
+      width: 100%;
+      flex: 1;
+   }
+}
