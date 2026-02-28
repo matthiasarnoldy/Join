@@ -123,7 +123,7 @@
    display: flex;
    align-items: center;
    gap: 30px;
-   padding: 110px 64px 48px 0;
+   padding: 110px 0 48px 0;
 }
 
 .initials-big {
@@ -187,7 +187,22 @@ input {
    height: 15px;
 }
 .d-none {
-   display: none !important;
+   display: none;
+}
+
+@media (max-width: 1280px) {
+   .contacts-detail__empty-headline {
+      align-items: flex-start;
+      flex-direction: column;
+   }
+
+   .horizontal-Line-contacts {
+      display: block;
+   }
+
+   .vertical-line-contacts {
+      display: none;
+   }
 }
 
 @media (max-width: 1080px) {

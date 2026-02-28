@@ -276,8 +276,8 @@ h2 {
    align-items: center;
 }
 
-.headline__dividingLine {
-   height: 59px;
+.horizontal-Line {
+   display: none;
 }
 
 .headline__description {
