@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", initLogin);
 function initLogin() {
     setMainOpacity();
     setupSignupFormValidation();
+    setupLoginButtons();
 }
 
 function setMainOpacity() {
@@ -32,4 +33,21 @@ function checkFormValidity(inputs, checkbox, button) {
     const allInputsFilled = Array.from(inputs).every(input => input.value.trim() !== "");
     const checkboxChecked = checkbox.checked;
     button.disabled = !(allInputsFilled && checkboxChecked);
+}
+
+function setupLoginButtons() {
+    const loginButton = document.getElementById("login-button");
+    const guestLoginButton = document.getElementById("guest-login-button");
+    
+    if (loginButton) {
+        loginButton.addEventListener("click", redirectToSummary);
+    }
+    
+    if (guestLoginButton) {
+        guestLoginButton.addEventListener("click", redirectToSummary);
+    }
+}
+
+function redirectToSummary() {
+    location.href = "./summary.html";
 }
