@@ -27,7 +27,7 @@
 </head>
 <body>
     <div class="main-content--signup">
-        <header>
+        <header class="signup__header">
             <img src="./assets/icons/desktop/Dark_Logo.svg" alt="Logo" class="main-content--signup-logo">
         </header>
         <main>
@@ -51,13 +51,13 @@
                         <img src="./assets/icons/desktop/mail.svg" alt="" class="login__email-icon" />
                     </div>
                     <div class="login__input-field">
-                        <input type="password" class="login__input login__input--password" autocomplete="off" placeholder="Password">
-                        <img src="./assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
+                        <input type="password" class="login__input login__input--password" id="password-input" autocomplete="off" placeholder="Password">
+                        <img id="password-icon" src="./assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
                     </div>
                     <div class="login__inputFieldError">
                         <div class="login__input-field">
-                            <input type="password" class="login__input login__input--password" autocomplete="off" placeholder="Confirm Password">
-                            <img src="./assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
+                            <input type="password" class="login__input login__input--password" id="confirm-password-input" autocomplete="off" placeholder="Confirm Password">
+                            <img id="confirm-password-icon" src="./assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
                         </div>
                         <span class="login__input--required">
                             This field is required

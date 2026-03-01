@@ -82,12 +82,14 @@ if (indexLegalNotice) {
 if (navPrivacyPolicy) {
    navPrivacyPolicy.addEventListener("click", () => {
       setActiveNav(navPrivacyPolicy);
+      location.href = "./privacy-Policy.html";
    });
 }
 
 if (navLegalNotice) {
    navLegalNotice.addEventListener("click", () => {
       setActiveNav(navLegalNotice);
+      location.href = "./legalnotice.html";
    });
 }
 
