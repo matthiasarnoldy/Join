@@ -373,7 +373,7 @@ body {
     }
 
     .main-content--signup-logo {
-        width: 80px;
+        width: 64px;
         top: 28px;
         left: 16px;
     }
@@ -388,7 +388,7 @@ body {
         100% {
             top: 28px;
             left: 16px;
-            width: 80px;
+            width: 64px;
             transform: translate(0, 0);
         }
     }
