@@ -7,8 +7,6 @@ const navSummary = document.getElementById("nav-summary");
 const navAddTask = document.getElementById("nav-add-task");
 const navBoard = document.getElementById("nav-board");
 const navContacts = document.getElementById("nav-contacts");
-const navPrivacyPolicy = document.getElementById("nav-Privacy-Policy");
-const navLegalNotice = document.getElementById("nav-Legal-Notice");
 const help = document.getElementById("help");
 const loginInitials = document.getElementById("login__initials");
 const dropdownHelp = document.getElementById("dropdownHelp");
@@ -16,6 +14,16 @@ const dropdownPrivacyPolicy = document.getElementById("dropdownPrivacyPolicy");
 const dropdownLegalNotice = document.getElementById("dropdownLegalNotice");
 const dropdownLog = document.getElementById("dropdownLog");
 const arrowBack = document.getElementById("help__arrowBack");
+const signupButton = document.getElementById("signup-button");
+const signupArrowBack = document.getElementById("signup__arrowBack");
+
+// Legal information links
+const indexPrivacyPolicy = document.getElementById("index-privacy-policy");
+const indexLegalNotice = document.getElementById("index-legal-notice");
+const signupPrivacyPolicy = document.getElementById("signup-privacy-policy");
+const signupLegalNotice = document.getElementById("signup-legal-notice");
+const navPrivacyPolicy = document.getElementById("nav-Privacy-Policy");
+const navLegalNotice = document.getElementById("nav-Legal-Notice");
 
 // Function to set the active navigation item based on the clicked button
 function setActiveNav(clickedItem) {
@@ -57,6 +65,20 @@ if (navContacts) {
    });
 }
 
+// Legal information links from index.html
+if (indexPrivacyPolicy) {
+   indexPrivacyPolicy.addEventListener("click", () => {
+      // Link handles navigation with query parameter
+   });
+}
+
+if (indexLegalNotice) {
+   indexLegalNotice.addEventListener("click", () => {
+      // Link handles navigation with query parameter
+   });
+}
+
+// Legal information links from privacy/legal pages (for navbar)
 if (navPrivacyPolicy) {
    navPrivacyPolicy.addEventListener("click", () => {
       setActiveNav(navPrivacyPolicy);
@@ -68,6 +90,19 @@ if (navLegalNotice) {
    navLegalNotice.addEventListener("click", () => {
       setActiveNav(navLegalNotice);
       location.href = "./legalnotice.html";
+   });
+}
+
+// Signup page privacy policy and legal notice links
+if (signupPrivacyPolicy) {
+   signupPrivacyPolicy.addEventListener("click", () => {
+      // Link handles navigation with query parameter
+   });
+}
+
+if (signupLegalNotice) {
+   signupLegalNotice.addEventListener("click", () => {
+      // Link handles navigation with query parameter
    });
 }
 
@@ -140,3 +175,17 @@ document.addEventListener("click", (event) => {
       location.href = "./board.html";
    }
 });
+
+// Redirect to signup page when clicking the sign up button
+if (signupButton) {
+   signupButton.addEventListener("click", () => {
+      location.href = "./signup.html";
+   });
+}
+
+// Redirect back when clicking the arrow back button in the signup page
+if (signupArrowBack) {
+   signupArrowBack.addEventListener("click", () => {
+      location.href = "./index.html";
+   });
+}
