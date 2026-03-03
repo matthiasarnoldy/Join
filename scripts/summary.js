@@ -1,7 +1,59 @@
 document.addEventListener("DOMContentLoaded", initSummary);
 
 function initSummary() {
+    showGreetingFullscreen();
+}
+
+function showGreetingFullscreen() {
+    const isMobile = window.matchMedia("(max-width: 1160px)").matches;
+    if (!isMobile || !shouldPlayGreetingAnimation()) return loadSummaryWithGreeting();
+    const greetings = document.querySelector(".overview__greetings");
+    const summaryMain = document.querySelector("main.main");
+    if (!greetings || !summaryMain) return loadSummaryWithGreeting();
+    activateGreetingView(summaryMain, greetings);
+    setTimeout(() => hideGreetingAndLoad(summaryMain, greetings), 1200);
+}
+
+function shouldPlayGreetingAnimation() {
+    if (isReloadNavigation()) return true;
+    return isFromLoginPage();
+}
+
+function isReloadNavigation() {
+    const navEntry = performance.getEntriesByType("navigation")[0];
+    return navEntry?.type === "reload";
+}
+
+function isFromLoginPage() {
+    return document.referrer.includes("index.html");
+}
+
+function loadSummaryWithGreeting() {
     getCurrentTime();
+    loadSummaryData();
+}
+
+function activateGreetingView(summaryMain, greetings) {
+    getCurrentTime();
+    summaryMain.classList.add("summary-greeting-active");
+    greetings.classList.add("greeting-fullscreen");
+}
+
+function hideGreetingAndLoad(summaryMain, greetings) {
+    summaryMain.classList.remove("summary-greeting-active");
+    greetings.classList.remove("greeting-fullscreen");
+    loadSummaryData();
+    animateSummaryFadeIn(summaryMain);
+}
+
+function animateSummaryFadeIn(summaryMain) {
+    summaryMain.classList.remove("summary-fade-in");
+    requestAnimationFrame(() => {
+        summaryMain.classList.add("summary-fade-in");
+    });
+}
+
+function loadSummaryData() {
     updateBacklogCount();
     updateDoneCount();
     updateTasksOnBoardCount();
