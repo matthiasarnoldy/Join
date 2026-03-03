@@ -35,33 +35,44 @@ function setActiveNav(clickedItem) {
    }
 }
 
+function isCurrentPage(targetPath) {
+   const pageName = targetPath.replace("./", "").toLowerCase();
+   const currentPath = window.location.pathname.toLowerCase();
+   return currentPath.endsWith(pageName);
+}
+
+function navigateToPage(targetPath) {
+   if (isCurrentPage(targetPath)) return;
+   location.href = targetPath;
+}
+
 // Add event listeners to the buttons to handle clicks and redirect to the appropriate pages
 
 if (navSummary) {
    navSummary.addEventListener("click", () => {
       setActiveNav(navSummary);
-      location.href = "./summary.html";
+      navigateToPage("./summary.html");
    });
 }
 
 if (navAddTask) {
    navAddTask.addEventListener("click", () => {
       setActiveNav(navAddTask);
-      location.href = "./add-task.html";
+      navigateToPage("./add-task.html");
    });
 }
 
 if (navBoard) {
    navBoard.addEventListener("click", () => {
       setActiveNav(navBoard);
-      location.href = "./board.html";
+      navigateToPage("./board.html");
    });
 }
 
 if (navContacts) {
    navContacts.addEventListener("click", () => {
       setActiveNav(navContacts);
-      location.href = "./contacts.html";
+      navigateToPage("./contacts.html");
    });
 }
 
@@ -82,14 +93,14 @@ if (indexLegalNotice) {
 if (navPrivacyPolicy) {
    navPrivacyPolicy.addEventListener("click", () => {
       setActiveNav(navPrivacyPolicy);
-      location.href = "./privacy-Policy.html";
+      navigateToPage("./privacy-Policy.html");
    });
 }
 
 if (navLegalNotice) {
    navLegalNotice.addEventListener("click", () => {
       setActiveNav(navLegalNotice);
-      location.href = "./legalnotice.html";
+      navigateToPage("./legalnotice.html");
    });
 }
 
@@ -111,7 +122,7 @@ if (help) {
       document
          .querySelectorAll(".navBar__quicklink, .legalInformation")
          .forEach((item) => item.classList.remove("navBar__quicklink--active"));
-      location.href = "./help.html";
+      navigateToPage("./help.html");
    });
 }
 
@@ -120,21 +131,21 @@ if (dropdownHelp) {
       document
          .querySelectorAll(".navBar__quicklink, .legalInformation")
          .forEach((item) => item.classList.remove("navBar__quicklink--active"));
-      location.href = "./help.html";
+      navigateToPage("./help.html");
    });
 }
 
 if (dropdownPrivacyPolicy) {
    dropdownPrivacyPolicy.addEventListener("click", () => {
       setActiveNav(navPrivacyPolicy);
-      location.href = "./privacy-Policy.html";
+      navigateToPage("./privacy-Policy.html");
    });
 }
 
 if (dropdownLegalNotice) {
    dropdownLegalNotice.addEventListener("click", () => {
       setActiveNav(navLegalNotice);
-      location.href = "./legalnotice.html";
+      navigateToPage("./legalnotice.html");
    });
 }
 
