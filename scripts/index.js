@@ -1,17 +1,42 @@
 document.addEventListener("DOMContentLoaded", initLogin);
 
 function initLogin() {
+    setSplashLogoByViewport();
+    setMobileSplashBackground();
     setMainOpacity();
     setupSignupFormValidation();
     setupPasswordVisibility();
     setupLoginButtons();
 }
 
+function setSplashLogoByViewport() {
+    const splashLogo = document.querySelector(".splash__logo--image");
+    if (!splashLogo) return;
+    const isMobile = window.matchMedia("(max-width: 600px)").matches;
+    splashLogo.src = isMobile
+        ? "./assets/icons/desktop/logo.svg"
+        : "./assets/icons/desktop/Dark_Logo.svg";
+}
+
+function setMobileSplashBackground() {
+    const splash = document.querySelector(".splash__logo");
+    const splashLogo = document.querySelector(".splash__logo--image");
+    if (!splash || !window.matchMedia("(max-width: 600px)").matches) return;
+    const originalBg = getComputedStyle(document.body).backgroundColor;
+    document.body.style.backgroundColor = "#2a3647";
+    const resetBg = () => {
+        document.body.style.backgroundColor = originalBg;
+        if (splashLogo) splashLogo.src = "./assets/icons/desktop/Dark_Logo.svg";
+    };
+    splash.addEventListener("animationend", resetBg, { once: true });
+    setTimeout(resetBg, 700);
+}
+
 function setMainOpacity() {
     const mainContent = document.getElementById('main-content');
     setTimeout(() => {
         mainContent.classList.add('main-content--opacity');
-    }, 500);
+    }, 700);
 }
 
 function setupSignupFormValidation() {
