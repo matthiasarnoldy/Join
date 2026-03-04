@@ -307,6 +307,33 @@ body {
     color: #29abe2;
 }
 
+.signup-success-message {
+    font-size: 20px;
+    font-weight: 400;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    padding: 25px;
+    background: #2a3647;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    gap: 16px;
+    border-radius: 20px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+    transform: translate(-50%, -50%) translateY(100vh);
+    opacity: 0;
+    z-index: 10000;
+    transition: all 800ms ease-in-out;
+}
+
+.signup-success-message--visible {
+   opacity: 1;
+   transform: translate(-50%, -50%);
+}
+
 @keyframes splash__logo--animation {
     0% {
         top: 50%;
@@ -428,37 +455,15 @@ body {
     .login__input--required {
         font-size: 10px;
     }
+
+    .signup-success-message {
+        font-size: 16px;
+        padding: 16px;
+    }
 }
 
 @media (max-width: 380px) {
     .signup__arrowBack {
         left: -54px;
     }
-}
-
-/* Success Message */
-.signup-success-message {
-    font-size: 20px;
-    font-weight: 400;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    padding: 25px;
-    background: #2a3647;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    border-radius: 20px;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
-    transform: translate(-50%, -50%) translateY(100vh);
-    opacity: 0;
-    z-index: 10000;
-    transition: all 800ms ease-in-out;
-}
-
-.signup-success-message--visible {
-   opacity: 1;
-   transform: translate(-50%, -50%);
 }

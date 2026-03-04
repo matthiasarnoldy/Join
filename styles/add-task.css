@@ -874,6 +874,7 @@
    display: flex;
    align-items: center;
    justify-content: space-between;
+   text-align: center;
    gap: 16px;
    border-radius: 20px;
    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
@@ -995,5 +996,15 @@
    }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 600px) {
+   .task-success-message {
+      font-size: 16px;
+      padding: 16px;
+      gap: 12px;
+   }
+
+   .task-success-message__icon {
+      width: 20px;
+      height: 20px;
+   }
 }
