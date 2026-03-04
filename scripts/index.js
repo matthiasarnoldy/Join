@@ -90,14 +90,46 @@ function togglePasswordVisibility(field) {
 function setupLoginButtons() {
     const loginButton = document.getElementById("login-button");
     const guestLoginButton = document.getElementById("guest-login-button");
+    const isSignupPage = document.querySelector(".main-content--signup");
     if (loginButton) {
-        loginButton.addEventListener("click", redirectToSummary);
+        if (isSignupPage) {
+            loginButton.addEventListener("click", handleSignup);
+        } else {
+            loginButton.addEventListener("click", redirectToSummary);
+        }
     }
     if (guestLoginButton) {
         guestLoginButton.addEventListener("click", redirectToSummary);
     }
 }
 
+function handleSignup() {
+    showSignupSuccess();
+    setTimeout(redirectToIndex, 1000);
+}
+
 function redirectToSummary() {
     location.href = "./summary.html";
+}
+
+function redirectToIndex() {
+    location.href = "./index.html";
+}
+
+function createSignupMessage() {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "signup-success-message";
+    const messageText = document.createElement("span");
+    messageText.textContent = "You signed up successfully";
+    messageDiv.appendChild(messageText);
+    return messageDiv;
+}
+
+function showSignupSuccess() {
+    const message = createSignupMessage();
+    document.body.appendChild(message);
+    requestAnimationFrame(() => {
+        message.classList.add("signup-success-message--visible");
+    });
+    setTimeout(() => message.remove(), 1000);
 }
