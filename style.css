@@ -199,10 +199,10 @@ h2 {
    background-color: #fff;
    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.1));
    width: 100%;
+   height: 96px;
    position: fixed;
    top: 0;
    z-index: 4;
-   min-height: 96px;
 }
 
 .header_flex-instructions {
@@ -322,6 +322,10 @@ h2 {
 
 @media (max-width: 1080px) {
    /* Mobile Ansicht */
+   .header {
+      height: 80px;
+   }
+
    .topBar {
       height: 80px;
    }

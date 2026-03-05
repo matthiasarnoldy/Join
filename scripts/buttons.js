@@ -149,6 +149,12 @@ if (dropdownLegalNotice) {
    });
 }
 
+if (dropdownLog) {
+   dropdownLog.addEventListener("click", () => {
+      navigateToPage("./index.html");
+   });
+}
+
 // Open the dropdown menu when clicking on the user initials
 if (loginInitials) {
    loginInitials.addEventListener("click", () => {

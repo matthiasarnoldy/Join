@@ -16,7 +16,7 @@
 }
 
 .headline_tasks {
-   padding: 110px 64px 48px 64px;
+   padding: 206px 64px 48px 64px;
    display: flex;
    align-items: center;
    justify-content: space-between;
@@ -946,14 +946,14 @@
       background-color: #f6f7f8;
       z-index: 1;
       width: 100%;
-      padding: 119px 32px 32px 32px;
+      padding: 206px 32px 32px 32px;
    }
 
    .add-task__overview {
       flex-direction: column;
       gap: 16px;
       padding-bottom: 160px;
-      padding-top: 127px;
+      padding-top: 206px;
       width: 100%;
    }
 
