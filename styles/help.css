@@ -1,6 +1,6 @@
 .headline--help {
-    justify-content: space-between;
     padding: 206px 64px 48px 64px;
+    justify-content: space-between;
 }
 
 .headline__logo {
@@ -12,9 +12,9 @@
 }
 
 .headline__logo:hover {
-    cursor: pointer;
-    scale: 1.1;
     background-color: #d1d1d1;
+    scale: 1.1;
+    cursor: pointer;
 }
 
 .textcontent {

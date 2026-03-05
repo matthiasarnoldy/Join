@@ -1,10 +1,10 @@
 .overview {
+   position: relative;
    width: 100%;
+   padding-left: 96px;
    display: flex;
    align-items: center;
    gap: 64px;
-   padding-left: 96px;
-   position: relative;
 }
 
 .overview__summary {
@@ -16,17 +16,17 @@
 }
 
 .headline_summary {
+   padding: 206px 64px 48px 96px;
    display: flex;
    align-items: center;
    gap: 30px;
-   padding: 206px 64px 48px 96px;
 }
 
 .summary__card {
-   background-color: #fff;
    display: flex;
    border-radius: 30px;
    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+   background-color: #fff;
    transform-origin: left;
    transition: all 100ms;
 }
@@ -40,20 +40,20 @@
 }
 
 .summary__card.summary__urgent {
-   background-color: #fff;
    display: flex;
    border-radius: 30px;
    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+   background-color: #fff;
    transform-origin: left top;
    transition: all 100ms;
 }
 
 .summary__card:hover {
-   cursor: pointer;
-   background-color: #2b3647;
    color: #fff;
-   transform: scaleX(1.07) scaleY(1.09);
    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   background-color: #2b3647;
+   transform: scaleX(1.07) scaleY(1.09);
+   cursor: pointer;
 }
 
 .summary__card.summary__urgent:hover {
@@ -77,10 +77,10 @@
 }
 
 .summary__card:active {
-   cursor: pointer;
-   background-color: #fff;
    color: #000;
    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   background-color: #fff;
+   cursor: pointer;
 }
 
 .summary__card:active .summary__text {
@@ -183,17 +183,17 @@
 }
 
 .tasks__card {
+   text-align: center;
    justify-content: center;
    align-items: center;
-   flex-direction: column;
    flex: 1;
-   text-align: center;
+   flex-direction: column;
 }
 
 .overview__greetings {
    display: flex;
-   flex-direction: column;
    flex: 1;
+   flex-direction: column;
    gap: 3px;
 }
 
@@ -244,8 +244,8 @@
    }
 
    .headline {
-      justify-content: center;
       padding-top: 80px;
+      justify-content: center;
    }
 }
 
@@ -254,9 +254,9 @@
 }
 
 .summary-greeting-active .overview {
+   min-height: calc(100vh - 96px);
    padding-left: 0;
    justify-content: center;
-   min-height: calc(100vh - 96px);
 }
 
 .summary-greeting-active .overview__summary {
@@ -264,18 +264,18 @@
 }
 
 .summary-greeting-active .overview__greetings {
-   display: flex !important;
+   text-align: center;
    width: 100%;
+   display: flex !important;
    justify-content: center;
    align-items: center;
-   text-align: center;
 }
 
 .greeting-fullscreen {
    display: flex !important;
-   flex-direction: column;
    justify-content: center;
    align-items: center;
+   flex-direction: column;
    gap: 8px;
 }
 

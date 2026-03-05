@@ -6,11 +6,11 @@ body {
     position: fixed;
     top: 50%;
     left: 50%;
+    z-index: 9999;
     width: 274px;
     height: auto;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
     animation: splash__logo--animation 500ms 200ms ease-in-out forwards;
+    transform: translate(-50%, -50%);
 }
 
 .splash__logo--image {
@@ -18,10 +18,10 @@ body {
 }
 
 .main-content--signup-logo {
-    width: 100px;
     position: absolute;
     top: 80px;
     left: 77px;
+    width: 100px;
 }
 
 .main-content {
@@ -29,8 +29,8 @@ body {
     width: 100%;
     max-width: 1440px;
     opacity: 0;
-    transition: opacity 1000ms;
     pointer-events: none;
+    transition: opacity 1000ms;
 }
 
 .main-content--signup {
@@ -45,10 +45,10 @@ body {
 }
 
 .header__flex-instructions {
+    z-index: 2;
     width: 100%;
     display: flex;
     justify-content: flex-end;
-    z-index: 2;
 }
 
 .login__signup {
@@ -62,11 +62,11 @@ body {
 .login__button {
     font-size: 16px;
     font-weight: 700;
-    padding: 10px;
-    background-color: #2a3647;
     color: #fff;
+    padding: 10px;
     border: none;
     border-radius: 8px;
+    background-color: #2a3647;
     cursor: pointer;
     transition: all 100ms ease-in-out;
 }
@@ -92,12 +92,12 @@ body {
 
 .login__email-icon {
     position: absolute;
-    right: 21px;
     top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
+    right: 21px;
     width: 24px;
     height: 24px;
+    pointer-events: none;
+    transform: translateY(-50%);
 }
 .login__input--password {
     padding-right: 48px;
@@ -105,16 +105,16 @@ body {
 
 .login__lock-icon {
     position: absolute;
-    right: 21px;
     top: 50%;
-    transform: translateY(-50%);
+    right: 21px;
     width: 24px;
     height: 24px;
+    transform: translateY(-50%);
 }
 
 .login__input:focus {
-   outline: none;
    border: 1px solid #29abe2;
+   outline: none;
 }
 
 .login__button--login {
@@ -125,28 +125,28 @@ body {
 
 .login__button:disabled {
    opacity: 0.5;
-   cursor: not-allowed;
    pointer-events: none;
+   cursor: not-allowed;
 }
 
 .login__button:disabled:hover {
-   background-color: #2a3647;
    filter: none;
+   background-color: #2a3647;
 }
 
 .login__button--guest {
-    background-color: transparent;
     color: #2a3647;
     border: 1px solid #2a3647;
     border-radius: 8px;
+    background-color: transparent;
     cursor: pointer;
     transition: all 100ms ease-in-out;
 }
 
 .login__button--guest:hover {
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
     color: #29abe2;
     border: 1px solid #29abe2;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
     transition: all 100ms ease-in-out;
 }
 
@@ -180,13 +180,13 @@ body {
 
 .login__window {
     padding: 48px 115px;
-    background-color: #fff;
     display: flex;
     align-items: center;
     flex-direction: column;
     gap: 20px;
     border-radius: 30px;
     filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+    background-color: #fff;
 }
 
 .login__headline {
@@ -198,17 +198,17 @@ body {
 
 .signup__arrowBack {
     position: absolute;
-    left: -172px;
     top: 44%;
-    transform: translateY(-50%);
+    left: -172px;
     border-radius: 50%;
-    transition: all 100ms;
+    transform: translateY(-50%);
     cursor: pointer;
+    transition: all 100ms;
 }
 
 .signup__arrowBack:hover {
-    scale: 1.1;
-    background-color: #d1d1d1;}
+    background-color: #d1d1d1;    scale: 1.1;
+}
 
 .login__headline--line {
     width: 150px;
@@ -239,9 +239,9 @@ body {
 }
 
 .login__input--required {
-    font-family: "Poppins";
     font-size: 12px;
     font-weight: 400;
+    font-family: "Poppins";
     color: rgba(230, 0, 38, 1);
 }
 
@@ -260,39 +260,39 @@ body {
 }
 
 .login__legalInformation {
-   min-height: 24px;
-   box-sizing: border-box;
-   color: #cdcdcd;
    line-height: 24px;
+   color: #cdcdcd;
+   min-height: 24px;
    display: flex;
    align-items: center;
+   box-sizing: border-box;
    transition: all 125ms;
 }
 
 .login__legalInformation:hover {
-   cursor: pointer;
    color: #29abe2;
    text-shadow: 0.7px 0 0 #29abe2;
+   cursor: pointer;
 }
 
 .signup__privacy-checkbox {
     display: flex;
     justify-content: center;
-    gap: 8px;
     align-items: center;
+    gap: 8px;
 }
 
 .signup__checkbox {
-    appearance: none;
-    -webkit-appearance: none;
     width: 24px;
     height: 24px;
-    background-image: url('../assets/icons/desktop/checkBox.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
     flex-shrink: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url('../assets/icons/desktop/checkBox.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
 }
 
 .signup__checkbox:checked {
@@ -310,22 +310,22 @@ body {
 .signup-success-message {
     font-size: 20px;
     font-weight: 400;
+    text-align: center;
+    color: #fff;
     position: fixed;
     top: 50%;
     left: 50%;
+    z-index: 10000;
     padding: 25px;
-    background: #2a3647;
-    color: #fff;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    text-align: center;
+    align-items: center;
     gap: 16px;
     border-radius: 20px;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
-    transform: translate(-50%, -50%) translateY(100vh);
+    background: #2a3647;
     opacity: 0;
-    z-index: 10000;
+    transform: translate(-50%, -50%) translateY(100vh);
     transition: all 800ms ease-in-out;
 }
 
@@ -400,9 +400,9 @@ body {
     }
 
     .main-content--signup-logo {
-        width: 64px;
         top: 28px;
         left: 16px;
+        width: 64px;
     }
 
     @keyframes splash__logo--animation {
