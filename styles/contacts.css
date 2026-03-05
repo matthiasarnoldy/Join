@@ -119,30 +119,6 @@
    background: #f6f7f8;
 }
 
-.contacts-back-btn {
-   display: none;
-   position: fixed;
-   top: 128px;
-   right: 24px;
-   width: 32px;
-   height: 32px;
-   border: none;
-   background: transparent;
-   padding: 0;
-   cursor: pointer;
-   z-index: 6;
-}
-
-.contacts-back-btn__icon {
-   width: 32px;
-   height: 32px;
-   display: block;
-}
-
-.contacts-back-btn.d-none {
-   display: none;
-}
-
 .contacts-detail__empty-headline {
    display: flex;
    align-items: center;
@@ -416,10 +392,6 @@ input {
 }
 
 @media (max-width: 820px) {
-   .contacts-back-btn {
-      display: block;
-   }
-
    .contacts-detail {
       padding: 0 16px;
    }

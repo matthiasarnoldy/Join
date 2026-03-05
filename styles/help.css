@@ -3,20 +3,6 @@
     padding: 110px 64px 48px 64px;
 }
 
-.headline__logo {
-    position: fixed;
-    top: 230px;
-    right: 100px;
-    border-radius: 50%;
-    transition: all 100ms;
-}
-
-.headline__logo:hover {
-    cursor: pointer;
-    scale: 1.1;
-    background-color: #d1d1d1;
-}
-
 .textcontent {
     padding: 0 64px 0 64px;
     display: flex;

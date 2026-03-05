@@ -280,6 +280,43 @@ h1 {
    font-weight: 400;
 }
 
+.page-back-btn {
+   position: fixed;
+   top: 128px;
+   right: 24px;
+   width: 32px;
+   height: 32px;
+   border: none;
+   background: transparent;
+   padding: 0;
+   border-radius: 50%;
+   cursor: pointer;
+   z-index: 6;
+   transition: all 100ms;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.page-back-btn:hover {
+   background-color: #d1d1d1;
+   scale: 1.1;
+}
+
+.page-back-btn__icon {
+   width: 32px;
+   height: 32px;
+   display: block;
+}
+
+.page-back-btn.d-none {
+   display: none;
+}
+
+.page-back-btn--mobile-only {
+   display: none;
+}
+
 @media (max-width: 1080px) {
    /* Mobile Ansicht */
    .topBar {
@@ -359,5 +396,57 @@ h1 {
    .quicklink__icon {
       width: 24px;
       height: 24px;
+   }
+}
+
+@media (max-width: 360px) {
+   .navBar__menu {
+      padding: 0 8px;
+   }
+
+   .navBar__list {
+      gap: 6px;
+   }
+
+   .navBar__quicklink {
+      width: 68px;
+      gap: 2px;
+      padding: 8px 0;
+   }
+
+   .navBar__quicklink span {
+      font-size: 15px;
+      line-height: 1.1;
+   }
+}
+
+@media (max-width: 320px) {
+   .navBar__menu {
+      padding: 0 4px;
+   }
+
+   .navBar__list {
+      gap: 2px;
+   }
+
+   .navBar__quicklink {
+      width: 62px;
+      border-radius: 12px;
+      padding: 7px 0;
+   }
+
+   .quicklink__icon {
+      width: 22px;
+      height: 22px;
+   }
+
+   .navBar__quicklink span {
+      font-size: 13px;
+   }
+}
+
+@media (max-width: 820px) {
+   .page-back-btn--mobile-only {
+      display: inline-flex;
    }
 }
