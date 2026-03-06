@@ -11,8 +11,8 @@
 
 /* Allgemein */
 * {
-   margin: 0;
    padding: 0;
+   margin: 0;
 }
 
 html {
@@ -22,12 +22,12 @@ html {
 }
 
 body {
-   font-family: "Inter";
    font-size: 16px;
    font-weight: 400;
+   font-family: "Inter";
    line-height: 1.2;
-   min-height: 100vh;
    color: #000;
+   min-height: 100vh;
    display: flex;
    justify-content: left;
 }
@@ -59,23 +59,23 @@ h1 {
 
 /* Navigation */
 .navBar {
+   color: #fff;
    position: fixed;
+   z-index: 5;
    height: 100vh;
    padding-bottom: 64px;
-   color: #fff;
-   background-color: #2b3647;
    display: flex;
    align-items: center;
    flex-direction: column;
-   z-index: 5;
+   background-color: #2b3647;
 }
 
 .navBar__logo {
    width: 100%;
    padding: 64px 0;
-   background-color: #2b3647;
    display: flex;
    justify-content: center;
+   background-color: #2b3647;
 }
 
 .logo__dark {
@@ -105,8 +105,8 @@ h1 {
 }
 
 .navBar__quicklink:hover {
-   cursor: pointer;
    background-color: #2a3d59;
+   cursor: pointer;
 }
 
 .navBar__quicklink--active {
@@ -114,23 +114,23 @@ h1 {
 }
 
 .navBar__quicklink--active:hover {
-   cursor: default;
    background-color: #091931;
+   cursor: default;
 }
 
 .navBar__backToLogin {
-   padding: 8px 56px;
-   display: flex;
-   align-items: center;
-   gap: 8px;
-   transition: all 100ms ease-in;
-   background: none;
-   border: none;
    color: #fff;
    width: 100%;
-   box-sizing: border-box;
+   padding: 8px 56px;
+   display: flex;
    justify-content: flex-start;
+   align-items: center;
+   gap: 8px;
+   border: none;
+   background: none;
+   box-sizing: border-box;
    cursor: pointer;
+   transition: all 100ms ease-in;
 }
 
 .navBar__backToLogin:hover {
@@ -141,70 +141,70 @@ h1 {
    width: 24px;
    height: 24px;
    display: flex;
-   align-items: center;
    justify-content: center;
+   align-items: center;
 }
 
 .navBar__backToLogin-text {
-   color: #fff;
-   font-family: "Inter";
    font-size: 16px;
    font-weight: 400;
+   font-family: "Inter";
+   color: #fff;
 }
 
 .navBar__legalInformation {
+   color: #a8a8a8;
    width: 100%;
    height: 100%;
-   color: #a8a8a8;
    display: flex;
-   align-items: stretch;
    justify-content: flex-end;
    align-content: center;
+   align-items: stretch;
    flex-direction: column;
    gap: 4px;
 }
 
 .legalInformation {
-   width: 100%;
-   padding: 8px 56px;
-   min-height: 24px;
-   box-sizing: border-box;
-   color: #cdcdcd;
    line-height: 24px;
+   color: #cdcdcd;
+   width: 100%;
+   min-height: 24px;
+   padding: 8px 56px;
    display: flex;
    align-items: center;
+   box-sizing: border-box;
    transition: all 125ms;
 }
 
 .legalInformation:hover {
-   cursor: pointer;
-   color: #29abe2;
    font-weight: 700;
+   color: #29abe2;
+   cursor: pointer;
 }
 
 .legalInformation.navBar__quicklink--active {
    font-weight: 400;
-   background-color: #091931;
    color: #cdcdcd;
+   background-color: #091931;
    cursor: default;
 }
 
 /* Header */
 .header {
-   background-color: #fff;
-   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.1));
-   width: 100%;
    position: fixed;
    top: 0;
    z-index: 4;
-   min-height: 96px;
+   width: 100%;
+   height: 96px;
+   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.1));
+   background-color: #fff;
 }
 
 .header_flex-instructions {
    max-width: 1440px;
    display: flex;
-   align-items: center;
    justify-content: space-between;
+   align-items: center;
 }
 
 .topBar {
@@ -226,15 +226,15 @@ h1 {
 }
 
 .help__icon:hover {
-   cursor: pointer;
    scale: 1.2;
+   cursor: pointer;
 }
 
 .login__initials {
-   width: 56px;
-   height: 56px;
    font-size: 14px;
    color: #29abe2;
+   width: 56px;
+   height: 56px;
    display: flex;
    justify-content: center;
    align-items: center;
@@ -244,26 +244,26 @@ h1 {
 }
 
 .login__initials:hover {
-   cursor: pointer;
    background-color: rgba(12, 46, 98, 0.12);
+   cursor: pointer;
 }
 
 .login__initials.login__initials--opened {
-   cursor: pointer;
    background-color: rgba(12, 46, 98, 0.12);
+   cursor: pointer;
 }
 
 /* Dropdown */
 .header__dropdown {
-   display: none;
+   color: #cdcdcd;
    position: fixed;
    top: 96px;
    right: 40px;
-   background-color: #2a3647;
-   color: #cdcdcd;
+   z-index: 10;
+   display: none;
    border-radius: 20px 0 20px 20px;
    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
-   z-index: 10;
+   background-color: #2a3647;
 }
 
 .header__dropdown--opened {
@@ -282,15 +282,15 @@ h1 {
 }
 
 .header__dropdown-quicklink:hover {
-   cursor: pointer;
    background-color: #2a3d59;
+   cursor: pointer;
 }
 
 /* Main */
 .main {
    margin-left: 222px;
-   background-color: #f6f7f8;
    flex-grow: 1;
+   background-color: #f6f7f8;
 }
 
 .main_flex-instructions {
@@ -304,10 +304,6 @@ h1 {
    max-width: calc(1440px - 232px);
    display: flex;
    align-items: center;
-}
-
-.horizontal-Line {
-   display: none;
 }
 
 .headline__description {
@@ -354,8 +350,13 @@ h1 {
 
 @media (max-width: 1080px) {
    /* Mobile Ansicht */
+   .header {
+      height: 80px;
+   }
+
    .topBar {
       height: 80px;
+      padding: 20px 40px;
    }
 
    .topBar__name {
@@ -367,18 +368,18 @@ h1 {
    }
 
    .navBar {
-      height: 80px;
       color: #fff;
-      background-color: #2b3647;
+      bottom: 0;
+      z-index: 1;
+      z-index: 3;
+      width: 100%;
+      height: 80px;
+      padding-bottom: 0;
       display: flex;
+      justify-content: space-between;
       align-items: center;
       flex-direction: row;
-      z-index: 1;
-      justify-content: space-between;
-      width: 100%;
-      padding-bottom: 0;
-      bottom: 0;
-      z-index: 3;
+      background-color: #2b3647;
    }
 
    .navBar__logo {
@@ -390,12 +391,8 @@ h1 {
    }
 
    .logo__dark {
-      display: flex;
       width: 32px;
-   }
-
-   .topBar {
-      padding: 20px 40px 20px 40px;
+      display: flex;
    }
 
    .navBar__legalInformation {
@@ -417,15 +414,15 @@ h1 {
    }
 
    .navBar__quicklink {
+      width: 144px;
+      height: 80px;
       padding: 8px 1px;
       display: flex;
-      align-items: center;
-      gap: 0px;
-      width: 76px;
-      flex-direction: column;
-      height: 80px;
-      border-radius: 16px;
       justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 0px;
+      border-radius: 16px;
    }
 
    .quicklink__icon {
@@ -483,5 +480,111 @@ h1 {
 @media (max-width: 820px) {
    .page-back-btn--mobile-only {
       display: inline-flex;
+   }
+}
+
+@media (max-width: 360px) {
+   .navBar__menu {
+      padding: 0 8px;
+   }
+
+   .navBar__list {
+      gap: 6px;
+   }
+
+   .navBar__quicklink {
+      width: 68px;
+      gap: 2px;
+      padding: 8px 0;
+   }
+
+   .navBar__quicklink span {
+      font-size: 15px;
+      line-height: 1.1;
+   }
+}
+
+@media (max-width: 320px) {
+   .navBar__menu {
+      padding: 0 4px;
+   }
+
+   .navBar__list {
+      gap: 2px;
+   }
+
+   .navBar__quicklink {
+      width: 62px;
+      border-radius: 12px;
+      padding: 7px 0;
+   }
+
+   .quicklink__icon {
+      width: 22px;
+      height: 22px;
+   }
+
+   .navBar__quicklink span {
+      font-size: 13px;
+   }
+}
+
+@media (max-width: 820px) {
+   .page-back-btn--mobile-only {
+      display: inline-flex;
+   }
+}
+
+@media (max-width: 620px) {
+   .topBar {
+      height: 80px;
+      padding: 20px 16px;
+   }
+
+   .help__icon {
+      display: none;
+   }
+
+   .navBar__quicklink {
+      width: 76px;
+      height: 80px;
+      padding: 8px 1px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 0px;
+      border-radius: 16px;
+   }
+
+   .header__dropdown {
+      right: 16px;
+   }
+}
+
+@media (max-width: 620px) {
+   .topBar {
+      height: 80px;
+      padding: 20px 16px;
+   }
+
+   .help__icon {
+      display: none;
+   }
+
+   .navBar__quicklink {
+      width: 76px;
+      height: 80px;
+      padding: 8px 1px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 0px;
+      border-radius: 16px;
+   }
+
+   .header__dropdown {
+      right: 16px;
    }
 }

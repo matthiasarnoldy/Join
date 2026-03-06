@@ -1,12 +1,12 @@
 :root {
-   --primary: #2a3647;
    --highlight: #29abe2;
+   --primary: #2a3647;
 }
 
 .main_flex-instructions {
+   height: calc(100vh - 96px);
    display: flex;
    flex-direction: column;
-   height: calc(100vh - 96px);
    overflow: hidden;
 }
 
@@ -15,24 +15,24 @@
 }
 
 .contact-container {
-   display: flex;
    width: 100%;
+   height: 100%;
 
    min-height: 0;
-   height: 100%;
    margin-top: 96px;
+   display: flex;
 }
 
 /* Liste Links */
 .contacts-list {
    width: 450px;
-   flex: 0 0 450px;
    height: 100%;
+   min-height: 0;
+   display: flex;
+   flex: 0 0 450px;
+   flex-direction: column;
    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
    background: white;
-   display: flex;
-   flex-direction: column;
-   min-height: 0;
    overflow: hidden;
 }
 
@@ -40,60 +40,60 @@
    position: sticky;
    top: 0;
    z-index: 3;
-   background: #fff;
    padding: 32px 24px 0;
+   background: #fff;
 }
 
 #contacts-list-content {
-   flex: 1;
-   min-height: 0;
-   overflow-y: scroll;
-   background: #fff;
-   padding: 22px 24px 0;
    width: 450px;
-   flex: 0 0 450px;
    height: 100%;
-   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-   background: white;
-   display: flex;
-   flex-direction: column;
    min-height: 0;
+   min-height: 0;
+   padding: 22px 24px 0;
+   display: flex;
+   flex: 1;
+   flex: 0 0 450px;
+   flex-direction: column;
+   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+   background: #fff;
+   background: white;
    overflow: hidden;
+   overflow-y: scroll;
 }
 
 .contacts-list__header {
    position: sticky;
    top: 0;
    z-index: 3;
-   background: #fff;
    padding: 32px 24px 0;
+   background: #fff;
 }
 
 #contacts-list-content {
-   flex: 1;
    min-height: 0;
-   overflow-y: scroll;
-   background: #fff;
    padding: 22px 24px 0;
+   flex: 1;
+   background: #fff;
+   overflow-y: scroll;
 }
 
 #btn-add-contact {
-   width: 100%;
-   padding: 12px;
-   background: var(--primary);
-   color: white;
-   border-radius: 10px;
-   cursor: pointer;
-   margin: 22px 0;
-   height: 56px;
-   display: inline-flex;
-   align-items: center;
-   justify-content: center;
-   gap: 16px;
-   font-family: "Inter";
    font-size: 21px;
    font-weight: 700;
+   font-family: "Inter";
+   color: white;
    position: static;
+   width: 100%;
+   height: 56px;
+   padding: 12px;
+   margin: 22px 0;
+   display: inline-flex;
+   justify-content: center;
+   align-items: center;
+   gap: 16px;
+   border-radius: 10px;
+   background: var(--primary);
+   cursor: pointer;
 }
 
 #btn-add-contact .btn-add-contact__icon {
@@ -103,52 +103,52 @@
 }
 
 .group-header {
-   padding: 10px;
-   font-weight: bold;
    font-size: 20px;
+   font-weight: bold;
+   padding: 10px;
 }
 
 .contact-item {
+   padding: 15px;
+   margin-bottom: 5px;
    display: flex;
    align-items: center;
-   padding: 15px;
-   cursor: pointer;
    border-radius: 10px;
-   margin-bottom: 5px;
+   cursor: pointer;
 }
 
 .contact-item:hover {
    background: #f0f0f0;
 }
 .contact-item.active {
-   background: var(--primary);
    color: white;
+   background: var(--primary);
 }
 
 .initials {
+   color: white;
    width: 40px;
    height: 40px;
-   border-radius: 50%;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   color: white;
    margin-right: 15px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
    border: 2px solid white;
+   border-radius: 50%;
 }
 
 /* Details Rechts */
 .contacts-detail {
-   flex-grow: 1;
    padding: 0 60px;
+   flex-grow: 1;
    background: #f6f7f8;
 }
 
 .contacts-detail__empty-headline {
+   padding-top: 110px;
    display: flex;
    align-items: center;
    gap: 30px;
-   padding-top: 110px;
 }
 
 .horizontal-Line-contacts {
@@ -156,36 +156,36 @@
 }
 
 .initials-big {
+   font-size: 40px;
+   color: white;
    width: 120px;
    height: 120px;
-   font-size: 40px;
-   border-radius: 50%;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   color: white;
    margin-right: 20px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border-radius: 50%;
 }
 
 .detail-header {
+   margin-bottom: 40px;
    display: flex;
    align-items: center;
-   margin-bottom: 40px;
 }
 
 .delete-link {
    color: var(--highlight);
-   cursor: pointer;
-   background: none;
-   border: none;
    padding: 0;
+   border: none;
+   background: none;
+   cursor: pointer;
 }
 
 .contact-item {
    min-height: 78px;
    padding: 15px 24px;
-   gap: 16px;
    margin-bottom: 2px;
+   gap: 16px;
    border-radius: 10px;
 }
 
@@ -194,22 +194,22 @@
 }
 
 .contact-item.active {
-   background: #2a3647;
    color: #ffffff;
+   background: #2a3647;
 }
 
 .contact-info {
+   min-width: 0;
    display: flex;
    flex-direction: column;
    gap: 4px;
-   min-width: 0;
 }
 
 .contact-info .name {
    font-size: 20px;
    font-weight: 400;
-   color: #000000;
    white-space: nowrap;
+   color: #000000;
    overflow: hidden;
    text-overflow: ellipsis;
 }
@@ -217,8 +217,8 @@
 .contact-info .email {
    font-size: 16px;
    font-weight: 400;
-   color: #007cee;
    white-space: nowrap;
+   color: #007cee;
    overflow: hidden;
    text-overflow: ellipsis;
 }
@@ -236,63 +236,63 @@
 }
 
 .detail-view {
-   padding-top: 32px;
    max-width: 660px;
+   padding-top: 32px;
 }
 
 .detail-header {
-   align-items: center;
    margin-bottom: 52px;
+   align-items: center;
    gap: 24px;
 }
 
 .initials-big {
-   width: 120px;
-   height: 120px;
-   margin-right: 0;
-   border: 3px solid #ffffff;
-   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
    font-size: 47px;
    font-weight: 500;
    line-height: 1;
+   width: 120px;
+   height: 120px;
+   margin-right: 0;
    flex-shrink: 0;
+   border: 3px solid #ffffff;
+   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
 
 .detail-meta {
+   min-width: 0;
    display: flex;
    flex-direction: column;
    gap: 8px;
-   min-width: 0;
 }
 
 #detail-name {
-   margin: 0;
    font-size: 47px;
    font-weight: 500;
    line-height: 1.2;
    color: #000000;
+   margin: 0;
    word-break: break-word;
 }
 
 .detail-actions {
+   margin-top: 4px;
    display: inline-flex;
    align-items: center;
    gap: 24px;
-   margin-top: 4px;
 }
 
 .detail-action {
+   font-size: 16px;
+   font-weight: 400;
+   font-family: "Inter";
+   line-height: 1.2;
+   color: #2a3647;
+   padding: 0;
    display: inline-flex;
    align-items: center;
    gap: 8px;
    border: none;
    background: transparent;
-   padding: 0;
-   color: #2a3647;
-   font-family: "Inter";
-   font-size: 16px;
-   font-weight: 400;
-   line-height: 1.2;
    cursor: pointer;
 }
 
@@ -313,10 +313,10 @@
 }
 
 .detail-info h3 {
-   margin: 0;
    font-size: 20px;
    font-weight: 400;
    color: #000000;
+   margin: 0;
 }
 
 .detail-info-item {
@@ -332,15 +332,15 @@
 }
 
 #detail-email {
-   color: #007cee;
    font-size: 16px;
    font-weight: 400;
+   color: #007cee;
 }
 
 #detail-phone {
-   color: #000000;
    font-size: 16px;
    font-weight: 400;
+   color: #000000;
 }
 
 /* Overlay / Modal */
@@ -350,31 +350,31 @@
    left: 0;
    width: 100%;
    height: 100%;
-   background: rgba(0, 0, 0, 0.5);
    display: flex;
    justify-content: center;
    align-items: center;
+   background: rgba(0, 0, 0, 0.5);
 }
 
 .overlay-content {
-   background: white;
+   width: 400px;
    padding: 40px;
    border-radius: 30px;
-   width: 400px;
+   background: white;
 }
 
 input {
    width: 100%;
-   margin: 10px 0;
    padding: 12px;
+   margin: 10px 0;
    border: 1px solid #d1d1d1;
    border-radius: 10px;
    box-sizing: border-box;
 }
 
 .error {
-   color: red;
    font-size: 12px;
+   color: red;
    height: 15px;
 }
 .d-none {

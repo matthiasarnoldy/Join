@@ -1,6 +1,20 @@
 .headline--help {
+    padding: 206px 64px 48px 64px;
     justify-content: space-between;
-    padding: 110px 64px 48px 64px;
+}
+
+.headline__logo {
+    position: fixed;
+    top: 230px;
+    right: 100px;
+    border-radius: 50%;
+    transition: all 100ms;
+}
+
+.headline__logo:hover {
+    background-color: #d1d1d1;
+    scale: 1.1;
+    cursor: pointer;
 }
 
 .textcontent {
