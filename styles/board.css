@@ -9,7 +9,7 @@
 
 .headline_board {
    width: 100%;
-   padding: 206px 64px 48px 64px;
+   padding: 206px 64px 48px 108px;
    display: flex;
    align-items: center;
    flex-direction: column;
@@ -17,7 +17,6 @@
 }
 
 .board-controls {
-   width: 100%;
    display: flex;
    justify-content: flex-end;
    align-items: center;
@@ -25,7 +24,6 @@
 }
 
 .board-controls--desktop {
-   width: 100%;
    display: flex;
    justify-content: flex-end;
    align-items: center;
@@ -33,7 +31,6 @@
 }
 
 .board-controls--mobile {
-   width: 100%;
    display: flex;
    justify-content: flex-end;
    align-items: center;
@@ -70,6 +67,7 @@
 
 .find-task__input {
    font-size: 16px;
+   width: 100%;
    color: #000000;
    height: 32px;
    border: none;
@@ -179,7 +177,7 @@
 .board-task-grid {
    width: 100%;
    max-width: calc(1440px - 232px);
-   padding: 16px 64px 0 64px;
+   padding: 16px 64px 0 108px;
    display: flex;
    justify-content: space-between;
    align-items: flex-start;
@@ -435,6 +433,14 @@ dialog::backdrop {
       font-size: 27px;
    }
 
+   .headline_board {
+      padding: 144px 32px 48px;
+   }
+
+   .add-task-btn {
+      padding: 10px;
+   }
+
    .board-task-grid {
       max-height: calc(100vh - 260px);
       padding-bottom: 230px;
@@ -491,69 +497,16 @@ dialog::backdrop {
    }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 620px) {
    .headline_board {
-      padding: 104px 16px 28px 16px;
-      gap: 12px;
+      padding: 144px 16px 28px;
    }
 
    .board-task-grid {
       padding: 0 16px 150px 16px;
    }
 
-   .headline_board .headline__name {
-      font-size: 52px;
-      line-height: 1.05;
-   }
-
-   .board-controls {
-      gap: 12px;
-   }
-
-   .add-task-btn {
-      height: 46px;
-      min-width: 62px;
-      padding: 8px 12px;
-      border-radius: 12px;
-   }
-
-   .add-task-btn__icon {
-      width: 28px;
-      height: 28px;
-   }
-
    .find-task--mobile {
-      height: 46px;
-      padding: 8px 12px;
-      width: 100%;
-   }
-
-   .find-task__input {
-      font-size: 15px;
-   }
-}
-
-@media (max-width: 320px) {
-   .headline_board {
-      padding: 100px 12px 24px 12px;
-   }
-
-   .board-task-grid {
-      padding: 0 12px 150px 12px;
-   }
-
-   .headline_board .headline__name {
-      font-size: 44px;
-   }
-
-   .add-task-btn {
-      height: 44px;
-      min-width: 56px;
-      padding: 6px 10px;
-   }
-
-   .add-task-btn__icon {
-      width: 24px;
-      height: 24px;
+      padding: 8px 16px;
    }
 }
