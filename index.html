@@ -3,25 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vorlage</title>
+    <title>Join</title>
 
-    <link rel="shortcut icon" href="./assets/icons/" type="image/x-icon">
+    <link
+         rel="icon"
+         href="./assets/icons/desktop/logoFavicon.svg"
+         type="image/svg+xml"
+         media="(prefers-color-scheme: light)" />
+      <link
+         rel="icon"
+         href="./assets/icons/desktop/logo.svg"
+         type="image/svg+xml"
+         media="(prefers-color-scheme: dark)" />
 
     <script src="./scripts/template.js"></script>
+    <script src="./scripts/index.js"></script>
+    <script src="./scripts/buttons.js" defer></script>
     <script src="./script.js"></script>
     
     <link rel="stylesheet" href="./styles/standard.css">
+    <link rel="stylesheet" href="./styles/index.css">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <header>
-        <div class="content_max-width"></div>
-    </header>
-    <main>
-        <div class="content_max-width main_flex-instructions"></div>
-    </main>
-    <footer>
-        <div class="content_max-width footer_flex-instructions"></div>
-    </footer>
+    <div class="splash__logo">
+        <img src="./assets/icons/desktop/Dark_Logo.svg" alt="Join Logo" class="splash__logo--image">
+    </div>
+    <div id="main-content" class="main-content">
+        <header>
+            <div class="header__flex-instructions">
+                <div class="login__signup">
+                    <p class="login__signup--question">Not a Join User?</p>
+                    <button id="signup-button" class="login__button button">Sign Up</button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="login__window">
+                <div class="login__headline">
+                    <h1 class="login__header">Log in</h1>
+                    <img src="./assets/icons/desktop/login__dividingLine.svg" alt="Dividing Line" class="login__headline--line">
+                </div>
+                <form action="#" class="login__formular">
+                    <div class="login__input-field">
+                        <input type="email" class="login__input login__input--email" autocomplete="off" placeholder="Email">
+                        <img src="./assets/icons/desktop/mail.svg" alt="" class="login__email-icon" />
+                    </div>
+                    <div class="login__inputFieldError">
+                        <div class="login__input-field">
+                            <input type="password" class="login__input login__input--password" autocomplete="off" placeholder="Password">
+                            <img id="password-icon" src="./assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
+                        </div>
+                        <span class="login__input--required">
+                            Check your email and password. Please try again.
+                        </span>
+                    </div>
+                </form>
+                <div class="login__buttonArea">
+                    <button id="login-button" class="login__button--login login__button button">Log in</button>
+                    <button id="guest-login-button" class="login__button--login login__button--guest button">Guest Log in</button>
+                </div>
+            </div>
+        </main>
+        <footer class="login__legalInformation--area">
+            <a href="./privacy-Policy.html?from=login" class="login__legalInformation" id="index-privacy-policy">
+                Privacy Policy
+            </a>
+            <a href="./legalnotice.html?from=login" class="login__legalInformation" id="index-legal-notice">Legal Notice</a>
+        </footer>
+    </div>
 </body>
 </html>
