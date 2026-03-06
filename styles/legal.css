@@ -43,3 +43,24 @@
 a {
     color: #29abe2;
 }
+
+@media (max-width: 1080px) {
+    .headline__legalinformation {
+        padding: 144px 40px 48px;
+    }
+
+    .textcontent {
+        padding: 0 40px 104px;
+    }
+}
+
+@media (max-width: 620px) {
+    .headline__legalinformation {
+        font-size: 47px;
+        padding: 144px 16px 48px;
+    }
+
+    .textcontent {
+        padding: 0 16px 104px;
+    }
+}

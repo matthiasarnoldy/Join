@@ -354,6 +354,10 @@ h1 {
       height: 80px;
    }
 
+   .header__dropdown {
+      top: 80px;
+   }
+
    .topBar {
       height: 80px;
       padding: 20px 40px;
