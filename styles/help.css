@@ -5,10 +5,20 @@
 
 .headline__logo {
     position: fixed;
-    top: 230px;
-    right: 100px;
+    top: 225px;
+    right: max(calc((100vw - 1440px) + 96px), 96px);
+    width: 37px;
+    height: 37px;
+    padding: 0;
+    border: none;
+    background: transparent;
     border-radius: 50%;
     transition: all 100ms;
+}
+
+.headline__logo .page-back-btn__icon {
+    width: 37px;
+    height: 37px;
 }
 
 .headline__logo:hover {
