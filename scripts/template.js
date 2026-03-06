@@ -62,7 +62,13 @@ function taskCardSubtasksHTML(completedSubtasks, totalSubtasks, subtaskProgress)
     `;
 }
 
-// Avatar HTML templates are built in board.js (templates only here)
+function taskCardAvatarHTML(colorClass, initialsText) {
+   return `<span class="avatar avatar--${colorClass}">${initialsText}</span>`;
+}
+
+function taskCardAvatarOverflowHTML(remainingCount) {
+   return `<span class="avatar avatar--overflow">+${remainingCount}</span>`;
+}
 
 function taskCardHTML(categoryClass, categoryLabel, title, description, subtasksHTML, avatarsHTML, priorityIconSrc) {
    return `
@@ -77,4 +83,8 @@ function taskCardHTML(categoryClass, categoryLabel, title, description, subtasks
          <img class="task-card__priority" src="${priorityIconSrc}" alt="Priority" />
       </div>
    `;
+}
+
+function taskCardFallbackHTML(categoryClass, categoryLabel, title, description, subtasksHTML, avatarsHTML, priorityIconSrc) {
+   return `<span class="task-card__label ${categoryClass}">${categoryLabel}</span><h3 class="task-card__title">${title}</h3><p class="task-card__description">${description}</p>${subtasksHTML}<div class="task-card__meta"><div class="task-card__avatars">${avatarsHTML}</div><img class="task-card__priority" src="${priorityIconSrc}" alt="Priority" /></div>`;
 }

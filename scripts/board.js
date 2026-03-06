@@ -85,14 +85,16 @@ function ensurePlaceholderExists(column) {
 function processColumnPlaceholder(column) {
    const taskDirectory = column.querySelector(".board-task-directory");
    if (!taskDirectory) return;
-   const visibleCards = Array.from(taskDirectory.querySelectorAll(".task-card")).filter(
-      (card) => card.style.display !== "none",
-   );
+   const visibleCards = Array.from(
+      taskDirectory.querySelectorAll(".task-card"),
+   ).filter((card) => card.style.display !== "none");
    if (visibleCards.length === 0) {
       const placeholder = ensurePlaceholderExists(column);
       if (placeholder) placeholder.style.display = "";
    } else {
-      const placeholder = taskDirectory.querySelector(".board-task-placeholder");
+      const placeholder = taskDirectory.querySelector(
+         ".board-task-placeholder",
+      );
       if (placeholder) placeholder.style.display = "none";
    }
 }
@@ -177,7 +179,11 @@ function makeCardDraggable(card) {
          dragPreviewCard.classList.add("task-card--drag-preview");
          dragPreviewCard.style.width = `${card.offsetWidth}px`;
          document.body.appendChild(dragPreviewCard);
-         event.dataTransfer.setDragImage(dragPreviewCard, card.offsetWidth / 2, card.offsetHeight / 2);
+         event.dataTransfer.setDragImage(
+            dragPreviewCard,
+            card.offsetWidth / 2,
+            card.offsetHeight / 2,
+         );
          event.dataTransfer.setData(
             "text/plain",
             card.dataset.taskId || "demo-card",
@@ -229,12 +235,15 @@ function setupDropZones() {
       directory.addEventListener("dragleave", (event) => {
          if (!directory.contains(event.relatedTarget)) {
             directory.classList.remove("board-task-directory--dragover");
-            const placeholder = directory.querySelector(".board-task-placeholder");
+            const placeholder = directory.querySelector(
+               ".board-task-placeholder",
+            );
             if (placeholder) {
                const hasVisibleCards = Array.from(
                   directory.querySelectorAll(".task-card"),
                ).some(
-                  (card) => card !== draggedCard && card.style.display !== "none",
+                  (card) =>
+                     card !== draggedCard && card.style.display !== "none",
                );
                placeholder.style.display = hasVisibleCards ? "none" : "";
             }
@@ -274,26 +283,35 @@ function getCategoryLabel(category) {
 
 function buildAvatarsHTML(taskData) {
    if (!taskData.assigned || taskData.assigned.length === 0) return "";
-   const avatarWidth = 32,
-      overlap = 8,
-      available = 220;
+   const avatarWidth = 32;
+   const overlap = 8;
+   const available = 220;
    const maxAvatars =
       Math.floor((available - avatarWidth) / (avatarWidth - overlap)) + 1;
    const total = taskData.assigned.length;
    const displayCount = total > maxAvatars ? maxAvatars - 1 : total;
    const colors = ["orange", "teal", "purple"];
-   let html = "";
-   for (let i = 0; i < displayCount; i++) {
-      const color = colors[i % colors.length];
-      html += `<span class="avatar avatar--${color}">${taskData.assigned[i].initials}</span>`;
-   }
+   const avatars = taskData.assigned.slice(0, displayCount);
+   const avatarTemplateAvailable = typeof taskCardAvatarHTML === "function";
+   const overflowTemplateAvailable =
+      typeof taskCardAvatarOverflowHTML === "function";
+   let html = avatars
+      .map((assignee, index) => {
+         const color = colors[index % colors.length];
+         return avatarTemplateAvailable
+            ? taskCardAvatarHTML(color, assignee.initials)
+            : `<span class="avatar avatar--${color}">${assignee.initials}</span>`;
+      })
+      .join("");
    const remaining = total - displayCount;
    if (remaining > 0)
-      html += `<span class="avatar avatar--overflow">+${remaining}</span>`;
+      html += overflowTemplateAvailable
+         ? taskCardAvatarOverflowHTML(remaining)
+         : `<span class="avatar avatar--overflow">+${remaining}</span>`;
    return html;
 }
 
-// Subtask and card HTML are provided by template.js (pure HTML, no logic)
+// Subtask, avatar and card HTML are provided by template.js (pure HTML, no logic)
 
 function createTaskCard(taskData) {
    const card = document.createElement("article");
@@ -319,9 +337,10 @@ function createTaskCard(taskData) {
               subtaskProgress,
            )
          : "";
-   const priorityIcon = getPriorityIcon(taskData.priority);
+   const priorityIconSrc = getPriorityIcon(taskData.priority);
    const categoryLabel = getCategoryLabel(taskData.category);
    const useTemplate = typeof taskCardHTML === "function";
+   const useFallbackTemplate = typeof taskCardFallbackHTML === "function";
    card.innerHTML = useTemplate
       ? taskCardHTML(
            categoryClass,
@@ -330,9 +349,19 @@ function createTaskCard(taskData) {
            taskData.description,
            subtasksHTML,
            avatarsHTML,
-           priorityIcon,
+           priorityIconSrc,
+         )
+      : useFallbackTemplate
+      ? taskCardFallbackHTML(
+           categoryClass,
+           categoryLabel,
+           taskData.title,
+           taskData.description,
+           subtasksHTML,
+           avatarsHTML,
+           priorityIconSrc,
         )
-      : `<span class="task-card__label ${categoryClass}">${categoryLabel}</span><h3 class="task-card__title">${taskData.title}</h3><p class="task-card__description">${taskData.description}</p>${subtasksHTML}<div class="task-card__meta"><div class="task-card__avatars">${avatarsHTML}</div><img class="task-card__priority" src="${priorityIcon}" alt="Priority" /></div>`;
+      : "";
    makeCardDraggable(card);
    return card;
 }
