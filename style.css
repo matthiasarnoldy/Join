@@ -482,6 +482,10 @@ h1 {
 }
 
 @media (max-width: 820px) {
+   h1 {
+      font-size: 47px;
+   }
+
    .page-back-btn--mobile-only {
       display: inline-flex;
    }

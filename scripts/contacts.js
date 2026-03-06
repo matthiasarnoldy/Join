@@ -167,7 +167,7 @@ function switchView() {
    const hasSelection = selectedContactId !== null;
 
    if (detailEmpty) {
-      detailEmpty.classList.toggle("d-none", hasSelection);
+      detailEmpty.classList.remove("d-none");
    }
 
    if (!isMobile) {
