@@ -1,9 +1,9 @@
 .headline__legalinformation {
-    padding: 206px 64px 48px 64px;
+    padding: 206px 64px 48px 108px;
 }
 
 .textcontent {
-    padding: 0 64px 24px 64px;
+    padding: 0 64px 24px 108px;
     display: flex;
     flex-direction: column;
     gap: 24px;

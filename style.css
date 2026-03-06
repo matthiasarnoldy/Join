@@ -311,10 +311,6 @@ h2 {
    align-items: center;
 }
 
-.horizontal-Line {
-   display: none;
-}
-
 .headline__description {
    font-size: 27px;
    font-weight: 400;
@@ -328,6 +324,7 @@ h2 {
 
    .topBar {
       height: 80px;
+      padding: 20px 40px;
    }
 
    .topBar__name {
@@ -366,10 +363,6 @@ h2 {
       display: flex;
    }
 
-   .topBar {
-      padding: 20px 40px 20px 40px;
-   }
-
    .navBar__legalInformation {
       display: none;
    }
@@ -389,7 +382,7 @@ h2 {
    }
 
    .navBar__quicklink {
-      width: 76px;
+      width: 144px;
       height: 80px;
       padding: 8px 1px;
       display: flex;
@@ -403,5 +396,24 @@ h2 {
    .quicklink__icon {
       width: 24px;
       height: 24px;
+   }
+}
+
+@media (max-width: 620px) {
+   .topBar {
+      height: 80px;
+      padding: 20px 16px;
+   }
+
+   .navBar__quicklink {
+      width: 76px;
+      height: 80px;
+      padding: 8px 1px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 0px;
+      border-radius: 16px;
    }
 }
