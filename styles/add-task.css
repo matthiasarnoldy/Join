@@ -945,16 +945,19 @@
       top: 0;
       z-index: 1;
       width: 100%;
-      padding: 206px 32px 32px 32px;
+      padding: 144px 32px 32px 32px;
       background-color: #f6f7f8;
    }
 
    .add-task__overview {
       width: 100%;
-      padding-top: 206px;
+      height: calc(100vh - 240px);
+      padding-top: 144px;
       padding-bottom: 160px;
       flex-direction: column;
       gap: 16px;
+      overflow-y: scroll;
+      scrollbar-gutter: stable;
    }
 
    .add-task__input--textarea {
@@ -970,7 +973,8 @@
 
    .add-task__form-buttons {
       width: 100%;
-      justify-content: center;
+      padding: 0 32px;
+      justify-content: flex-end;
    }
 
    .add-task__information-group {
@@ -996,7 +1000,15 @@
    }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 620px) {
+   .headline_tasks {
+      padding: 144px 16px 32px;
+   }
+
+   .add-task__form-information {
+      padding: 110px 16px 48px;
+   }
+
    .task-success-message {
       font-size: 16px;
       padding: 16px;
@@ -1006,5 +1018,59 @@
    .task-success-message__icon {
       width: 20px;
       height: 20px;
+   }
+
+   .headline__name {
+      font-size: 47px;
+   }
+
+   .add-task__label {
+      font-size: 16px;
+   }
+
+   .add-task__input {
+      font-size: 16px;
+      padding: 10px 21px;
+   }
+
+   .date-picker__toggle {
+      background-size: 20px 20px;
+   }
+
+   .add-task__select-value {
+      font-size: 16px;
+   }
+
+   .add-task__option-content {
+      font-size: 16px;
+   }
+
+   .add-task__option-initials {
+      width: 40px;
+      height: 40px;
+   }
+
+   .add-task__select-option {
+      font-size: 16px;
+   }
+
+   .add-task__form-buttons {
+      padding: 0 16px;
+   }
+}
+
+@media (max-width: 400px) {
+   .add-task__priority-icon {
+      flex-shrink: 0;
+   }
+
+   .add-task__priority-field {
+      flex-wrap: wrap;
+   }
+}
+
+@media (max-width: 340px) {
+   .add-task__button {
+      font-size: 16px;
    }
 }

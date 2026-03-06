@@ -405,6 +405,10 @@ h2 {
       padding: 20px 16px;
    }
 
+   .help__icon {
+      display: none;
+   }
+
    .navBar__quicklink {
       width: 76px;
       height: 80px;
@@ -415,5 +419,9 @@ h2 {
       flex-direction: column;
       gap: 0px;
       border-radius: 16px;
+   }
+
+   .header__dropdown {
+      right: 16px;
    }
 }
