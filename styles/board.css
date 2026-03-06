@@ -16,6 +16,12 @@
    gap: 16px;
 }
 
+.headline__board {
+   padding: 64px 74px 28px;
+   display: flex;
+   justify-content: space-between;
+}
+
 .board-controls {
    display: flex;
    justify-content: flex-end;
@@ -125,10 +131,19 @@
    border-radius: 10px;
    background-color: #2a3647;
    cursor: pointer;
+   white-space: nowrap;
+   flex-shrink: 0;
 }
 
 .add-task-btn:hover {
    background-color: #29abe2;
+   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   transition: all 100ms ease-in-out;
+}
+
+.add-task-btn:active {
+   background-color: #091931;
+   transition: all 100ms ease-in-out;
 }
 
 .add-task-btn__icon {
@@ -383,7 +398,9 @@
 
 .addtaskDialog {
    width: 78%;
+   max-width: 1124px;
    height: 90%;
+   max-height: 1000px;
    margin: auto;
    border: none;
    border-radius: 30px;
