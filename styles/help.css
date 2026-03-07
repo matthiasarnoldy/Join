@@ -5,7 +5,7 @@
 
 .headline__logo {
     position: fixed;
-    top: 225px;
+    top: 228px;
     right: max(calc((100vw - 1440px) + 96px), 96px);
     width: 37px;
     height: 37px;
@@ -84,6 +84,12 @@
     }
 }
 
+@media (max-width: 820px) {
+    .headline__logo {
+        top: 156px;
+    }
+}
+
 @media (max-width: 620px) {
     .headline--help {
         padding: 144px 16px 48px;
@@ -98,7 +104,7 @@
     }
 
     .headline__logo {
-        top: 168px;
+        top: 158px;
         right: 16px;
     }
 
