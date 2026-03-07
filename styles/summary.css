@@ -293,6 +293,10 @@
       gap: 16px;
    }
 
+   .summary__card:hover {
+      transform: scaleX(1.02) scaleY(1.04);
+   }
+
    .summary__todo {
       gap: 16px;
    }
