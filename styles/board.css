@@ -17,7 +17,7 @@
 }
 
 .headline__board {
-   padding: 64px 74px 28px;
+   padding: 64px 136px 28px 108px;
    display: flex;
    justify-content: space-between;
 }
@@ -418,6 +418,12 @@ dialog::backdrop {
    background: rgba(0, 0, 0, 0.4);
 }
 
+@media (max-width: 1300px) {
+   .headline__board {
+      padding: 64px 96px 28px 64px;
+   }
+}
+
 @media (max-width: 1230px) {
    .headline_board {
       padding: 206px 32px 48px 32px;
@@ -452,6 +458,13 @@ dialog::backdrop {
 
    .headline_board {
       padding: 144px 32px 48px;
+   }
+
+   .headline__board {
+      position: absolute;
+      width: 100%;
+      padding: 64px 32px 28px;
+      background-color: #f6f7f8;
    }
 
    .add-task-btn {
@@ -512,18 +525,47 @@ dialog::backdrop {
       width: 252px;
       min-width: 252px;
    }
+
+   .add-task__form-information {
+      padding: 0 32px 48px;
+   }
+
+   .add-task__overview {
+      padding: 165px 0 0;
+   }
+
+   .add-task__footer {
+      width: 78%;
+      background-color: transparent;
+   }
 }
 
 @media (max-width: 620px) {
+   .addtaskDialog {
+      width: calc(100% - 32px);
+   }
+
    .headline_board {
       padding: 144px 16px 28px;
+   }
+
+   .headline__board {
+      padding: 64px 16px 28px;
    }
 
    .board-task-grid {
       padding: 0 16px 150px 16px;
    }
 
+   .add-task__form-information {
+      padding: 0 16px 48px;
+   }
+
    .find-task--mobile {
       padding: 8px 16px;
+   }
+
+   .add-task__footer {
+      width: calc(100% - 32px);
    }
 }

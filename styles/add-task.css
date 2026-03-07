@@ -529,6 +529,10 @@
    transition: all 100ms ease-in-out;
 }
 
+.add-task__priority-icon {
+      flex-shrink: 0;
+   }
+
 .add-task__priority-option--active .add-task__priority-icon--secondary {
    fill: #fff;
 }
