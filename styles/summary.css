@@ -201,6 +201,11 @@
    gap: 3px;
 }
 
+.greetings__timeannouncement {
+   font-size: 47px;
+   font-weight: 500;
+}
+
 .greetings__name {
    font-size: 64px;
 }
