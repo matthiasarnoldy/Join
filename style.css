@@ -36,6 +36,10 @@ body {
    display: none;
 }
 
+.rotate-lock {
+   display: none;
+}
+
 .content_max-width {
    display: flex;
    justify-content: space-between;
@@ -432,6 +436,27 @@ h1 {
    .quicklink__icon {
       width: 24px;
       height: 24px;
+   }
+}
+
+@media (max-width: 1000px) and (orientation: landscape) {
+   .rotate-lock {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f6f7f8;
+      color: #2b3647;
+      text-align: center;
+      padding: 24px;
+      font-size: 20px;
+      font-weight: 600;
+   }
+
+   body > *:not(.rotate-lock) {
+      display: none;
    }
 }
 
