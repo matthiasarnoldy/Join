@@ -304,6 +304,7 @@
 }
 
 .add-task__input--textarea {
+   font-family: "Inter";
    height: 120px;
    max-height: 160px;
    min-height: 48px;
@@ -955,9 +956,8 @@
 
    .add-task__overview {
       width: 100%;
-      height: calc(100vh - 240px);
-      padding-top: 144px;
-      padding-bottom: 160px;
+      height: calc(100vh - 280px);
+      padding: 144px 0 0;
       flex-direction: column;
       gap: 16px;
       overflow-y: scroll;

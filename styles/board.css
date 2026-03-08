@@ -465,6 +465,7 @@ dialog::backdrop {
       width: 100%;
       padding: 64px 32px 28px;
       background-color: #f6f7f8;
+      z-index: 1000;
    }
 
    .add-task-btn {
@@ -531,6 +532,7 @@ dialog::backdrop {
    }
 
    .add-task__overview {
+      height: calc(100vh - 240px);
       padding: 165px 0 0;
    }
 
