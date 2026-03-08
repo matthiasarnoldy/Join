@@ -260,8 +260,8 @@
 
 @media (max-width: 620px) {
    .main_flex-instructions {
-      height: calc(100dvh - 80px) !important;
-      padding-bottom: 24px;
+      height: calc(100dvh - 80px);
+      padding-bottom: 104px;
       overflow-y: auto;
    }
 
@@ -381,13 +381,13 @@
 .summary-greeting-active .overview__greetings {
    text-align: center;
    width: 100%;
-   display: flex !important;
+   display: flex;
    justify-content: center;
    align-items: center;
 }
 
 .greeting-fullscreen {
-   display: flex !important;
+   display: flex;
    justify-content: center;
    align-items: center;
    flex-direction: column;
