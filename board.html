@@ -253,7 +253,9 @@
             <div class="dialog_flex-instructions">
                <section class="headline--board">
                   <div class="headline__board">
-                     <h1 class="headline__name">Add Tasks</h1>
+                     <h1 id="addTaskDialogTitle" class="headline__name">
+                        Add Tasks
+                     </h1>
                      <button
                         class="add-task__close-button"
                         aria-label="Close Add Task Form"
@@ -852,7 +854,7 @@
                         </button>
                         <button
                            class="add-task__button add-task__button--create">
-                           Create Task
+                           <span class="add-task__button-text">Create Task</span>
                            <svg
                               width="24"
                               height="24"
@@ -880,6 +882,59 @@
                   </section>
                </section>
             </div>
+         </dialog>
+         <dialog id="taskDetailDialog" class="task-detail-dialog">
+            <article class="task-detail">
+               <header class="task-detail__header">
+                  <span id="taskDetailCategory" class="task-detail__label"
+                     >Technical Task</span
+                  >
+                  <button
+                     id="taskDetailClose"
+                     class="task-detail__close"
+                     aria-label="Close task details">
+                     <img src="./assets/icons/desktop/close.svg" alt="" />
+                  </button>
+               </header>
+
+               <section class="task-detail__content">
+                  <h2 id="taskDetailTitle" class="task-detail__title"></h2>
+                  <p id="taskDetailDescription" class="task-detail__description"></p>
+
+                  <div class="task-detail__field">
+                     <span class="task-detail__field-label">Due date:</span>
+                     <span id="taskDetailDate" class="task-detail__field-value"></span>
+                  </div>
+
+                  <div class="task-detail__field">
+                     <span class="task-detail__field-label">Priority:</span>
+                     <span class="task-detail__priority">
+                        <span id="taskDetailPriorityText"></span>
+                        <img id="taskDetailPriorityIcon" src="" alt="" />
+                     </span>
+                  </div>
+
+                  <div class="task-detail__group">
+                     <h3 class="task-detail__group-title">Assigned To:</h3>
+                     <ul id="taskDetailAssignedList" class="task-detail__assigned-list"></ul>
+                  </div>
+
+                  <div class="task-detail__group">
+                     <h3 class="task-detail__group-title">Subtasks</h3>
+                     <ul id="taskDetailSubtasksList" class="task-detail__subtasks-list"></ul>
+                  </div>
+               </section>
+
+               <footer class="task-detail__footer">
+                  <button id="taskDetailDelete" class="task-detail__action-btn">
+                     Delete
+                  </button>
+                  <span class="task-detail__divider"></span>
+                  <button id="taskDetailEdit" class="task-detail__action-btn">
+                     Edit
+                  </button>
+               </footer>
+            </article>
          </dialog>
       </section>
    </body>

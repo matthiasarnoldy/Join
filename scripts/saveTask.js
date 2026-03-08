@@ -13,7 +13,7 @@ function getSelectedContacts() {
       contacts.push({
          name: contactName,
          initials: contactInitials,
-         value: contactValue
+         value: contactValue,
       });
    });
    return contacts;
@@ -24,11 +24,12 @@ function getSubtasksList() {
    const subtasks = [];
    subtaskItems.forEach((item) => {
       const textElement = item.querySelector(".add-task__subtask-text");
-      const subtaskText = textElement?.textContent || "";
-      if (subtaskText) {
+      const inputElement = item.querySelector(".add-task__subtask-input");
+      const subtaskText = textElement?.textContent || inputElement?.value || "";
+      if (subtaskText.trim()) {
          subtasks.push({
-            text: subtaskText,
-            completed: false
+            text: subtaskText.trim(),
+            completed: item.dataset.completed === "true",
          });
       }
    });
@@ -59,11 +60,11 @@ function getBasicInputs() {
    return { title, description, date, priority, category };
 }
 
-function createTaskData() {
+function createTaskData(existingId = null) {
    const status = getDialogStatus();
    const { title, description, date, priority, category } = getBasicInputs();
    return {
-      id: Date.now(),
+      id: existingId || Date.now(),
       title,
       description,
       date,
@@ -71,27 +72,9 @@ function createTaskData() {
       category,
       assigned: getSelectedContacts(),
       subtasks: getSubtasksList(),
-      status
+      status,
    };
 }
-
-/*
-function loadTasksFromStorage() {
-   const tasksJson = sessionStorage.getItem("tasks") || "[]";
-   return JSON.parse(tasksJson);
-}
-
-function saveTasksToStorage(tasks) {
-   const tasksJson = JSON.stringify(tasks);
-   sessionStorage.setItem("tasks", tasksJson);
-}
-
-function addTaskToStorage(taskData) {
-   const allTasks = loadTasksFromStorage();
-   allTasks.push(taskData);
-   saveTasksToStorage(allTasks);
-}
-*/
 
 async function addTaskToFirebase(taskData) {
    const response = await fetch(`${SAVE_TASK_BASE_URL}tasks.json`, {
@@ -104,17 +87,55 @@ async function addTaskToFirebase(taskData) {
    }
 }
 
+async function updateTaskInFirebase(taskKey, taskData) {
+   const response = await fetch(`${SAVE_TASK_BASE_URL}tasks/${taskKey}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(taskData),
+   });
+   if (!response.ok) {
+      throw new Error(`Task update failed: HTTP ${response.status}`);
+   }
+}
+
+function getDialogEditContext() {
+   const dialog = document.getElementById("addTaskDialog");
+   if (!dialog) return { isEdit: false, taskId: null, taskKey: null };
+   const taskId = dialog.dataset.editTaskId || null;
+   const taskKey = dialog.dataset.editTaskKey || null;
+   return {
+      isEdit: Boolean(taskId),
+      taskId,
+      taskKey,
+   };
+}
+
+async function findTaskKeyByIdForSave(taskId) {
+   if (!taskId) return null;
+   const response = await fetch(`${SAVE_TASK_BASE_URL}tasks.json`);
+   if (!response.ok) return null;
+   const data = await response.json();
+   if (!data) return null;
+   const entries = Array.isArray(data)
+      ? data.map((task, index) => [String(index), task])
+      : Object.entries(data);
+   const match = entries.find(
+      ([, task]) => task && String(task.id ?? "") === String(taskId),
+   );
+   return match ? match[0] : null;
+}
+
 function isInDialog() {
    const dialog = document.getElementById("addTaskDialog");
    return dialog && dialog.open;
 }
 
-function createSuccessMessage() {
+function createSuccessMessage(isEdit = false) {
    const messageDiv = document.createElement("div");
    messageDiv.className = "task-success-message";
    const messageText = document.createElement("span");
    messageText.className = "task-success-message__text";
-   messageText.textContent = "Task added to board";
+   messageText.textContent = isEdit ? "Task updated" : "Task added to board";
    const messageIcon = document.createElement("img");
    messageIcon.className = "task-success-message__icon";
    messageIcon.src = "./assets/icons/desktop/board.svg";
@@ -123,8 +144,8 @@ function createSuccessMessage() {
    return messageDiv;
 }
 
-function showSuccessMessage() {
-   const message = createSuccessMessage();
+function showSuccessMessage(isEdit = false) {
+   const message = createSuccessMessage(isEdit);
    document.body.appendChild(message);
    requestAnimationFrame(() => {
       message.classList.add("task-success-message--visible");
@@ -143,15 +164,25 @@ function redirectAfterSave() {
 }
 
 async function saveTaskToBoard() {
-   const taskData = createTaskData();
+   const { isEdit, taskId, taskKey } = getDialogEditContext();
+   const taskData = createTaskData(taskId);
    try {
-      await addTaskToFirebase(taskData);
+      if (isEdit) {
+         const resolvedTaskKey = taskKey || (await findTaskKeyByIdForSave(taskId));
+         if (!resolvedTaskKey) {
+            throw new Error(`Task key not found for edit id ${taskId}`);
+         }
+         await updateTaskInFirebase(resolvedTaskKey, taskData);
+      } else {
+         await addTaskToFirebase(taskData);
+      }
       if (isInDialog()) {
          localStorage.setItem("showTaskSuccess", "true");
+         localStorage.setItem("showTaskSuccessEdit", isEdit ? "true" : "false");
          redirectAfterSave();
          return;
       }
-      showSuccessMessage();
+      showSuccessMessage(isEdit);
       setTimeout(() => {
          redirectAfterSave();
       }, 1000);

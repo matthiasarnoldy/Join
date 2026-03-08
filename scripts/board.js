@@ -3,26 +3,54 @@ let dragPreviewCard = null;
 const BOARD_BASE_URL =
    "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
 const taskKeyById = {};
+const tasksById = {};
+
+function getAddTaskDialog() {
+   return document.getElementById("addTaskDialog");
+}
+
+function getTaskDetailDialog() {
+   return document.getElementById("taskDetailDialog");
+}
+
+function setAddTaskDialogMode(isEditMode) {
+   const title = document.getElementById("addTaskDialogTitle");
+   const buttonText = document.querySelector(".add-task__button-text");
+   if (title) title.textContent = isEditMode ? "Edit Task" : "Add Tasks";
+   if (buttonText) buttonText.textContent = isEditMode ? "Save changes" : "Create Task";
+}
+
+function resetAddTaskDialogMode() {
+   const dialog = getAddTaskDialog();
+   if (!dialog) return;
+   delete dialog.dataset.editTaskId;
+   delete dialog.dataset.editTaskKey;
+   setAddTaskDialogMode(false);
+}
 
 function openDialog(status = "todo") {
-   const dialog = document.getElementById("addTaskDialog");
-   if (dialog) {
-      // Status im Dialog speichern für späteren Abruf
-      dialog.dataset.taskStatus = status;
-      dialog.showModal();
-   }
+   const dialog = getAddTaskDialog();
+   if (!dialog) return;
+   dialog.dataset.taskStatus = status;
+   resetAddTaskDialogMode();
+   dialog.showModal();
 }
 
 function closeDialog() {
-   const dialog = document.getElementById("addTaskDialog");
-   if (dialog) {
-      dialog.close();
-      // Status zurücksetzen
-      delete dialog.dataset.taskStatus;
-   }
+   const dialog = getAddTaskDialog();
+   if (!dialog) return;
+   dialog.close();
+   delete dialog.dataset.taskStatus;
+   resetAddTaskDialogMode();
 }
 
-// Event-Listener für Plus-Buttons in den Spalten
+function closeTaskDetailDialog() {
+   const dialog = getTaskDetailDialog();
+   if (!dialog) return;
+   dialog.close();
+   delete dialog.dataset.taskId;
+}
+
 function setupColumnAddButtons() {
    const addButtons = document.querySelectorAll(".board-column__add");
    addButtons.forEach((button) => {
@@ -39,8 +67,6 @@ const STATUS_BY_DIRECTORY_ID = {
    AwaitTask: "await-feedback",
    DoneTask: "done",
 };
-
-// ===== TASK SUCHE =====
 
 function setCardVisibility(card, shouldShow) {
    card.style.display = shouldShow ? "" : "none";
@@ -116,45 +142,8 @@ function setupTaskSearch() {
    });
 }
 
-// ===== DRAG & DROP LOGIC =====
 function getStatusByDirectoryId(directoryId) {
    return STATUS_BY_DIRECTORY_ID[directoryId] || null;
-}
-
-async function updateTaskStatusInFirebase(taskId, newStatus) {
-   if (!taskId || !newStatus) return;
-   let taskKey = taskKeyById[String(taskId)];
-   if (!taskKey) {
-      taskKey = await findTaskKeyById(taskId);
-   }
-   if (!taskKey) {
-      throw new Error(`Task key not found for id ${taskId}`);
-   }
-   const taskUrl = `${BOARD_BASE_URL}tasks/${taskKey}.json`;
-   const currentTaskResponse = await fetch(taskUrl);
-   if (!currentTaskResponse.ok) {
-      throw new Error(
-         `Task fetch before update failed: HTTP ${currentTaskResponse.status}`,
-      );
-   }
-   const currentTask = await currentTaskResponse.json();
-   if (!currentTask || typeof currentTask !== "object") {
-      throw new Error(`Task data missing for key ${taskKey}`);
-   }
-   const updatedTask = {
-      ...currentTask,
-      id: currentTask.id ?? taskId,
-      status: newStatus,
-   };
-   const response = await fetch(taskUrl, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedTask),
-   });
-   if (!response.ok) {
-      throw new Error(`Task status update failed: HTTP ${response.status}`);
-   }
-   taskKeyById[String(taskId)] = taskKey;
 }
 
 async function findTaskKeyById(taskId) {
@@ -169,6 +158,55 @@ async function findTaskKeyById(taskId) {
       ([, task]) => task && String(task.id ?? "") === String(taskId),
    );
    return match ? match[0] : null;
+}
+
+async function getTaskKeyById(taskId) {
+   let taskKey = taskKeyById[String(taskId)];
+   if (!taskKey) {
+      taskKey = await findTaskKeyById(taskId);
+      if (taskKey) taskKeyById[String(taskId)] = taskKey;
+   }
+   return taskKey;
+}
+
+async function putTaskToFirebase(taskId, taskData) {
+   const taskKey = await getTaskKeyById(taskId);
+   if (!taskKey) throw new Error(`Task key not found for id ${taskId}`);
+   const response = await fetch(`${BOARD_BASE_URL}tasks/${taskKey}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...taskData, id: taskData.id ?? taskId }),
+   });
+   if (!response.ok) {
+      throw new Error(`Task update failed: HTTP ${response.status}`);
+   }
+   taskKeyById[String(taskId)] = taskKey;
+}
+
+async function deleteTaskFromFirebase(taskId) {
+   const taskKey = await getTaskKeyById(taskId);
+   if (!taskKey) throw new Error(`Task key not found for id ${taskId}`);
+   const response = await fetch(`${BOARD_BASE_URL}tasks/${taskKey}.json`, {
+      method: "DELETE",
+   });
+   if (!response.ok) {
+      throw new Error(`Task delete failed: HTTP ${response.status}`);
+   }
+   delete taskKeyById[String(taskId)];
+   delete tasksById[String(taskId)];
+}
+
+async function updateTaskStatusInFirebase(taskId, newStatus) {
+   if (!taskId || !newStatus) return;
+   const currentTask = tasksById[String(taskId)];
+   if (!currentTask) return;
+   const updatedTask = {
+      ...currentTask,
+      id: currentTask.id ?? taskId,
+      status: newStatus,
+   };
+   await putTaskToFirebase(taskId, updatedTask);
+   tasksById[String(taskId)] = updatedTask;
 }
 
 function clearDropHighlights() {
@@ -298,8 +336,6 @@ function setupDropZones() {
    directories.forEach((directory) => initializeDropZone(directory));
 }
 
-// ===== TASK CARDS GENERIEREN =====
-
 function getPriorityIcon(priority) {
    const icons = {
       urgent: "./assets/icons/desktop/Priority orange.svg",
@@ -307,6 +343,15 @@ function getPriorityIcon(priority) {
       low: "./assets/icons/desktop/Priority green.svg",
    };
    return icons[priority] || icons.medium;
+}
+
+function getPriorityLabel(priority) {
+   const labels = {
+      urgent: "Urgent",
+      medium: "Medium",
+      low: "Low",
+   };
+   return labels[String(priority || "")] || "Medium";
 }
 
 function getCategoryLabel(category) {
@@ -355,7 +400,6 @@ function buildAvatarsHTML(taskData) {
       : avatarHTML;
 }
 
-// Subtask, avatar and card HTML are provided by template.js (pure HTML, no logic)
 function getSubtaskStats(subtasks) {
    const total = subtasks?.length || 0;
    const completed = (subtasks || []).filter((item) => item.completed).length;
@@ -441,14 +485,17 @@ function normalizeFirebaseTasks(data) {
       .filter(([, task]) => task && typeof task === "object")
       .map(([key, task]) => {
          const resolvedId = task.id ?? key;
+         const normalizedTask = { ...task, id: resolvedId };
          taskKeyById[String(resolvedId)] = key;
-         return { ...task, id: resolvedId };
+         tasksById[String(resolvedId)] = normalizedTask;
+         return normalizedTask;
       });
 }
 
 async function loadTasks() {
    clearBoardTaskCards();
    Object.keys(taskKeyById).forEach((taskId) => delete taskKeyById[taskId]);
+   Object.keys(tasksById).forEach((taskId) => delete tasksById[taskId]);
    const columns = {
       todo: document.getElementById("TodoTask"),
       "in-progress": document.getElementById("InProgressTask"),
@@ -471,7 +518,306 @@ async function loadTasks() {
    }
 }
 
-// Tasks beim Laden der Seite anzeigen
+function renderTaskDetail(taskData) {
+   const label = document.getElementById("taskDetailCategory");
+   const title = document.getElementById("taskDetailTitle");
+   const description = document.getElementById("taskDetailDescription");
+   const dueDate = document.getElementById("taskDetailDate");
+   const priorityText = document.getElementById("taskDetailPriorityText");
+   const priorityIcon = document.getElementById("taskDetailPriorityIcon");
+   const assignedList = document.getElementById("taskDetailAssignedList");
+   const subtasksList = document.getElementById("taskDetailSubtasksList");
+
+   if (label) {
+      label.className = "task-detail__label";
+      if (taskData.category === "technical") {
+         label.classList.add("task-detail__label--teal");
+      }
+      label.textContent = getCategoryLabel(taskData.category) || "No category";
+   }
+   if (title) title.textContent = taskData.title || "Untitled task";
+   if (description)
+      description.textContent = taskData.description || "No description";
+   if (dueDate) dueDate.textContent = taskData.date || "No due date";
+   if (priorityText) priorityText.textContent = getPriorityLabel(taskData.priority);
+   if (priorityIcon) {
+      priorityIcon.src = getPriorityIcon(taskData.priority);
+      priorityIcon.alt = getPriorityLabel(taskData.priority);
+   }
+
+   if (assignedList) {
+      assignedList.innerHTML = "";
+      const assignees = taskData.assigned || [];
+      if (assignees.length === 0) {
+         const emptyItem = document.createElement("li");
+         emptyItem.className = "task-detail__empty";
+         emptyItem.textContent = "No assignees";
+         assignedList.appendChild(emptyItem);
+      } else {
+         assignees.forEach((assignee, index) => {
+            const item = document.createElement("li");
+            item.className = "task-detail__assigned-item";
+            const avatar = document.createElement("span");
+            const colors = ["orange", "teal", "purple"];
+            avatar.className = `avatar avatar--${colors[index % colors.length]}`;
+            avatar.textContent = assignee.initials || "?";
+            const name = document.createElement("span");
+            name.className = "task-detail__assigned-name";
+            name.textContent = assignee.name || "Unnamed";
+            item.append(avatar, name);
+            assignedList.appendChild(item);
+         });
+      }
+   }
+
+   if (subtasksList) {
+      subtasksList.innerHTML = "";
+      const subtasks = taskData.subtasks || [];
+      if (subtasks.length === 0) {
+         const emptyItem = document.createElement("li");
+         emptyItem.className = "task-detail__empty";
+         emptyItem.textContent = "No subtasks";
+         subtasksList.appendChild(emptyItem);
+      } else {
+         subtasks.forEach((subtask, index) => {
+            const item = document.createElement("li");
+            item.className = "task-detail__subtask-item";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "task-detail__subtask-checkbox";
+            checkbox.checked = Boolean(subtask.completed);
+            checkbox.dataset.subtaskIndex = String(index);
+            const text = document.createElement("span");
+            text.className = "task-detail__subtask-text";
+            text.textContent = subtask.text || `Subtask ${index + 1}`;
+            if (checkbox.checked) text.classList.add("task-detail__subtask-text--done");
+            item.append(checkbox, text);
+            subtasksList.appendChild(item);
+         });
+      }
+   }
+}
+
+function openTaskDetail(taskId) {
+   const dialog = getTaskDetailDialog();
+   if (!dialog) return;
+   const taskData = tasksById[String(taskId)];
+   if (!taskData) return;
+   dialog.dataset.taskId = String(taskId);
+   renderTaskDetail(taskData);
+   dialog.showModal();
+}
+
+function setupTaskCardClicks() {
+   const grid = document.querySelector(".board-task-grid");
+   if (!grid || grid.dataset.cardClickInitialized === "true") return;
+   grid.dataset.cardClickInitialized = "true";
+   grid.addEventListener("click", (event) => {
+      const card = event.target.closest(".task-card");
+      if (!card || draggedCard) return;
+      openTaskDetail(card.dataset.taskId);
+   });
+}
+
+async function handleTaskDetailSubtaskToggle(event) {
+   const checkbox = event.target.closest(".task-detail__subtask-checkbox");
+   if (!checkbox) return;
+   const dialog = getTaskDetailDialog();
+   const taskId = dialog?.dataset.taskId;
+   const subtaskIndex = Number.parseInt(checkbox.dataset.subtaskIndex || "", 10);
+   if (!taskId || Number.isNaN(subtaskIndex)) return;
+   const currentTask = tasksById[String(taskId)];
+   if (!currentTask?.subtasks?.[subtaskIndex]) return;
+
+   const updatedSubtasks = (currentTask.subtasks || []).map((subtask, index) =>
+      index === subtaskIndex
+         ? { ...subtask, completed: checkbox.checked }
+         : subtask,
+   );
+   const updatedTask = { ...currentTask, subtasks: updatedSubtasks };
+
+   try {
+      await putTaskToFirebase(taskId, updatedTask);
+      tasksById[String(taskId)] = updatedTask;
+      await loadTasks();
+      openTaskDetail(taskId);
+   } catch (error) {
+      checkbox.checked = !checkbox.checked;
+      console.error("Subtask update failed:", error);
+   }
+}
+
+function setPriorityInForm(priority) {
+   const priorityField = document.getElementById("addTaskPriority");
+   if (!priorityField) return;
+   const buttons = priorityField.querySelectorAll(".add-task__priority-option");
+   buttons.forEach((button) =>
+      button.classList.remove("add-task__priority-option--active"),
+   );
+   const target = priorityField.querySelector(
+      `.add-task__priority-option--${priority || "medium"}`,
+   );
+   if (target) target.classList.add("add-task__priority-option--active");
+}
+
+function setCategoryInForm(category) {
+   const input = document.getElementById("addTaskCategoryInput");
+   const select = document.getElementById("addTaskCategory");
+   if (!input || !select) return;
+   const label = select.querySelector(".add-task__select-value");
+   const option = document.querySelector(
+      `#addTaskCategoryMenu .add-task__select-option[data-value="${category}"]`,
+   );
+   input.value = category || "";
+   if (label) {
+      label.textContent = option
+         ? option.textContent.trim()
+         : "Select task category";
+      label.dataset.lastLabel = label.textContent;
+   }
+   input.dataset.lastValue = input.value;
+   input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function setAssignedInForm(assigned) {
+   const options = document.querySelectorAll(
+      "#addTaskAssignedMenu .add-task__select-option--assigned",
+   );
+   const assignedValues = new Set((assigned || []).map((person) => person.value));
+   const assignedNames = new Set((assigned || []).map((person) => person.name));
+
+   options.forEach((option) => {
+      const optionName = option.textContent.trim();
+      const optionValue = option.dataset.value || "";
+      const isSelected =
+         assignedValues.has(optionValue) || assignedNames.has(optionName);
+      const checkbox = option.querySelector(".add-task__option-checkbox");
+      option.classList.toggle(ASSIGNED_SELECTED_CLASS, isSelected);
+      if (checkbox) {
+         checkbox.src = isSelected
+            ? "./assets/icons/desktop/checkBox--checked.svg"
+            : "./assets/icons/desktop/checkBox.svg";
+      }
+   });
+
+   const input = document.getElementById("addTaskAssignedInput");
+   if (input) {
+      input.value = (assigned || []).length > 0 ? "assigned" : "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+   }
+
+   if (typeof getAssignedElements === "function" && typeof updateContactInitials === "function") {
+      const elements = getAssignedElements();
+      if (elements) updateContactInitials(elements);
+   }
+}
+
+function setSubtasksInForm(subtasks) {
+   const list = document.querySelector(".add-task__subtask-list");
+   if (!list) return;
+   list.innerHTML = "";
+   (subtasks || []).forEach((subtask) => {
+      if (typeof createSubtaskItem === "function") {
+         const item = createSubtaskItem(subtask.text || "");
+         item.dataset.completed = subtask.completed ? "true" : "false";
+         list.prepend(item);
+         if (typeof setupSubtaskListeners === "function") {
+            setupSubtaskListeners(item);
+         }
+      }
+   });
+}
+
+function fillAddTaskFormForEdit(taskData) {
+   const title = document.getElementById("addTaskTitle");
+   const description = document.getElementById("addTaskDescription");
+   const date = document.getElementById("addTaskDate");
+   if (title) {
+      title.value = taskData.title || "";
+      title.dispatchEvent(new Event("input", { bubbles: true }));
+   }
+   if (description) {
+      description.value = taskData.description || "";
+      description.dispatchEvent(new Event("input", { bubbles: true }));
+   }
+   if (date) {
+      date.value = taskData.date || "";
+      date.dispatchEvent(new Event("input", { bubbles: true }));
+   }
+   setPriorityInForm(taskData.priority || "medium");
+   setCategoryInForm(taskData.category || "");
+   setAssignedInForm(taskData.assigned || []);
+   setSubtasksInForm(taskData.subtasks || []);
+}
+
+function openEditTaskDialog(taskId) {
+   const dialog = getAddTaskDialog();
+   const taskData = tasksById[String(taskId)];
+   if (!dialog || !taskData) return;
+
+   if (typeof handleClearClick === "function") {
+      const clearButton = dialog.querySelector(".add-task__button--cancel");
+      if (clearButton) {
+         const fakeEvent = { preventDefault: () => {} };
+         handleClearClick(fakeEvent, clearButton);
+      }
+   }
+
+   const taskKey = taskKeyById[String(taskId)] || "";
+   dialog.dataset.taskStatus = taskData.status || "todo";
+   dialog.dataset.editTaskId = String(taskId);
+   if (taskKey) dialog.dataset.editTaskKey = taskKey;
+   setAddTaskDialogMode(true);
+   fillAddTaskFormForEdit(taskData);
+   closeTaskDetailDialog();
+   dialog.showModal();
+}
+
+async function handleDeleteTask(taskId) {
+   const shouldDelete = window.confirm("Delete this task?");
+   if (!shouldDelete) return;
+   try {
+      await deleteTaskFromFirebase(taskId);
+      closeTaskDetailDialog();
+      await loadTasks();
+      updatePlaceholders();
+   } catch (error) {
+      console.error("Task delete failed:", error);
+   }
+}
+
+function setupTaskDetailInteractions() {
+   const dialog = getTaskDetailDialog();
+   if (!dialog || dialog.dataset.initialized === "true") return;
+   dialog.dataset.initialized = "true";
+
+   const closeButton = document.getElementById("taskDetailClose");
+   const deleteButton = document.getElementById("taskDetailDelete");
+   const editButton = document.getElementById("taskDetailEdit");
+   const subtasksList = document.getElementById("taskDetailSubtasksList");
+
+   if (closeButton) {
+      closeButton.addEventListener("click", () => closeTaskDetailDialog());
+   }
+   if (subtasksList) {
+      subtasksList.addEventListener("change", handleTaskDetailSubtaskToggle);
+   }
+   if (deleteButton) {
+      deleteButton.addEventListener("click", async () => {
+         const taskId = dialog.dataset.taskId;
+         if (!taskId) return;
+         await handleDeleteTask(taskId);
+      });
+   }
+   if (editButton) {
+      editButton.addEventListener("click", () => {
+         const taskId = dialog.dataset.taskId;
+         if (!taskId) return;
+         openEditTaskDialog(taskId);
+      });
+   }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
    await loadTasks();
    initializeDraggableCards();
@@ -479,19 +825,27 @@ document.addEventListener("DOMContentLoaded", async () => {
    updatePlaceholders();
    setupColumnAddButtons();
    setupTaskSearch();
+   setupTaskCardClicks();
+   setupTaskDetailInteractions();
 
    const shouldShowSuccess = localStorage.getItem("showTaskSuccess");
    if (shouldShowSuccess === "true") {
+      const successIsEdit = localStorage.getItem("showTaskSuccessEdit") === "true";
       localStorage.removeItem("showTaskSuccess");
+      localStorage.removeItem("showTaskSuccessEdit");
       if (typeof showSuccessMessage === "function") {
-         showSuccessMessage();
+         showSuccessMessage(successIsEdit);
       }
    }
 });
 
 window.addEventListener("click", (event) => {
-   const dialog = document.getElementById("addTaskDialog");
-   if (dialog && event.target === dialog) {
-      dialog.close();
+   const addDialog = getAddTaskDialog();
+   if (addDialog && event.target === addDialog) {
+      closeDialog();
+   }
+   const detailDialog = getTaskDetailDialog();
+   if (detailDialog && event.target === detailDialog) {
+      closeTaskDetailDialog();
    }
 });
