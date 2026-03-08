@@ -591,7 +591,7 @@
    top: calc(100% - 10px);
    right: 0;
    left: 0;
-   z-index: 0;
+   z-index: 20;
    padding: 10px 0 0;
    margin: 0;
    display: flex;
@@ -616,7 +616,6 @@
 }
 
 .add-task__select-menu--assigned {
-   z-index: 0;
    max-height: 294px;
    min-height: 294px;
    overflow-y: scroll;
@@ -680,13 +679,11 @@
 
 .add-task__selection-group--category-open .add-task__input-group--subtasks {
    position: relative;
-   transform: translateY(90px);
 }
 
 .add-task__information-group--selection.add-task__selection-group--assigned-open
    .add-task__selection-group {
    position: relative;
-   transform: translateY(294px);
 }
 
 .add-task__select-option {
