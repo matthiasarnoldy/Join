@@ -254,6 +254,7 @@
    filter: grayscale(0.35);
    opacity: 0.45;
    cursor: grabbing;
+   transform: rotate(5deg);
 }
 
 .task-card--drag-preview {
@@ -263,7 +264,7 @@
    z-index: 9999;
    margin: 0;
    box-shadow: 0 14px 28px #00000026;
-   transform: rotate(-4deg) scale(1.02);
+   transform: rotate(5deg) scale(1.02);
 }
 
 .board-task-directory--dragover {
