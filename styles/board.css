@@ -192,7 +192,7 @@
 .board-task-grid {
    width: 100%;
    max-width: calc(1440px - 232px);
-   padding: 16px 64px 0 108px;
+   padding: 16px 64px 16px 108px;
    display: flex;
    justify-content: space-between;
    align-items: flex-start;
