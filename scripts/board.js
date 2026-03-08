@@ -1,3 +1,6 @@
+let draggedCard = null;
+let dragPreviewCard = null;
+
 function openDialog(status = "todo") {
    const dialog = document.getElementById("addTaskDialog");
    if (dialog) {
@@ -40,9 +43,6 @@ const STATUS_BY_DIRECTORY_ID = {
    AwaitTask: "await-feedback",
    DoneTask: "done",
 };
-
-let draggedCard = null;
-let dragPreviewCard = null;
 
 // ===== TASK SUCHE =====
 
@@ -165,42 +165,42 @@ function getInsertBeforeElement(container, mouseY) {
    return closest.element;
 }
 
+function handleCardDragStart(card, event) {
+   draggedCard = card;
+   card.classList.add("task-card--dragging");
+   if (!event.dataTransfer) return;
+   event.dataTransfer.effectAllowed = "move";
+   dragPreviewCard = card.cloneNode(true);
+   dragPreviewCard.classList.add("task-card--drag-preview");
+   dragPreviewCard.style.width = `${card.offsetWidth}px`;
+   document.body.appendChild(dragPreviewCard);
+   event.dataTransfer.setDragImage(
+      dragPreviewCard,
+      card.offsetWidth / 2,
+      card.offsetHeight / 2,
+   );
+   event.dataTransfer.setData("text/plain", card.dataset.taskId || "demo-card");
+}
+
+function handleCardDragEnd(card) {
+   card.classList.remove("task-card--dragging");
+   if (dragPreviewCard) {
+      dragPreviewCard.remove();
+      dragPreviewCard = null;
+   }
+   clearDropHighlights();
+   draggedCard = null;
+   updatePlaceholders();
+}
+
 function makeCardDraggable(card) {
    if (!card || card.dataset.dndInitialized === "true") return;
    card.dataset.dndInitialized = "true";
    card.setAttribute("draggable", "true");
-
-   card.addEventListener("dragstart", (event) => {
-      draggedCard = card;
-      card.classList.add("task-card--dragging");
-      if (event.dataTransfer) {
-         event.dataTransfer.effectAllowed = "move";
-         dragPreviewCard = card.cloneNode(true);
-         dragPreviewCard.classList.add("task-card--drag-preview");
-         dragPreviewCard.style.width = `${card.offsetWidth}px`;
-         document.body.appendChild(dragPreviewCard);
-         event.dataTransfer.setDragImage(
-            dragPreviewCard,
-            card.offsetWidth / 2,
-            card.offsetHeight / 2,
-         );
-         event.dataTransfer.setData(
-            "text/plain",
-            card.dataset.taskId || "demo-card",
-         );
-      }
-   });
-
-   card.addEventListener("dragend", () => {
-      card.classList.remove("task-card--dragging");
-      if (dragPreviewCard) {
-         dragPreviewCard.remove();
-         dragPreviewCard = null;
-      }
-      clearDropHighlights();
-      draggedCard = null;
-      updatePlaceholders();
-   });
+   card.addEventListener("dragstart", (event) =>
+      handleCardDragStart(card, event),
+   );
+   card.addEventListener("dragend", () => handleCardDragEnd(card));
 }
 
 function initializeDraggableCards() {
@@ -208,57 +208,55 @@ function initializeDraggableCards() {
    cards.forEach(makeCardDraggable);
 }
 
+function handleDirectoryDragOver(directory, event) {
+   if (!draggedCard) return;
+   event.preventDefault();
+   directory.classList.add("board-task-directory--dragover");
+   const placeholder = directory.querySelector(".board-task-placeholder");
+   if (placeholder) placeholder.style.display = "none";
+   const insertBeforeElement = getInsertBeforeElement(directory, event.clientY);
+   if (insertBeforeElement)
+      directory.insertBefore(draggedCard, insertBeforeElement);
+   else directory.appendChild(draggedCard);
+}
+
+function handleDirectoryDragLeave(directory, event) {
+   if (directory.contains(event.relatedTarget)) return;
+   directory.classList.remove("board-task-directory--dragover");
+   const placeholder = directory.querySelector(".board-task-placeholder");
+   if (!placeholder) return;
+   const hasVisibleCards = Array.from(
+      directory.querySelectorAll(".task-card"),
+   ).some((card) => card !== draggedCard && card.style.display !== "none");
+   placeholder.style.display = hasVisibleCards ? "none" : "";
+}
+
+function handleDirectoryDrop(directory, event) {
+   if (!draggedCard) return;
+   event.preventDefault();
+   directory.classList.remove("board-task-directory--dragover");
+   const targetStatus = getStatusByDirectoryId(directory.id);
+   updateTaskStatusInStorage(draggedCard.dataset.taskId, targetStatus);
+   updatePlaceholders();
+}
+
+function initializeDropZone(directory) {
+   if (directory.dataset.dropzoneInitialized === "true") return;
+   directory.dataset.dropzoneInitialized = "true";
+   directory.addEventListener("dragover", (event) =>
+      handleDirectoryDragOver(directory, event),
+   );
+   directory.addEventListener("dragleave", (event) =>
+      handleDirectoryDragLeave(directory, event),
+   );
+   directory.addEventListener("drop", (event) =>
+      handleDirectoryDrop(directory, event),
+   );
+}
+
 function setupDropZones() {
    const directories = document.querySelectorAll(".board-task-directory");
-
-   directories.forEach((directory) => {
-      if (directory.dataset.dropzoneInitialized === "true") return;
-      directory.dataset.dropzoneInitialized = "true";
-
-      directory.addEventListener("dragover", (event) => {
-         if (!draggedCard) return;
-         event.preventDefault();
-         directory.classList.add("board-task-directory--dragover");
-         const placeholder = directory.querySelector(".board-task-placeholder");
-         if (placeholder) placeholder.style.display = "none";
-         const insertBeforeElement = getInsertBeforeElement(
-            directory,
-            event.clientY,
-         );
-         if (insertBeforeElement) {
-            directory.insertBefore(draggedCard, insertBeforeElement);
-         } else {
-            directory.appendChild(draggedCard);
-         }
-      });
-
-      directory.addEventListener("dragleave", (event) => {
-         if (!directory.contains(event.relatedTarget)) {
-            directory.classList.remove("board-task-directory--dragover");
-            const placeholder = directory.querySelector(
-               ".board-task-placeholder",
-            );
-            if (placeholder) {
-               const hasVisibleCards = Array.from(
-                  directory.querySelectorAll(".task-card"),
-               ).some(
-                  (card) =>
-                     card !== draggedCard && card.style.display !== "none",
-               );
-               placeholder.style.display = hasVisibleCards ? "none" : "";
-            }
-         }
-      });
-
-      directory.addEventListener("drop", (event) => {
-         if (!draggedCard) return;
-         event.preventDefault();
-         directory.classList.remove("board-task-directory--dragover");
-         const targetStatus = getStatusByDirectoryId(directory.id);
-         updateTaskStatusInStorage(draggedCard.dataset.taskId, targetStatus);
-         updatePlaceholders();
-      });
-   });
+   directories.forEach((directory) => initializeDropZone(directory));
 }
 
 // ===== TASK CARDS GENERIEREN =====
@@ -281,87 +279,97 @@ function getCategoryLabel(category) {
    return labels[categoryStr] || categoryStr;
 }
 
-function buildAvatarsHTML(taskData) {
-   if (!taskData.assigned || taskData.assigned.length === 0) return "";
+function getAvatarDisplayCount(totalAssignees) {
    const avatarWidth = 32;
    const overlap = 8;
    const available = 220;
    const maxAvatars =
       Math.floor((available - avatarWidth) / (avatarWidth - overlap)) + 1;
-   const total = taskData.assigned.length;
-   const displayCount = total > maxAvatars ? maxAvatars - 1 : total;
+   return totalAssignees > maxAvatars ? maxAvatars - 1 : totalAssignees;
+}
+
+function renderSingleAvatar(assignee, index) {
    const colors = ["orange", "teal", "purple"];
-   const avatars = taskData.assigned.slice(0, displayCount);
-   const avatarTemplateAvailable = typeof taskCardAvatarHTML === "function";
-   const overflowTemplateAvailable =
-      typeof taskCardAvatarOverflowHTML === "function";
-   let html = avatars
-      .map((assignee, index) => {
-         const color = colors[index % colors.length];
-         return avatarTemplateAvailable
-            ? taskCardAvatarHTML(color, assignee.initials)
-            : `<span class="avatar avatar--${color}">${assignee.initials}</span>`;
-      })
+   const color = colors[index % colors.length];
+   return typeof taskCardAvatarHTML === "function"
+      ? taskCardAvatarHTML(color, assignee.initials)
+      : `<span class="avatar avatar--${color}">${assignee.initials}</span>`;
+}
+
+function renderAvatarOverflow(remaining) {
+   return typeof taskCardAvatarOverflowHTML === "function"
+      ? taskCardAvatarOverflowHTML(remaining)
+      : `<span class="avatar avatar--overflow">+${remaining}</span>`;
+}
+
+function buildAvatarsHTML(taskData) {
+   const assignees = taskData.assigned || [];
+   if (assignees.length === 0) return "";
+   const displayCount = getAvatarDisplayCount(assignees.length);
+   const avatarHTML = assignees
+      .slice(0, displayCount)
+      .map((assignee, index) => renderSingleAvatar(assignee, index))
       .join("");
-   const remaining = total - displayCount;
-   if (remaining > 0)
-      html += overflowTemplateAvailable
-         ? taskCardAvatarOverflowHTML(remaining)
-         : `<span class="avatar avatar--overflow">+${remaining}</span>`;
-   return html;
+   const remaining = assignees.length - displayCount;
+   return remaining > 0
+      ? avatarHTML + renderAvatarOverflow(remaining)
+      : avatarHTML;
 }
 
 // Subtask, avatar and card HTML are provided by template.js (pure HTML, no logic)
+function getSubtaskStats(subtasks) {
+   const total = subtasks?.length || 0;
+   const completed = (subtasks || []).filter((item) => item.completed).length;
+   const progress = total ? (completed / total) * 100 : 0;
+   return { total, completed, progress };
+}
+
+function buildSubtasksHTML(subtasks) {
+   const { total, completed, progress } = getSubtaskStats(subtasks);
+   if (typeof taskCardSubtasksHTML !== "function" || total === 0) return "";
+   return taskCardSubtasksHTML(completed, total, progress);
+}
+
+function getTaskCardRenderData(taskData) {
+   return {
+      categoryClass: taskData.category === "technical" ? "task-card__label--teal" : "",
+      categoryLabel: getCategoryLabel(taskData.category),
+      priorityIconSrc: getPriorityIcon(taskData.priority),
+      avatarsHTML: buildAvatarsHTML(taskData),
+      subtasksHTML: buildSubtasksHTML(taskData.subtasks),
+   };
+}
+
+function buildTaskCardHTML(taskData, viewData) {
+   if (typeof taskCardHTML === "function")
+      return taskCardHTML(
+         viewData.categoryClass,
+         viewData.categoryLabel,
+         taskData.title,
+         taskData.description,
+         viewData.subtasksHTML,
+         viewData.avatarsHTML,
+         viewData.priorityIconSrc,
+      );
+   if (typeof taskCardFallbackHTML === "function")
+      return taskCardFallbackHTML(
+         viewData.categoryClass,
+         viewData.categoryLabel,
+         taskData.title,
+         taskData.description,
+         viewData.subtasksHTML,
+         viewData.avatarsHTML,
+         viewData.priorityIconSrc,
+      );
+   return "";
+}
 
 function createTaskCard(taskData) {
    const card = document.createElement("article");
    card.className = "task-card";
    card.dataset.taskId = taskData.id;
-   const categoryClass =
-      taskData.category === "technical" ? "task-card__label--teal" : "";
-   const completedSubtasks = (taskData.subtasks || []).filter(
-      (s) => s.completed,
-   ).length;
-   const subtaskProgress =
-      taskData.subtasks && taskData.subtasks.length
-         ? (completedSubtasks / taskData.subtasks.length) * 100
-         : 0;
-   const avatarsHTML = buildAvatarsHTML(taskData);
-   const subtasksHTML =
-      typeof taskCardSubtasksHTML === "function" &&
-      taskData.subtasks &&
-      taskData.subtasks.length
-         ? taskCardSubtasksHTML(
-              completedSubtasks,
-              taskData.subtasks.length,
-              subtaskProgress,
-           )
-         : "";
-   const priorityIconSrc = getPriorityIcon(taskData.priority);
-   const categoryLabel = getCategoryLabel(taskData.category);
-   const useTemplate = typeof taskCardHTML === "function";
-   const useFallbackTemplate = typeof taskCardFallbackHTML === "function";
-   card.innerHTML = useTemplate
-      ? taskCardHTML(
-           categoryClass,
-           categoryLabel,
-           taskData.title,
-           taskData.description,
-           subtasksHTML,
-           avatarsHTML,
-           priorityIconSrc,
-         )
-      : useFallbackTemplate
-      ? taskCardFallbackHTML(
-           categoryClass,
-           categoryLabel,
-           taskData.title,
-           taskData.description,
-           subtasksHTML,
-           avatarsHTML,
-           priorityIconSrc,
-        )
-      : "";
+   const viewData = getTaskCardRenderData(taskData);
+   card.innerHTML = buildTaskCardHTML(taskData, viewData);
    makeCardDraggable(card);
    return card;
 }
