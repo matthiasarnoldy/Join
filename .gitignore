@@ -1,2 +1,4 @@
 .Ds_Store
-.vscode/settings.json
+.vscode/
+db.json
+**/db.json
