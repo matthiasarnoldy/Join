@@ -426,36 +426,6 @@ input {
    height: 15px;
 }
 
-.contact-success-message {
-   font-size: 20px;
-   font-weight: 400;
-   font-family: "Inter";
-   line-height: 120%;
-   letter-spacing: 0;
-   color: #ffffff;
-   position: fixed;
-   top: 116px;
-   left: 50%;
-   z-index: 10001;
-   width: 326px;
-   min-height: 74px;
-   padding: 0 20px;
-   display: inline-flex;
-   align-items: center;
-   justify-content: center;
-   border-radius: 20px;
-   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-   background: #2a3647;
-   opacity: 0;
-   transform: translateX(-50%) translateY(-12px);
-   transition: all 250ms ease-in-out;
-}
-
-.contact-success-message--visible {
-   opacity: 1;
-   transform: translateX(-50%) translateY(0);
-}
-
 .d-none {
    display: none;
 }
@@ -565,10 +535,6 @@ input {
       flex: 1 1 auto;
    }
 
-   .contact-success-message {
-      font-size: 20px;
-      top: 96px;
-   }
 }
 
 @media (max-width: 360px) {
