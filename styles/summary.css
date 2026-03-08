@@ -273,6 +273,7 @@
       padding: 44px 16px 44px;
       align-items: flex-start;
       flex-direction: column;
+      gap: 16px;
    }
 
    .headline__name {
