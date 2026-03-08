@@ -263,6 +263,9 @@
       height: calc(100dvh - 80px);
       padding-bottom: 104px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior-y: contain;
    }
 
    .headline {
@@ -369,7 +372,7 @@
 }
 
 .summary-greeting-active .overview {
-   min-height: calc(100vh - 96px);
+   min-height: calc(100vh - 80px);
    padding-left: 0;
    justify-content: center;
 }
