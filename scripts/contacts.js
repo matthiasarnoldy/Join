@@ -1,4 +1,5 @@
 let selectedContactId = null;
+let editingContactId = null;
 let contactsState = [];
 
 const CONTACTS_BASE_URL =
@@ -67,6 +68,22 @@ async function deleteContactFromFirebase(contactId) {
    }
 }
 
+async function updateContactInFirebase(contactId, contactData) {
+   const contactKey = await findContactKeyById(contactId);
+   if (!contactKey) throw new Error(`Contact key not found for id ${contactId}`);
+   const response = await fetch(
+      `${CONTACTS_BASE_URL}contacts/${contactKey}.json`,
+      {
+         method: "PATCH",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(contactData),
+      },
+   );
+   if (!response.ok) {
+      throw new Error(`Contact update failed: HTTP ${response.status}`);
+   }
+}
+
 async function initContactsPage() {
    await loadContactsFromFirebase();
    renderContacts();
@@ -131,6 +148,7 @@ function handleContactClick(e) {
    const clickedContactId = item.dataset.id;
    if (String(selectedContactId) === String(clickedContactId)) {
       selectedContactId = null;
+      closeContactDetailMenu();
       document.getElementById("detail-view").classList.add("d-none");
       renderContacts();
       switchView();
@@ -153,7 +171,8 @@ function switchView() {
    const detailContainer = document.querySelector(".contacts-detail");
    const detailView = document.getElementById("detail-view");
    const detailEmpty = document.getElementById("detail-empty");
-    const backButton = document.getElementById("btn-back-to-list");
+   const backButton = document.getElementById("btn-back-to-list");
+   const detailMenuButton = document.getElementById("btn-contact-detail-menu");
 
    if (!listView || !detailContainer || !detailView) return;
 
@@ -168,6 +187,8 @@ function switchView() {
       listView.classList.remove("d-none");
       detailContainer.style.display = "";
       if (backButton) backButton.classList.add("d-none");
+      if (detailMenuButton) detailMenuButton.hidden = true;
+      closeContactDetailMenu();
       return;
    }
 
@@ -176,6 +197,7 @@ function switchView() {
       detailContainer.style.display = "block";
       detailView.classList.remove("d-none");
       if (backButton) backButton.classList.remove("d-none");
+      if (detailMenuButton) detailMenuButton.hidden = false;
       return;
    }
 
@@ -183,10 +205,13 @@ function switchView() {
    detailContainer.style.display = "";
    detailView.classList.add("d-none");
    if (backButton) backButton.classList.add("d-none");
+   if (detailMenuButton) detailMenuButton.hidden = true;
+   closeContactDetailMenu();
 }
 
 function handleBackToList() {
    selectedContactId = null;
+   closeContactDetailMenu();
    document.getElementById("detail-view").classList.add("d-none");
    renderContacts();
    switchView();
@@ -208,6 +233,51 @@ function showDetail(contact) {
    document.getElementById("detail-phone").innerText = contact.phone;
 }
 
+function setContactFormMode(isEditMode) {
+   const title = document.getElementById("contact-form-title");
+   const submitButton = document.getElementById("contact-form-submit");
+   if (title) title.innerText = isEditMode ? "Edit Contact" : "Add Contact";
+   if (submitButton) {
+      submitButton.innerText = isEditMode ? "Save contact" : "Create contact";
+   }
+}
+
+function resetContactFormMode() {
+   editingContactId = null;
+   setContactFormMode(false);
+}
+
+function handleEditContact() {
+   if (!selectedContactId) return;
+   const contact = contactsState.find(
+      (c) => String(c.id) === String(selectedContactId),
+   );
+   if (!contact) return;
+
+   editingContactId = contact.id;
+   setContactFormMode(true);
+
+   document.getElementById("add-name").value = contact.name || "";
+   document.getElementById("add-email").value = contact.email || "";
+   document.getElementById("add-phone").value = contact.phone || "";
+   document.getElementById("contactFormError").innerText = "";
+
+   if (typeof window.openOverlay === "function") {
+      window.openOverlay();
+   }
+}
+
+function closeContactDetailMenu() {
+   const menu = document.getElementById("contact-detail-menu");
+   if (menu) menu.classList.add("d-none");
+}
+
+function toggleContactDetailMenu() {
+   const menu = document.getElementById("contact-detail-menu");
+   if (!menu) return;
+   menu.classList.toggle("d-none");
+}
+
 async function handleCreateContact(e) {
    e.preventDefault();
    const name = document.getElementById("add-name").value;
@@ -220,19 +290,42 @@ async function handleCreateContact(e) {
       return;
    }
 
-   const newContact = {
-      id: Date.now(),
-      name,
-      email,
-      phone,
-      color: "#" + Math.floor(Math.random() * 16777215).toString(16),
-   };
-
    try {
-      await addContactToFirebase(newContact);
+      if (editingContactId !== null) {
+         const selectedContact = contactsState.find(
+            (c) => String(c.id) === String(editingContactId),
+         );
+         await updateContactInFirebase(editingContactId, {
+            name,
+            email,
+            phone,
+            color:
+               selectedContact?.color ||
+               "#" + Math.floor(Math.random() * 16777215).toString(16),
+         });
+      } else {
+         const newContact = {
+            id: Date.now(),
+            name,
+            email,
+            phone,
+            color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+         };
+         await addContactToFirebase(newContact);
+      }
+
       await loadContactsFromFirebase();
+      if (editingContactId !== null) {
+         selectedContactId = editingContactId;
+      }
+      resetContactFormMode();
       closeOverlay();
       renderContacts();
+      const activeContact = contactsState.find(
+         (c) => String(c.id) === String(selectedContactId),
+      );
+      if (activeContact) showDetail(activeContact);
+      switchView();
    } catch (error) {
       console.error("Contact creation failed:", error);
       errorMsg.innerText = "Kontakt konnte nicht gespeichert werden.";
@@ -242,6 +335,7 @@ async function handleCreateContact(e) {
 async function deleteContact() {
    if (!selectedContactId) return;
    try {
+      closeContactDetailMenu();
       await deleteContactFromFirebase(selectedContactId);
       await loadContactsFromFirebase();
       selectedContactId = null;
@@ -254,20 +348,63 @@ async function deleteContact() {
 }
 
 function bindEvents() {
+   const addContactButton = document.getElementById("btn-add-contact");
+   const editButton = document.getElementById("btn-edit");
+   const deleteButton = document.getElementById("btn-delete");
+   const detailMenuButton = document.getElementById("btn-contact-detail-menu");
+   const detailMenuEdit = document.getElementById("btn-contact-detail-edit");
+   const detailMenuDelete = document.getElementById("btn-contact-detail-delete");
+
+   if (typeof window.closeOverlay === "function") {
+      const originalCloseOverlay = window.closeOverlay;
+      window.closeOverlay = function patchedCloseOverlay() {
+         resetContactFormMode();
+         originalCloseOverlay();
+      };
+   }
+
+   addContactButton?.addEventListener("click", () => {
+      resetContactFormMode();
+      closeContactDetailMenu();
+   });
+
    document
       .getElementById("contacts-list-content")
       .addEventListener("click", handleContactClick);
    document
       .getElementById("contact-form")
       .addEventListener("submit", handleCreateContact);
-   document
-      .getElementById("btn-delete")
-      .addEventListener("click", deleteContact);
+   editButton?.addEventListener("click", handleEditContact);
+   deleteButton?.addEventListener("click", deleteContact);
+
+   detailMenuButton?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleContactDetailMenu();
+   });
+
+   detailMenuEdit?.addEventListener("click", () => {
+      closeContactDetailMenu();
+      editButton?.click();
+   });
+
+   detailMenuDelete?.addEventListener("click", () => {
+      closeContactDetailMenu();
+      deleteButton?.click();
+   });
+
+   document.addEventListener("click", (event) => {
+      const menu = document.getElementById("contact-detail-menu");
+      const isClickInsideMenu = event.target.closest("#contact-detail-menu");
+      const isClickOnMenuButton = event.target.closest("#btn-contact-detail-menu");
+      if (menu && !menu.classList.contains("d-none") && !isClickInsideMenu && !isClickOnMenuButton) {
+         closeContactDetailMenu();
+      }
+   });
+
    document
       .getElementById("btn-back-to-list")
       .addEventListener("click", handleBackToList);
    window.addEventListener("resize", switchView);
-   // Modal toggles hier ergänzen...
 }
 
 window.addEventListener("DOMContentLoaded", initContactsPage);
