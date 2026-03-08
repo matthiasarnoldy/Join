@@ -1,4 +1,6 @@
 // ===== TASK SPEICHERN =====
+const SAVE_TASK_BASE_URL =
+   "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
 
 function getSelectedContacts() {
    const selectedOptions = document.querySelectorAll(`.${ASSIGNED_SELECTED_CLASS}`);
@@ -73,6 +75,7 @@ function createTaskData() {
    };
 }
 
+/*
 function loadTasksFromStorage() {
    const tasksJson = sessionStorage.getItem("tasks") || "[]";
    return JSON.parse(tasksJson);
@@ -87,6 +90,18 @@ function addTaskToStorage(taskData) {
    const allTasks = loadTasksFromStorage();
    allTasks.push(taskData);
    saveTasksToStorage(allTasks);
+}
+*/
+
+async function addTaskToFirebase(taskData) {
+   const response = await fetch(`${SAVE_TASK_BASE_URL}tasks.json`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(taskData),
+   });
+   if (!response.ok) {
+      throw new Error(`Task save failed: HTTP ${response.status}`);
+   }
 }
 
 function isInDialog() {
@@ -127,16 +142,20 @@ function redirectAfterSave() {
    }
 }
 
-function saveTaskToBoard() {
+async function saveTaskToBoard() {
    const taskData = createTaskData();
-   addTaskToStorage(taskData);
-   if (isInDialog()) {
-      sessionStorage.setItem("showTaskSuccess", "true");
-      redirectAfterSave();
-      return;
+   try {
+      await addTaskToFirebase(taskData);
+      if (isInDialog()) {
+         localStorage.setItem("showTaskSuccess", "true");
+         redirectAfterSave();
+         return;
+      }
+      showSuccessMessage();
+      setTimeout(() => {
+         redirectAfterSave();
+      }, 1000);
+   } catch (error) {
+      console.error(error);
    }
-   showSuccessMessage();
-   setTimeout(() => {
-      redirectAfterSave();
-   }, 1000);
 }

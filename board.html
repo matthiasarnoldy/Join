@@ -155,7 +155,7 @@
                      </div>
                      <div class="find-task--mobile">
                         <input
-                           id="findTaskInput"
+                           id="findTaskInputMobile"
                            class="find-task__input"
                            type="text"
                            placeholder="Find Task"
@@ -176,7 +176,6 @@
                </section>
 
                <section class="board-task-grid">
-                  <!-- Example task cards -->
                   <div class="board-task-column" id="column-todo">
                      <div class="board-column">
                         <h2 class="board-column__title">To do</h2>
@@ -212,37 +211,6 @@
                      <div class="board-task-directory-scroll">
                         <div class="board-task-directory" id="InProgressTask">
                            <div class="board-task-placeholder">No tasks In progress</div>
-                           <article class="task-card">
-                              <span class="task-card__label">User Story</span>
-                              <h3 class="task-card__title">
-                                 Kochwelt Page &amp; Recipe Recommender
-                              </h3>
-                              <p class="task-card__description">
-                                 Build start page with recipe recommendation...
-                              </p>
-                              <div class="task-card__progress">
-                                 <div class="task-card__progress-track">
-                                    <div
-                                       class="task-card__progress-bar"
-                                       style="width: 60%"></div>
-                                 </div>
-                                 <span class="task-card__progress-text"
-                                    >1/2 Subtasks</span
-                                 >
-                              </div>
-                              <div class="task-card__meta">
-                                 <div class="task-card__avatars" id="avatars-1">
-                                    <!-- JS inserts avatars here -->
-                                    <span class="avatar avatar--orange">AM</span>
-                                    <span class="avatar avatar--teal">EM</span>
-                                    <span class="avatar avatar--purple">MB</span>
-                                 </div>
-                                 <img
-                                    class="task-card__priority"
-                                    src="./assets/icons/desktop/Priority orange.svg"
-                                    alt="Priority" />
-                              </div>
-                           </article>
                         </div>
                      </div>
                   </div>
@@ -251,6 +219,7 @@
                         <h2 class="board-column__title">Await feedback</h2>
                         <button
                            class="board-column__add"
+                           data-status="await-feedback"
                            aria-label="Add await feedback">
                            <img
                               class="board-column__add-icon"
@@ -261,58 +230,6 @@
                      <div class="board-task-directory-scroll">
                         <div class="board-task-directory" id="AwaitTask">
                            <div class="board-task-placeholder">No tasks Await feedback</div>
-                           <article class="task-card">
-                              <span class="task-card__label task-card__label--teal"
-                                 >Technical Task</span
-                              >
-                              <h3 class="task-card__title">
-                                 HTML Base Template Creation
-                              </h3>
-                              <p class="task-card__description">
-                                 Create reusable HTML base templates...
-                              </p>
-                              <div class="task-card__progress">
-                                 <div class="task-card__progress-track">
-                                    <div
-                                       class="task-card__progress-bar"
-                                       style="width: 100%"></div>
-                                 </div>
-                                 <span class="task-card__progress-text"
-                                    >2/2 Subtasks</span
-                                 >
-                              </div>
-                              <div class="task-card__meta">
-                                 <div class="task-card__avatars" id="avatars-2">
-                                    <!-- JS inserts avatars here -->
-                                    <span class="avatar avatar--orange">AM</span>
-                                    <span class="avatar avatar--teal">EM</span>
-                                    <span class="avatar avatar--purple">MB</span>
-                                 </div>
-                                 <img
-                                    class="task-card__priority"
-                                    src="./assets/icons/desktop/Priority green.svg"
-                                    alt="Priority" />
-                              </div>
-                           </article>
-                           <article class="task-card">
-                              <span class="task-card__label">User Story</span>
-                              <h3 class="task-card__title">Daily Kochwelt Recipe</h3>
-                              <p class="task-card__description">
-                                 Implement daily recipe and portion calculator....
-                              </p>
-                              <div class="task-card__meta">
-                                 <div class="task-card__avatars" id="avatars-3">
-                                    <!-- JS inserts avatars here -->
-                                    <span class="avatar avatar--orange">AM</span>
-                                    <span class="avatar avatar--teal">EM</span>
-                                    <span class="avatar avatar--purple">MB</span>
-                                 </div>
-                                 <img
-                                    class="task-card__priority"
-                                    src="./assets/icons/desktop/Priority orange.svg"
-                                    alt="Priority" />
-                              </div>
-                           </article>
                         </div>
                      </div>
                   </div>
@@ -326,72 +243,6 @@
                      <div class="board-task-directory-scroll">
                         <div class="board-task-directory" id="DoneTask">
                            <div class="board-task-placeholder">No tasks Done</div>
-                           <article class="task-card">
-                              <span class="task-card__label task-card__label--teal"
-                                 >Technical Task</span
-                              >
-                              <h3 class="task-card__title">
-                                 CSS Architecture Planning
-                              </h3>
-                              <p class="task-card__description">
-                                 Define CSS naming conventions and structure...
-                              </p>
-                              <div class="task-card__progress">
-                                 <div class="task-card__progress-track">
-                                    <div
-                                       class="task-card__progress-bar"
-                                       style="width: 100%"></div>
-                                 </div>
-                                 <span class="task-card__progress-text"
-                                    >2/2 Subtasks</span
-                                 >
-                              </div>
-                              <div class="task-card__meta">
-                                 <div class="task-card__avatars" id="avatars-4">
-                                    <!-- JS inserts avatars here -->
-                                    <span class="avatar avatar--orange">AM</span>
-                                    <span class="avatar avatar--teal">EM</span>
-                                    <span class="avatar avatar--purple">MB</span>
-                                 </div>
-                                 <img
-                                    class="task-card__priority"
-                                    src="./assets/icons/desktop/Priority gleich.svg"
-                                    alt="Priority" />
-                              </div>
-                           </article>
-                           <article class="task-card">
-                              <span class="task-card__label task-card__label--teal"
-                                 >Technical Task</span
-                              >
-                              <h3 class="task-card__title">
-                                 CSS Architecture Planning
-                              </h3>
-                              <p class="task-card__description">
-                                 Define CSS naming conventions and structure...
-                              </p>
-                              <div class="task-card__progress">
-                                 <div class="task-card__progress-track">
-                                    <div
-                                       class="task-card__progress-bar"
-                                       style="width: 100%"></div>
-                                 </div>
-                                 <span class="task-card__progress-text"
-                                    >2/2 Subtasks</span
-                                 >
-                              </div>
-                              <div class="task-card__meta">
-                                 <div class="task-card__avatars" id="avatars-5">
-                                    <!-- JS inserts avatars here -->
-                                    <span class="avatar avatar--orange">AM</span>
-                                    <span class="avatar avatar--teal">EM</span>
-                                    <span class="avatar avatar--purple">MB</span>
-                                 </div>
-                                 <img
-                                    class="task-card__priority"
-                                    src="./assets/icons/desktop/Priority gleich.svg"
-                                    alt="Priority" />
-                              </div>
-                           </article>
                         </div>
                      </div>
                   </div>

@@ -1,5 +1,8 @@
 let draggedCard = null;
 let dragPreviewCard = null;
+const BOARD_BASE_URL =
+   "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+const taskKeyById = {};
 
 function openDialog(status = "todo") {
    const dialog = document.getElementById("addTaskDialog");
@@ -9,13 +12,6 @@ function openDialog(status = "todo") {
       dialog.showModal();
    }
 }
-
-window.addEventListener("click", (event) => {
-   const dialog = document.getElementById("addTaskDialog");
-   if (dialog && event.target === dialog) {
-      dialog.close();
-   }
-});
 
 function closeDialog() {
    const dialog = document.getElementById("addTaskDialog");
@@ -105,13 +101,19 @@ function updatePlaceholders() {
 }
 
 function setupTaskSearch() {
-   const searchInput = document.getElementById("findTaskInput");
-
-   if (searchInput) {
+   const searchInputs = [
+      document.getElementById("findTaskInput"),
+      document.getElementById("findTaskInputMobile"),
+   ].filter(Boolean);
+   searchInputs.forEach((searchInput) => {
       searchInput.addEventListener("input", (e) => {
-         filterTasks(e.target.value);
+         const value = e.target.value;
+         searchInputs.forEach((input) => {
+            if (input !== e.target) input.value = value;
+         });
+         filterTasks(value);
       });
-   }
+   });
 }
 
 // ===== DRAG & DROP LOGIC =====
@@ -119,23 +121,54 @@ function getStatusByDirectoryId(directoryId) {
    return STATUS_BY_DIRECTORY_ID[directoryId] || null;
 }
 
-function loadStoredTasks() {
-   return JSON.parse(sessionStorage.getItem("tasks") || "[]");
-}
-
-function saveStoredTasks(tasks) {
-   sessionStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-function updateTaskStatusInStorage(taskId, newStatus) {
+async function updateTaskStatusInFirebase(taskId, newStatus) {
    if (!taskId || !newStatus) return;
-   const tasks = loadStoredTasks();
-   const taskIndex = tasks.findIndex(
-      (task) => String(task.id) === String(taskId),
+   let taskKey = taskKeyById[String(taskId)];
+   if (!taskKey) {
+      taskKey = await findTaskKeyById(taskId);
+   }
+   if (!taskKey) {
+      throw new Error(`Task key not found for id ${taskId}`);
+   }
+   const taskUrl = `${BOARD_BASE_URL}tasks/${taskKey}.json`;
+   const currentTaskResponse = await fetch(taskUrl);
+   if (!currentTaskResponse.ok) {
+      throw new Error(
+         `Task fetch before update failed: HTTP ${currentTaskResponse.status}`,
+      );
+   }
+   const currentTask = await currentTaskResponse.json();
+   if (!currentTask || typeof currentTask !== "object") {
+      throw new Error(`Task data missing for key ${taskKey}`);
+   }
+   const updatedTask = {
+      ...currentTask,
+      id: currentTask.id ?? taskId,
+      status: newStatus,
+   };
+   const response = await fetch(taskUrl, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedTask),
+   });
+   if (!response.ok) {
+      throw new Error(`Task status update failed: HTTP ${response.status}`);
+   }
+   taskKeyById[String(taskId)] = taskKey;
+}
+
+async function findTaskKeyById(taskId) {
+   const response = await fetch(`${BOARD_BASE_URL}tasks.json`);
+   if (!response.ok) return null;
+   const data = await response.json();
+   if (!data) return null;
+   const entries = Array.isArray(data)
+      ? data.map((task, index) => [String(index), task])
+      : Object.entries(data);
+   const match = entries.find(
+      ([, task]) => task && String(task.id ?? "") === String(taskId),
    );
-   if (taskIndex === -1) return;
-   tasks[taskIndex].status = newStatus;
-   saveStoredTasks(tasks);
+   return match ? match[0] : null;
 }
 
 function clearDropHighlights() {
@@ -231,12 +264,18 @@ function handleDirectoryDragLeave(directory, event) {
    placeholder.style.display = hasVisibleCards ? "none" : "";
 }
 
-function handleDirectoryDrop(directory, event) {
-   if (!draggedCard) return;
+async function handleDirectoryDrop(directory, event) {
    event.preventDefault();
    directory.classList.remove("board-task-directory--dragover");
    const targetStatus = getStatusByDirectoryId(directory.id);
-   updateTaskStatusInStorage(draggedCard.dataset.taskId, targetStatus);
+   const draggedTaskId =
+      event.dataTransfer?.getData("text/plain") || draggedCard?.dataset.taskId;
+   if (!draggedTaskId || !targetStatus) return;
+   try {
+      await updateTaskStatusInFirebase(draggedTaskId, targetStatus);
+   } catch (error) {
+      console.error("Task status update failed:", error);
+   }
    updatePlaceholders();
 }
 
@@ -332,7 +371,8 @@ function buildSubtasksHTML(subtasks) {
 
 function getTaskCardRenderData(taskData) {
    return {
-      categoryClass: taskData.category === "technical" ? "task-card__label--teal" : "",
+      categoryClass:
+         taskData.category === "technical" ? "task-card__label--teal" : "",
       categoryLabel: getCategoryLabel(taskData.category),
       priorityIconSrc: getPriorityIcon(taskData.priority),
       avatarsHTML: buildAvatarsHTML(taskData),
@@ -385,32 +425,73 @@ function addTaskToColumn(taskData, columns) {
    taskDirectory.appendChild(card);
 }
 
-function loadTasksFromSession() {
-   const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
-   if (!tasks || tasks.length === 0) return;
+function clearBoardTaskCards() {
+   const taskDirectories = document.querySelectorAll(".board-task-directory");
+   taskDirectories.forEach((directory) => {
+      directory.querySelectorAll(".task-card").forEach((card) => card.remove());
+   });
+}
+
+function normalizeFirebaseTasks(data) {
+   if (!data) return [];
+   const entries = Array.isArray(data)
+      ? data.map((task, index) => [String(index), task])
+      : Object.entries(data);
+   return entries
+      .filter(([, task]) => task && typeof task === "object")
+      .map(([key, task]) => {
+         const resolvedId = task.id ?? key;
+         taskKeyById[String(resolvedId)] = key;
+         return { ...task, id: resolvedId };
+      });
+}
+
+async function loadTasks() {
+   clearBoardTaskCards();
+   Object.keys(taskKeyById).forEach((taskId) => delete taskKeyById[taskId]);
    const columns = {
       todo: document.getElementById("TodoTask"),
       "in-progress": document.getElementById("InProgressTask"),
       "await-feedback": document.getElementById("AwaitTask"),
       done: document.getElementById("DoneTask"),
    };
-   tasks.forEach((taskData) => addTaskToColumn(taskData, columns));
+   try {
+      const response = await fetch(`${BOARD_BASE_URL}tasks.json`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      const tasks = normalizeFirebaseTasks(data);
+      tasks.forEach((taskData) =>
+         addTaskToColumn(
+            { ...taskData, status: taskData.status || "todo" },
+            columns,
+         ),
+      );
+   } catch (error) {
+      console.error("Task loading failed:", error);
+   }
 }
 
 // Tasks beim Laden der Seite anzeigen
-document.addEventListener("DOMContentLoaded", () => {
-   loadTasksFromSession();
+document.addEventListener("DOMContentLoaded", async () => {
+   await loadTasks();
    initializeDraggableCards();
    setupDropZones();
    updatePlaceholders();
    setupColumnAddButtons();
    setupTaskSearch();
 
-   const shouldShowSuccess = sessionStorage.getItem("showTaskSuccess");
+   const shouldShowSuccess = localStorage.getItem("showTaskSuccess");
    if (shouldShowSuccess === "true") {
-      sessionStorage.removeItem("showTaskSuccess");
+      localStorage.removeItem("showTaskSuccess");
       if (typeof showSuccessMessage === "function") {
          showSuccessMessage();
       }
+   }
+});
+
+window.addEventListener("click", (event) => {
+   const dialog = document.getElementById("addTaskDialog");
+   if (dialog && event.target === dialog) {
+      dialog.close();
    }
 });
