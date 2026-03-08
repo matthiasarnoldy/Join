@@ -16,17 +16,31 @@ const UI_IDS = {
    dropdownLegalNotice: "dropdownLegalNotice",
    arrowBack: "help__arrowBack",
 };
+const PAGE_FILES = {
+   summary: "summary.html",
+   addTask: "add-task.html",
+   board: "board.html",
+   contacts: "contacts.html",
+   privacy: "privacy-Policy.html",
+   legal: "legalnotice.html",
+   help: "help.html",
+};
+const IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
+const PAGE_BASE_PATH = IS_IN_TEMPLATES ? "./" : "./templates/";
+function getPagePath(pageFile) {
+   return `${PAGE_BASE_PATH}${pageFile}`;
+}
 const NAV_LINKS = [
-   ["navSummary", "./summary.html", "navSummary"],
-   ["navAddTask", "./add-task.html", "navAddTask"],
-   ["navBoard", "./board.html", "navBoard"],
-   ["navContacts", "./contacts.html", "navContacts"],
-   ["navPrivacyPolicy", "./privacy-Policy.html", "navPrivacyPolicy"],
-   ["navLegalNotice", "./legalnotice.html", "navLegalNotice"],
-   ["help", "./help.html", null],
-   ["dropdownHelp", "./help.html", null],
-   ["dropdownPrivacyPolicy", "./privacy-Policy.html", "navPrivacyPolicy"],
-   ["dropdownLegalNotice", "./legalnotice.html", "navLegalNotice"],
+   ["navSummary", getPagePath(PAGE_FILES.summary), "navSummary"],
+   ["navAddTask", getPagePath(PAGE_FILES.addTask), "navAddTask"],
+   ["navBoard", getPagePath(PAGE_FILES.board), "navBoard"],
+   ["navContacts", getPagePath(PAGE_FILES.contacts), "navContacts"],
+   ["navPrivacyPolicy", getPagePath(PAGE_FILES.privacy), "navPrivacyPolicy"],
+   ["navLegalNotice", getPagePath(PAGE_FILES.legal), "navLegalNotice"],
+   ["help", getPagePath(PAGE_FILES.help), null],
+   ["dropdownHelp", getPagePath(PAGE_FILES.help), null],
+   ["dropdownPrivacyPolicy", getPagePath(PAGE_FILES.privacy), "navPrivacyPolicy"],
+   ["dropdownLegalNotice", getPagePath(PAGE_FILES.legal), "navLegalNotice"],
 ];
 
 /**
@@ -170,7 +184,9 @@ function bindBackArrow(arrowBack) {
  */
 function bindSummaryCardRedirect() {
    document.addEventListener("click", (event) => {
-      if (event.target.closest(".summary__card")) location.href = "./board.html";
+      if (event.target.closest(".summary__card")) {
+         location.href = getPagePath(PAGE_FILES.board);
+      }
    });
 }
 

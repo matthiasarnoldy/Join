@@ -1,4 +1,12 @@
 (function () {
+   const BOARD_DETAIL_ASSET_BASE_PATH = window.location.pathname.includes("/templates/")
+      ? "../assets/"
+      : "./assets/";
+
+   function boardDetailAssetPath(relativePath) {
+      return `${BOARD_DETAIL_ASSET_BASE_PATH}${relativePath}`;
+   }
+
    function getTaskDetailDialog() {
       return document.getElementById("taskDetailDialog");
    }
@@ -191,8 +199,8 @@
          option.classList.toggle(ASSIGNED_SELECTED_CLASS, isSelected);
          if (checkbox) {
             checkbox.src = isSelected
-               ? "./assets/icons/desktop/checkBox--checked.svg"
-               : "./assets/icons/desktop/checkBox.svg";
+               ? boardDetailAssetPath("icons/desktop/checkBox--checked.svg")
+               : boardDetailAssetPath("icons/desktop/checkBox.svg");
          }
       });
    }

@@ -1,4 +1,15 @@
 document.addEventListener("DOMContentLoaded", initLogin);
+const IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
+const ASSET_BASE_PATH = IS_IN_TEMPLATES ? "../assets/" : "./assets/";
+const PAGE_BASE_PATH = IS_IN_TEMPLATES ? "./" : "./templates/";
+
+function assetPath(relativePath) {
+    return `${ASSET_BASE_PATH}${relativePath}`;
+}
+
+function pagePath(pageFile) {
+    return `${PAGE_BASE_PATH}${pageFile}`;
+}
 
 function initLogin() {
     setSplashLogoByViewport();
@@ -14,8 +25,8 @@ function setSplashLogoByViewport() {
     if (!splashLogo) return;
     const isMobile = window.matchMedia("(max-width: 600px)").matches;
     splashLogo.src = isMobile
-        ? "./assets/icons/desktop/logo.svg"
-        : "./assets/icons/desktop/Dark_Logo.svg";
+        ? assetPath("icons/desktop/logo.svg")
+        : assetPath("icons/desktop/Dark_Logo.svg");
 }
 
 function setMobileSplashBackground() {
@@ -26,7 +37,7 @@ function setMobileSplashBackground() {
     document.body.style.backgroundColor = "#2a3647";
     const resetBg = () => {
         document.body.style.backgroundColor = originalBg;
-        if (splashLogo) splashLogo.src = "./assets/icons/desktop/Dark_Logo.svg";
+        if (splashLogo) splashLogo.src = assetPath("icons/desktop/Dark_Logo.svg");
     };
     splash.addEventListener("animationend", resetBg, { once: true });
     setTimeout(resetBg, 700);
@@ -86,14 +97,14 @@ function setupPasswordField(field) {
 
 function showVisibilityIcon(field) {
     if (field.input.type === "password") {
-        field.icon.src = "./assets/icons/desktop/visibility_off.svg";
+        field.icon.src = assetPath("icons/desktop/visibility_off.svg");
         field.icon.style.cursor = "pointer";
     }
 }
 
 function hideVisibilityIcon(field) {
     field.input.type = "password";
-    field.icon.src = "./assets/icons/desktop/lock.svg";
+    field.icon.src = assetPath("icons/desktop/lock.svg");
     field.icon.style.cursor = "default";
 }
 
@@ -102,10 +113,10 @@ function togglePasswordVisibility(field) {
     if (isLockIcon) return;
     if (field.input.type === "password") {
         field.input.type = "text";
-        field.icon.src = "./assets/icons/desktop/visibility.svg";
+        field.icon.src = assetPath("icons/desktop/visibility.svg");
     } else {
         field.input.type = "password";
-        field.icon.src = "./assets/icons/desktop/visibility_off.svg";
+        field.icon.src = assetPath("icons/desktop/visibility_off.svg");
     }
     field.input.focus();
 }
@@ -134,11 +145,11 @@ function handleSignup() {
 }
 
 function redirectToSummary() {
-    location.href = "./summary.html";
+    location.href = pagePath("summary.html");
 }
 
 function redirectToIndex() {
-    location.href = "./index.html";
+    location.href = IS_IN_TEMPLATES ? "../index.html" : "./index.html";
 }
 
 function createSignupMessage() {

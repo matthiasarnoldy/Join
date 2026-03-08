@@ -4,8 +4,15 @@
 const ASSIGNED_SELECTED_CLASS = "add-task__select-option--selected";
 const ASSIGNED_OPEN_CLASS = "add-task__select--open";
 const ASSIGNED_PLACEHOLDER_TEXT = "Select contacts to assign";
+const ASSIGNED_ASSET_BASE_PATH = window.location.pathname.includes("/templates/")
+   ? "../assets/"
+   : "./assets/";
 const ASSIGNED_CONTACTS_BASE_URL =
    "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+
+function assignedAssetPath(relativePath) {
+   return `${ASSIGNED_ASSET_BASE_PATH}${relativePath}`;
+}
 
 function getInitialsFromName(name) {
    const parts = String(name || "")
@@ -67,7 +74,7 @@ function createAssignedOptionElement(contact) {
    content.append(initials, document.createTextNode(` ${contact.name}`));
 
    const checkbox = document.createElement("img");
-   checkbox.src = "./assets/icons/desktop/checkBox.svg";
+   checkbox.src = assignedAssetPath("icons/desktop/checkBox.svg");
    checkbox.alt = "";
    checkbox.className = "add-task__option-checkbox";
 
@@ -244,11 +251,11 @@ function toggleAssignedMenu(elements) {
 }
 
 function checkCheckbox(checkbox) {
-   checkbox.src = "./assets/icons/desktop/checkBox--checked.svg";
+   checkbox.src = assignedAssetPath("icons/desktop/checkBox--checked.svg");
 }
 
 function uncheckCheckbox(checkbox) {
-   checkbox.src = "./assets/icons/desktop/checkBox.svg";
+   checkbox.src = assignedAssetPath("icons/desktop/checkBox.svg");
 }
 
 function toggleContactSelection(option) {

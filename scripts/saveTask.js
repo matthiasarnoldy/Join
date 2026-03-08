@@ -1,6 +1,21 @@
 // ===== TASK SPEICHERN =====
 const SAVE_TASK_BASE_URL =
    "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+const SAVE_TASK_IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
+const SAVE_TASK_ASSET_BASE_PATH = window.location.pathname.includes("/templates/")
+   ? "../assets/"
+   : "./assets/";
+const SAVE_TASK_PAGE_BASE_PATH = SAVE_TASK_IS_IN_TEMPLATES
+   ? "./"
+   : "./templates/";
+
+function saveTaskAssetPath(relativePath) {
+   return `${SAVE_TASK_ASSET_BASE_PATH}${relativePath}`;
+}
+
+function saveTaskPagePath(pageFile) {
+   return `${SAVE_TASK_PAGE_BASE_PATH}${pageFile}`;
+}
 
 function getSelectedContacts() {
    const selectedOptions = document.querySelectorAll(`.${ASSIGNED_SELECTED_CLASS}`);
@@ -138,7 +153,7 @@ function createSuccessMessage(isEdit = false) {
    messageText.textContent = isEdit ? "Task updated" : "Task added to board";
    const messageIcon = document.createElement("img");
    messageIcon.className = "task-success-message__icon";
-   messageIcon.src = "./assets/icons/desktop/board.svg";
+   messageIcon.src = saveTaskAssetPath("icons/desktop/board.svg");
    messageIcon.alt = "Board";
    messageDiv.append(messageText, messageIcon);
    return messageDiv;
@@ -159,7 +174,7 @@ function redirectAfterSave() {
    if (isInDialog()) {
       window.location.reload();
    } else {
-      window.location.href = "./board.html";
+      window.location.href = saveTaskPagePath("board.html");
    }
 }
 

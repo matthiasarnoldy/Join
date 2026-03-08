@@ -1,12 +1,18 @@
 // Transform navbar when accessed from login/signup
 document.addEventListener("DOMContentLoaded", transformNavbarForLogin);
+const IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
+const ASSET_BASE_PATH = IS_IN_TEMPLATES ? "../assets/" : "./assets/";
 
 function transformNavbarForLogin() {
     const urlParams = new URLSearchParams(window.location.search);
     const from = urlParams.get("from");
     if (from === "login" || from === "signup") {
         const isFromSignup = from === "signup";
-        const previousPage = isFromSignup ? "./signup.html" : "./index.html";
+        const previousPage = isFromSignup
+            ? "./signup.html"
+            : IS_IN_TEMPLATES
+                ? "../index.html"
+                : "./index.html";
         const buttonText = isFromSignup ? "Sign up" : "Log in";
         replaceNavMenuWithBackButton(buttonText, previousPage);
         hideHeaderElements();
@@ -18,7 +24,7 @@ function replaceNavMenuWithBackButton(buttonText, previousPage) {
     const navMenu = document.querySelector(".navBar__menu");
     navMenu.innerHTML = `
         <button class="navBar__backToLogin" id="back-to-login">
-            <img src="./assets/icons/desktop/login.svg" alt="${buttonText}" class="navBar__backToLogin-icon">
+            <img src="${ASSET_BASE_PATH}icons/desktop/login.svg" alt="${buttonText}" class="navBar__backToLogin-icon">
             <span class="navBar__backToLogin-text">${buttonText}</span>
         </button>
     `;

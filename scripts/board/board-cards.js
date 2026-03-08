@@ -1,4 +1,12 @@
 (function () {
+   const BOARD_CARDS_ASSET_BASE_PATH = window.location.pathname.includes("/templates/")
+      ? "../assets/"
+      : "./assets/";
+
+   function boardCardsAssetPath(relativePath) {
+      return `${BOARD_CARDS_ASSET_BASE_PATH}${relativePath}`;
+   }
+
    function setCardVisibility(card, shouldShow) {
       card.style.display = shouldShow ? "" : "none";
    }
@@ -78,9 +86,9 @@
 
    function getPriorityIcon(priority) {
       const icons = {
-         urgent: "./assets/icons/desktop/Priority orange.svg",
-         medium: "./assets/icons/desktop/Priority gleich.svg",
-         low: "./assets/icons/desktop/Priority green.svg",
+         urgent: boardCardsAssetPath("icons/desktop/Priority orange.svg"),
+         medium: boardCardsAssetPath("icons/desktop/Priority gleich.svg"),
+         low: boardCardsAssetPath("icons/desktop/Priority green.svg"),
       };
       return icons[priority] || icons.medium;
    }
