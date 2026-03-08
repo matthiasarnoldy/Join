@@ -84,6 +84,24 @@ async function updateContactInFirebase(contactId, contactData) {
    }
 }
 
+function createContactSuccessMessage() {
+   const message = document.createElement("div");
+   message.className = "contact-success-message";
+   message.textContent = "Contact successfully created";
+   return message;
+}
+
+function showContactSuccessMessage() {
+   const message = createContactSuccessMessage();
+   document.body.appendChild(message);
+   requestAnimationFrame(() => {
+      message.classList.add("contact-success-message--visible");
+   });
+   setTimeout(() => {
+      message.remove();
+   }, 1200);
+}
+
 async function initContactsPage() {
    await loadContactsFromFirebase();
    renderContacts();
@@ -314,8 +332,9 @@ async function handleCreateContact(e) {
          await addContactToFirebase(newContact);
       }
 
+      const wasEdit = editingContactId !== null;
       await loadContactsFromFirebase();
-      if (editingContactId !== null) {
+      if (wasEdit) {
          selectedContactId = editingContactId;
       }
       resetContactFormMode();
@@ -326,6 +345,7 @@ async function handleCreateContact(e) {
       );
       if (activeContact) showDetail(activeContact);
       switchView();
+      if (!wasEdit) showContactSuccessMessage();
    } catch (error) {
       console.error("Contact creation failed:", error);
       errorMsg.innerText = "Kontakt konnte nicht gespeichert werden.";
