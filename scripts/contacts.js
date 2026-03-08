@@ -1,105 +1,94 @@
 let selectedContactId = null;
+let contactsState = [];
 
-function initContactsPage() {
-   seedContactsIfEmpty();
+const CONTACTS_BASE_URL =
+   "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+
+function normalizeContact(contact, firebaseKey) {
+   if (!contact || typeof contact !== "object") return null;
+   const resolvedId = contact.id ?? firebaseKey;
+   return {
+      ...contact,
+      id: resolvedId,
+      _firebaseKey: firebaseKey,
+   };
+}
+
+function normalizeFirebaseContacts(data) {
+   if (!data) return [];
+   const entries = Array.isArray(data)
+      ? data.map((contact, index) => [String(index), contact])
+      : Object.entries(data);
+   return entries
+      .map(([key, contact]) => normalizeContact(contact, key))
+      .filter(Boolean);
+}
+
+async function loadContactsFromFirebase() {
+   try {
+      const response = await fetch(`${CONTACTS_BASE_URL}contacts.json`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      contactsState = normalizeFirebaseContacts(data);
+   } catch (error) {
+      console.error("Contact loading failed:", error);
+      contactsState = [];
+   }
+}
+
+async function addContactToFirebase(contact) {
+   const response = await fetch(`${CONTACTS_BASE_URL}contacts.json`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(contact),
+   });
+   if (!response.ok) {
+      throw new Error(`Contact save failed: HTTP ${response.status}`);
+   }
+}
+
+async function findContactKeyById(contactId) {
+   const targetId = String(contactId);
+   const match = contactsState.find((contact) => String(contact.id) === targetId);
+   return match?._firebaseKey || null;
+}
+
+async function deleteContactFromFirebase(contactId) {
+   const contactKey = await findContactKeyById(contactId);
+   if (!contactKey) throw new Error(`Contact key not found for id ${contactId}`);
+   const response = await fetch(
+      `${CONTACTS_BASE_URL}contacts/${contactKey}.json`,
+      {
+         method: "DELETE",
+      },
+   );
+   if (!response.ok) {
+      throw new Error(`Contact delete failed: HTTP ${response.status}`);
+   }
+}
+
+async function initContactsPage() {
+   await loadContactsFromFirebase();
    renderContacts();
    bindEvents();
    switchView();
 }
 
-function seedContactsIfEmpty() {
-   const data = getJoinData();
-   if (data.contacts.length === 0) {
-      const seed = [
-         {
-            id: Date.now() + 1,
-            name: "Anton Mayer",
-            email: "anton@gmail.com",
-            phone: "+49 111",
-            color: "#FF7A00",
-         },
-         {
-            id: Date.now() + 2,
-            name: "Anja Schulz",
-            email: "anja@web.de",
-            phone: "+49 222",
-            color: "#FF5EB3",
-         },
-         {
-            id: Date.now() + 3,
-            name: "Benedikt Ziegler",
-            email: "ben@gmx.de",
-            phone: "+49 333",
-            color: "#6E52FF",
-         },
-         {
-            id: Date.now() + 4,
-            name: "David Eisner",
-            email: "david@mail.com",
-            phone: "+49 444",
-            color: "#9327FF",
-         },
-         {
-            id: Date.now() + 5,
-            name: "Eva Fischer",
-            email: "eva@test.de",
-            phone: "+49 555",
-            color: "#00BEE3",
-         },
-         {
-            id: Date.now() + 6,
-            name: "Frank Otto",
-            email: "frank@work.de",
-            phone: "+49 666",
-            color: "#1FD7C1",
-         },
-         {
-            id: Date.now() + 7,
-            name: "Gabi Weber",
-            email: "gabi@provider.com",
-            phone: "+49 777",
-            color: "#FF745E",
-         },
-         {
-            id: Date.now() + 8,
-            name: "Hanna Schmidt",
-            email: "hanna@web.de",
-            phone: "+49 888",
-            color: "#FFA35E",
-         },
-         {
-            id: Date.now() + 9,
-            name: "Ingo Sorglos",
-            email: "ingo@fun.de",
-            phone: "+49 999",
-            color: "#FC71FF",
-         },
-         {
-            id: Date.now() + 10,
-            name: "Julia Bauer",
-            email: "julia@farm.com",
-            phone: "+49 000",
-            color: "#FFBB2B",
-         },
-      ];
-      data.contacts = seed;
-      saveJoinData(data);
-   }
-}
-
 function renderContacts() {
-   const data = getJoinData();
    const listContainer = document.getElementById("contacts-list-content");
    if (!listContainer) return;
 
-   const sorted = data.contacts.sort((a, b) => a.name.localeCompare(b.name));
+   const sorted = [...contactsState].sort((a, b) =>
+      (a.name || "").localeCompare(b.name || ""),
+   );
    const grouped = groupContacts(sorted);
 
    let html = "";
    for (const letter in grouped) {
       html += `<div class="group-header">${letter}</div><hr>`;
       grouped[letter].forEach((c) => {
-         const activeClass = c.id == selectedContactId ? "active" : "";
+         const activeClass =
+            String(c.id) === String(selectedContactId) ? "active" : "";
          html += `
         <div class="contact-item ${activeClass}" data-id="${c.id}">
           <div class="initials" style="background:${c.color}">${getInitials(
@@ -117,7 +106,7 @@ function renderContacts() {
 
 function groupContacts(contacts) {
    return contacts.reduce((groups, contact) => {
-      const letter = contact.name.charAt(0).toUpperCase();
+      const letter = (contact.name || "?").charAt(0).toUpperCase();
       if (!groups[letter]) groups[letter] = [];
       groups[letter].push(contact);
       return groups;
@@ -125,7 +114,10 @@ function groupContacts(contacts) {
 }
 
 function getInitials(name) {
-   const parts = name.trim().split(/\s+/);
+   const parts = String(name || "")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
    if (parts.length >= 2) {
       return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
    }
@@ -137,7 +129,7 @@ function handleContactClick(e) {
    if (!item) return;
 
    const clickedContactId = item.dataset.id;
-   if (selectedContactId == clickedContactId) {
+   if (String(selectedContactId) === String(clickedContactId)) {
       selectedContactId = null;
       document.getElementById("detail-view").classList.add("d-none");
       renderContacts();
@@ -146,8 +138,10 @@ function handleContactClick(e) {
    }
 
    selectedContactId = clickedContactId;
-   const data = getJoinData();
-   const contact = data.contacts.find((c) => c.id == selectedContactId);
+   const contact = contactsState.find(
+      (c) => String(c.id) === String(selectedContactId),
+   );
+   if (!contact) return;
 
    renderContacts(); // Für Active Highlight
    showDetail(contact);
@@ -199,6 +193,7 @@ function handleBackToList() {
 }
 
 function showDetail(contact) {
+   if (!contact) return;
    const view = document.getElementById("detail-view");
    view.classList.remove("d-none");
 
@@ -213,7 +208,7 @@ function showDetail(contact) {
    document.getElementById("detail-phone").innerText = contact.phone;
 }
 
-function handleCreateContact(e) {
+async function handleCreateContact(e) {
    e.preventDefault();
    const name = document.getElementById("add-name").value;
    const email = document.getElementById("add-email").value;
@@ -233,24 +228,29 @@ function handleCreateContact(e) {
       color: "#" + Math.floor(Math.random() * 16777215).toString(16),
    };
 
-   const data = getJoinData();
-   data.contacts.push(newContact);
-   saveJoinData(data);
-
-   closeOverlay();
-   renderContacts();
+   try {
+      await addContactToFirebase(newContact);
+      await loadContactsFromFirebase();
+      closeOverlay();
+      renderContacts();
+   } catch (error) {
+      console.error("Contact creation failed:", error);
+      errorMsg.innerText = "Kontakt konnte nicht gespeichert werden.";
+   }
 }
 
-function deleteContact() {
+async function deleteContact() {
    if (!selectedContactId) return;
-   const data = getJoinData();
-   data.contacts = data.contacts.filter((c) => c.id != selectedContactId);
-   saveJoinData(data);
-
-   selectedContactId = null;
-   document.getElementById("detail-view").classList.add("d-none");
-   renderContacts();
-   switchView();
+   try {
+      await deleteContactFromFirebase(selectedContactId);
+      await loadContactsFromFirebase();
+      selectedContactId = null;
+      document.getElementById("detail-view").classList.add("d-none");
+      renderContacts();
+      switchView();
+   } catch (error) {
+      console.error("Contact deletion failed:", error);
+   }
 }
 
 function bindEvents() {

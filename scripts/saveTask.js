@@ -7,7 +7,7 @@ function getSelectedContacts() {
    const contacts = [];
    selectedOptions.forEach((option) => {
       const initialsElement = option.querySelector(".add-task__option-initials");
-      const contactName = option.textContent.trim();
+      const contactName = option.dataset.name || option.textContent.trim();
       const contactValue = option.dataset.value || "";
       const contactInitials = initialsElement?.textContent || "";
       contacts.push({
