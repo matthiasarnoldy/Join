@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", initSummary);
 
+const SUMMARY_BASE_URL =
+    window.JOIN_CONFIG.BASE_URL;
+
 function initSummary() {
     showGreetingFullscreen();
 }
@@ -53,60 +56,70 @@ function animateSummaryFadeIn(summaryMain) {
     });
 }
 
-function loadSummaryData() {
-    updateBacklogCount();
-    updateDoneCount();
-    updateTasksOnBoardCount();
-    updateTasksInProgressCount();
-    updateAwaitingFeedbackCount();
-    updateUrgentCount();
-    updateUpcomingDeadline();
+async function loadSummaryData() {
+    const tasks = await loadTasksFromFirebase();
+    updateBacklogCount(tasks);
+    updateDoneCount(tasks);
+    updateTasksOnBoardCount(tasks);
+    updateTasksInProgressCount(tasks);
+    updateAwaitingFeedbackCount(tasks);
+    updateUrgentCount(tasks);
+    updateUpcomingDeadline(tasks);
 }
 
-function updateBacklogCount() {
-    const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
+async function loadTasksFromFirebase() {
+    try {
+        const response = await fetch(`${SUMMARY_BASE_URL}tasks.json`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        if (!data) return [];
+        if (Array.isArray(data)) {
+            return data.filter((task) => task && typeof task === "object");
+        }
+        return Object.values(data).filter((task) => task && typeof task === "object");
+    } catch (error) {
+        console.error("Summary task loading failed:", error);
+        return [];
+    }
+}
+
+function updateBacklogCount(tasks) {
     const todoCount = tasks.filter(task => task.status === "todo").length;
     const backlogElement = document.getElementById("backlogCount");
     if (backlogElement) backlogElement.textContent = todoCount;
 }
 
-function updateDoneCount() {
-    const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
+function updateDoneCount(tasks) {
     const doneCount = tasks.filter(task => task.status === "done").length;
     const doneElement = document.getElementById("doneCount");
     if (doneElement) doneElement.textContent = doneCount;
 }
 
-function updateTasksOnBoardCount() {
-    const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
+function updateTasksOnBoardCount(tasks) {
     const totalCount = tasks.length;
     const boardElement = document.getElementById("tasksOnBoardCount");
     if (boardElement) boardElement.textContent = totalCount;
 }
 
-function updateTasksInProgressCount() {
-    const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
+function updateTasksInProgressCount(tasks) {
     const progressCount = tasks.filter(task => task.status === "in-progress").length;
     const progressElement = document.getElementById("tasksInProgressCount");
     if (progressElement) progressElement.textContent = progressCount;
 }
 
-function updateAwaitingFeedbackCount() {
-    const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
+function updateAwaitingFeedbackCount(tasks) {
     const feedbackCount = tasks.filter(task => task.status === "await-feedback").length;
     const feedbackElement = document.getElementById("awaitingFeedbackCount");
     if (feedbackElement) feedbackElement.textContent = feedbackCount;
 }
 
-function updateUrgentCount() {
-    const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
+function updateUrgentCount(tasks) {
     const urgentCount = tasks.filter(task => task.priority === "urgent").length;
     const urgentElement = document.getElementById("urgentCount");
     if (urgentElement) urgentElement.textContent = urgentCount;
 }
 
-function updateUpcomingDeadline() {
-    const tasks = JSON.parse(sessionStorage.getItem("tasks") || "[]");
+function updateUpcomingDeadline(tasks) {
     const urgentTasks = tasks.filter(task => task.priority === "urgent" && task.date);
     if (urgentTasks.length === 0) {
         const deadlineElement = document.getElementById("upcomingDeadline");

@@ -2,6 +2,12 @@
 
 const ACTIVE_CLASS = "navBar__quicklink--active";
 const NAV_ITEM_SELECTOR = ".navBar__quicklink, .legalInformation";
+const DEFAULT_BASE_URL =
+   "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+
+window.JOIN_CONFIG = window.JOIN_CONFIG || {};
+window.JOIN_CONFIG.BASE_URL = window.JOIN_CONFIG.BASE_URL || DEFAULT_BASE_URL;
+
 const UI_IDS = {
    navSummary: "nav-summary",
    navAddTask: "nav-add-task",

@@ -1,6 +1,6 @@
 (function () {
    const BOARD_BASE_URL =
-      "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+      window.JOIN_CONFIG.BASE_URL;
 
    const taskKeyById = {};
    const tasksById = {};

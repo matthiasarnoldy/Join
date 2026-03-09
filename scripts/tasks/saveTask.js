@@ -1,6 +1,6 @@
 // ===== TASK SPEICHERN =====
 const SAVE_TASK_BASE_URL =
-   "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+   window.JOIN_CONFIG.BASE_URL;
 const SAVE_TASK_IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
 const SAVE_TASK_ASSET_BASE_PATH = window.location.pathname.includes("/templates/")
    ? "../assets/"

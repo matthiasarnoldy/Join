@@ -2,7 +2,7 @@ let selectedContactId = null;
 let contactsState = [];
 
 const CONTACTS_BASE_URL =
-   "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+   window.JOIN_CONFIG.BASE_URL;
 
 function normalizeContact(contact, firebaseKey) {
    if (!contact || typeof contact !== "object") return null;
