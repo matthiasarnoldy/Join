@@ -196,6 +196,23 @@ function bindSummaryCardRedirect() {
    });
 }
 
+function getLoginEntryPath() {
+   return IS_IN_TEMPLATES ? "../index.html" : "./index.html";
+}
+
+function getSignupEntryPath() {
+   return IS_IN_TEMPLATES ? "./signup.html" : "./templates/signup.html";
+}
+
+function bindAuthEntryButtons() {
+   bindClick(document.getElementById("signup-button"), () => {
+      location.href = getSignupEntryPath();
+   });
+   bindClick(document.getElementById("signup__arrowBack"), () => {
+      location.href = getLoginEntryPath();
+   });
+}
+
 /**
  * Initializes global UI behavior such as navigation clicks, dropdown handling,
  * back navigation, and summary-card redirect logic.
@@ -209,6 +226,7 @@ function initGlobalUi() {
    bindWindowDropdownClose(ui.loginInitials);
    bindBackArrow(ui.arrowBack);
    bindSummaryCardRedirect();
+   bindAuthEntryButtons();
 }
 
 if (document.readyState === "loading") {
