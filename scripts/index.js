@@ -1,14 +1,14 @@
 document.addEventListener("DOMContentLoaded", initLogin);
-const IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
-const ASSET_BASE_PATH = IS_IN_TEMPLATES ? "../assets/" : "./assets/";
-const PAGE_BASE_PATH = IS_IN_TEMPLATES ? "./" : "./templates/";
+const INDEX_IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
+const ASSET_BASE_PATH = INDEX_IS_IN_TEMPLATES ? "../assets/" : "./assets/";
+const INDEX_PAGE_BASE_PATH = INDEX_IS_IN_TEMPLATES ? "./" : "./templates/";
 
 function assetPath(relativePath) {
     return `${ASSET_BASE_PATH}${relativePath}`;
 }
 
 function pagePath(pageFile) {
-    return `${PAGE_BASE_PATH}${pageFile}`;
+    return `${INDEX_PAGE_BASE_PATH}${pageFile}`;
 }
 
 function initLogin() {
@@ -45,6 +45,7 @@ function setMobileSplashBackground() {
 
 function setMainOpacity() {
     const mainContent = document.getElementById('main-content');
+    if (!mainContent) return;
     setTimeout(() => {
         mainContent.classList.add('main-content--opacity');
     }, 700);
@@ -141,15 +142,11 @@ function setupLoginButtons() {
 
 function handleSignup() {
     showSignupSuccess();
-    setTimeout(redirectToIndex, 1000);
+    setTimeout(redirectToSummary, 1000);
 }
 
 function redirectToSummary() {
     location.href = pagePath("summary.html");
-}
-
-function redirectToIndex() {
-    location.href = IS_IN_TEMPLATES ? "../index.html" : "./index.html";
 }
 
 function createSignupMessage() {
