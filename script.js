@@ -4,6 +4,7 @@ const ACTIVE_CLASS = "navBar__quicklink--active";
 const NAV_ITEM_SELECTOR = ".navBar__quicklink, .legalInformation";
 const DEFAULT_BASE_URL =
    "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+const GLOBAL_AUTH_USER_QUERY_KEY = "uid";
 
 window.JOIN_CONFIG = window.JOIN_CONFIG || {};
 window.JOIN_CONFIG.BASE_URL = window.JOIN_CONFIG.BASE_URL || DEFAULT_BASE_URL;
@@ -20,6 +21,7 @@ const UI_IDS = {
    dropdownHelp: "dropdownHelp",
    dropdownPrivacyPolicy: "dropdownPrivacyPolicy",
    dropdownLegalNotice: "dropdownLegalNotice",
+   dropdownLog: "dropdownLog",
    arrowBack: "help__arrowBack",
 };
 const PAGE_FILES = {
@@ -114,7 +116,7 @@ function bindNavLink(element, targetPath, activeItem) {
    bindClick(element, () => {
       if (activeItem) setActiveNav(activeItem);
       else clearActiveNav();
-      location.href = targetPath;
+      location.href = withAuthUserQuery(targetPath);
    });
 }
 
@@ -191,9 +193,21 @@ function bindBackArrow(arrowBack) {
 function bindSummaryCardRedirect() {
    document.addEventListener("click", (event) => {
       if (event.target.closest(".summary__card")) {
-         location.href = getPagePath(PAGE_FILES.board);
+         location.href = withAuthUserQuery(getPagePath(PAGE_FILES.board));
       }
    });
+}
+
+function getAuthUserIdFromUrl() {
+   const params = new URLSearchParams(window.location.search);
+   return String(params.get(GLOBAL_AUTH_USER_QUERY_KEY) || "").trim();
+}
+
+function withAuthUserQuery(path) {
+   const userId = getAuthUserIdFromUrl();
+   if (!userId) return path;
+   const separator = path.includes("?") ? "&" : "?";
+   return `${path}${separator}${GLOBAL_AUTH_USER_QUERY_KEY}=${encodeURIComponent(userId)}`;
 }
 
 function getLoginEntryPath() {
@@ -213,6 +227,53 @@ function bindAuthEntryButtons() {
    });
 }
 
+function bindLogoutButton(logoutButton) {
+   bindClick(logoutButton, () => {
+      location.href = getLoginEntryPath();
+   });
+}
+
+async function fetchAuthUserFromDatabase(userId) {
+   const response = await fetch(
+      `${window.JOIN_CONFIG.BASE_URL}users/${encodeURIComponent(userId)}.json`
+   );
+   if (!response.ok) throw new Error(`Failed loading user: HTTP ${response.status}`);
+   return await response.json();
+}
+
+function buildInitialFromName(name) {
+   const trimmedName = String(name || "").trim();
+   if (!trimmedName) return "";
+   const parts = trimmedName.split(/\s+/).filter(Boolean);
+   const firstInitial = parts[0].charAt(0).toUpperCase();
+   const secondLetter = parts[0].charAt(1).toUpperCase();
+   const lastInitial =
+      parts.length > 1
+         ? parts[parts.length - 1].charAt(0).toUpperCase()
+         : secondLetter || firstInitial;
+   return `${firstInitial}${lastInitial}`;
+}
+
+function resolveHeaderInitial(user) {
+   const storedInitial = String(user?.initial || "").trim().toUpperCase();
+   if (storedInitial) return storedInitial;
+   return buildInitialFromName(user?.name);
+}
+
+async function applyHeaderInitials() {
+   const initialsElement = document.getElementById("login__initials");
+   if (!initialsElement) return;
+   const userId = getAuthUserIdFromUrl();
+   if (!userId) return;
+   try {
+      const authUser = await fetchAuthUserFromDatabase(userId);
+      const initial = resolveHeaderInitial(authUser);
+      if (initial) initialsElement.textContent = initial;
+   } catch (error) {
+      console.error("Loading header initials failed:", error);
+   }
+}
+
 /**
  * Initializes global UI behavior such as navigation clicks, dropdown handling,
  * back navigation, and summary-card redirect logic.
@@ -221,12 +282,14 @@ function bindAuthEntryButtons() {
  */
 function initGlobalUi() {
    const ui = getUiElements();
+   applyHeaderInitials();
    bindNavigation(ui);
    bindLoginToggle(ui.loginInitials);
    bindWindowDropdownClose(ui.loginInitials);
    bindBackArrow(ui.arrowBack);
    bindSummaryCardRedirect();
    bindAuthEntryButtons();
+   bindLogoutButton(ui.dropdownLog);
 }
 
 if (document.readyState === "loading") {

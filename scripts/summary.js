@@ -2,9 +2,41 @@ document.addEventListener("DOMContentLoaded", initSummary);
 
 const SUMMARY_BASE_URL =
     window.JOIN_CONFIG.BASE_URL;
+const SUMMARY_AUTH_USER_QUERY_KEY = "uid";
 
 function initSummary() {
+    loadGreetingUserName();
     showGreetingFullscreen();
+}
+
+function getSummaryAuthUserId() {
+    const params = new URLSearchParams(window.location.search);
+    return String(params.get(SUMMARY_AUTH_USER_QUERY_KEY) || "").trim();
+}
+
+async function fetchSummaryUser(userId) {
+    const response = await fetch(`${SUMMARY_BASE_URL}users/${encodeURIComponent(userId)}.json`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+}
+
+function setGreetingUserName(name) {
+    const nameElement = document.querySelector(".greetings__name");
+    if (!nameElement) return;
+    const trimmedName = String(name || "").trim();
+    if (!trimmedName) return;
+    nameElement.textContent = trimmedName;
+}
+
+async function loadGreetingUserName() {
+    const userId = getSummaryAuthUserId();
+    if (!userId) return;
+    try {
+        const user = await fetchSummaryUser(userId);
+        setGreetingUserName(user?.name);
+    } catch (error) {
+        console.error("Summary user loading failed:", error);
+    }
 }
 
 function showGreetingFullscreen() {
