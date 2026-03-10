@@ -3,9 +3,13 @@ document.addEventListener("DOMContentLoaded", initSummary);
 const SUMMARY_BASE_URL =
     window.JOIN_CONFIG.BASE_URL;
 const SUMMARY_AUTH_USER_QUERY_KEY = "uid";
+const SUMMARY_GUEST_NAME = "guest user";
+const SUMMARY_GUEST_EMAIL = "guest@join.local";
 
-function initSummary() {
-    loadGreetingUserName();
+let summaryIsGuestUser = false;
+
+async function initSummary() {
+    await loadGreetingUserName();
     showGreetingFullscreen();
 }
 
@@ -25,7 +29,20 @@ function setGreetingUserName(name) {
     if (!nameElement) return;
     const trimmedName = String(name || "").trim();
     if (!trimmedName) return;
+    nameElement.style.display = "";
     nameElement.textContent = trimmedName;
+}
+
+function isSummaryGuestUser(user) {
+    const name = String(user?.name || "").trim().toLowerCase();
+    const email = String(user?.email || "").trim().toLowerCase();
+    return name === SUMMARY_GUEST_NAME || email === SUMMARY_GUEST_EMAIL;
+}
+
+function hideGreetingUserName() {
+    const nameElement = document.querySelector(".greetings__name");
+    if (!nameElement) return;
+    nameElement.style.display = "none";
 }
 
 async function loadGreetingUserName() {
@@ -33,10 +50,17 @@ async function loadGreetingUserName() {
     if (!userId) return;
     try {
         const user = await fetchSummaryUser(userId);
+        summaryIsGuestUser = isSummaryGuestUser(user);
+        if (summaryIsGuestUser) return hideGreetingUserName();
         setGreetingUserName(user?.name);
     } catch (error) {
         console.error("Summary user loading failed:", error);
     }
+}
+
+function formatGuestGreeting(greetingText) {
+    const normalized = String(greetingText || "").replace(",", "").trim();
+    return `${normalized}!`;
 }
 
 function showGreetingFullscreen() {
@@ -190,9 +214,12 @@ function getCurrentTime() {
 
 function setCurrentTime(currentHour) {
     let greetings = document.getElementById('greetings');
-    greetings.innerHTML =
+    const greetingText =
         currentHour < 7  ? setGoodNight() :
         currentHour < 12 ? setGoodMorning() :
         currentHour < 18 ? setGoodAfternoon() :
         setGoodEvening();
+    greetings.innerHTML = summaryIsGuestUser
+        ? formatGuestGreeting(greetingText)
+        : greetingText;
 }
