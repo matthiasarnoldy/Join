@@ -33,6 +33,12 @@ const PAGE_FILES = {
    legal: "legalnotice.html",
    help: "help.html",
 };
+const PROTECTED_PAGE_FILES = new Set([
+   PAGE_FILES.summary,
+   PAGE_FILES.addTask,
+   PAGE_FILES.board,
+   PAGE_FILES.contacts,
+]);
 const IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
 const PAGE_BASE_PATH = IS_IN_TEMPLATES ? "./" : "./templates/";
 function getPagePath(pageFile) {
@@ -203,6 +209,21 @@ function getAuthUserIdFromUrl() {
    return String(params.get(GLOBAL_AUTH_USER_QUERY_KEY) || "").trim();
 }
 
+function getCurrentPageFileName() {
+   return String(window.location.pathname.split("/").pop() || "").toLowerCase();
+}
+
+function isProtectedPage() {
+   return PROTECTED_PAGE_FILES.has(getCurrentPageFileName());
+}
+
+function enforceAuthGuard() {
+   if (!isProtectedPage()) return false;
+   if (getAuthUserIdFromUrl()) return false;
+   location.replace(getLoginEntryPath());
+   return true;
+}
+
 function withAuthUserQuery(path) {
    const userId = getAuthUserIdFromUrl();
    if (!userId) return path;
@@ -281,6 +302,7 @@ async function applyHeaderInitials() {
  * @returns {void}
  */
 function initGlobalUi() {
+   if (enforceAuthGuard()) return;
    const ui = getUiElements();
    applyHeaderInitials();
    bindNavigation(ui);
