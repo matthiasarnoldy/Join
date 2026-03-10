@@ -245,6 +245,12 @@ body {
     color: rgba(230, 0, 38, 1);
 }
 
+.login__input--error,
+.login__input--error:focus {
+    border: 1px solid rgba(230, 0, 38, 1);
+    outline: none;
+}
+
 .login__buttonArea {
     display: flex;
     gap: 35px;

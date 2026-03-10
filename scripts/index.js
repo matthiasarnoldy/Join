@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", initLogin);
 const INDEX_IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
 const ASSET_BASE_PATH = INDEX_IS_IN_TEMPLATES ? "../assets/" : "./assets/";
 const INDEX_PAGE_BASE_PATH = INDEX_IS_IN_TEMPLATES ? "./" : "./templates/";
+const LOGIN_ERROR_MESSAGE = "Check your email and password. Please try again.";
 
 function assetPath(relativePath) {
     return `${ASSET_BASE_PATH}${relativePath}`;
@@ -17,9 +18,11 @@ function initLogin() {
     setMobileSplashBackground();
     setMainOpacity();
     setupSignupFormValidation();
+    hideLoginError();
     hideSignupError();
     setupPasswordVisibility();
     setupLoginButtons();
+    bindLoginErrorHideOnInput();
 }
 
 function getAuthBaseUrl() {
@@ -50,17 +53,30 @@ function getLoginFields() {
     return mapLoginFields(loginForm);
 }
 
-function showLoginError(message) {
-    const { errorElement } = getLoginFields();
+function showLoginError() {
+    const { emailInput, passwordInput, errorElement } = getLoginFields();
     if (!errorElement) return;
-    errorElement.textContent = message;
+    errorElement.textContent = LOGIN_ERROR_MESSAGE;
     errorElement.style.display = "block";
+    errorElement.style.opacity = "1";
+    emailInput?.classList.add("login__input--error");
+    passwordInput?.classList.add("login__input--error");
 }
 
 function hideLoginError() {
-    const { errorElement } = getLoginFields();
+    const { emailInput, passwordInput, errorElement } = getLoginFields();
     if (!errorElement) return;
-    errorElement.style.display = "none";
+    errorElement.style.display = "block";
+    errorElement.style.opacity = "0";
+    emailInput?.classList.remove("login__input--error");
+    passwordInput?.classList.remove("login__input--error");
+}
+
+function bindLoginErrorHideOnInput() {
+    const fields = getLoginFields();
+    if (!areLoginFieldsReady(fields)) return;
+    fields.emailInput.addEventListener("input", hideLoginError);
+    fields.passwordInput.addEventListener("input", hideLoginError);
 }
 
 function getSignupForm() {
@@ -148,18 +164,16 @@ function readLoginValues(fields) {
     };
 }
 
-function getLoginValidationError(values) {
-    if (!values.email || !values.password) return "Please fill out all fields.";
-    if (!isValidEmailAddress(values.email)) return "Please enter a valid email address.";
-    return "";
+function isValidLoginValues(values) {
+    if (!values.email || !values.password) return false;
+    return isValidEmailAddress(values.email);
 }
 
 function buildLoginPayload() {
     const fields = getLoginFields();
-    if (!areLoginFieldsReady(fields)) return showLoginError("Login form is incomplete."), null;
+    if (!areLoginFieldsReady(fields)) return showLoginError(), null;
     const values = readLoginValues(fields);
-    const validationError = getLoginValidationError(values);
-    if (validationError) return showLoginError(validationError), null;
+    if (!isValidLoginValues(values)) return showLoginError(), null;
     hideLoginError();
     return values;
 }
@@ -436,11 +450,11 @@ async function handleLogin(loginButton) {
     try {
         setButtonDisabled(loginButton, true);
         const users = await getUsersFromDatabase();
-        if (!hasMatchingLogin(users, payload)) return showLoginError("Check your email and password. Please try again.");
+        if (!hasMatchingLogin(users, payload)) return showLoginError();
         redirectToSummary();
     } catch (error) {
         console.error("Login failed:", error);
-        showLoginError("Login failed. Please try again.");
+        showLoginError();
     } finally {
         setButtonDisabled(loginButton, false);
     }
