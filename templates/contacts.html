@@ -120,10 +120,13 @@
                   <!-- LINKER BEREICH: LISTE -->
                   <section class="contacts-list">
                      <div class="contacts-list__header">
-                        <button id="btn-add-contact" onclick="openOverlay()">
+                        <button
+                           id="btn-add-contact"
+                           class="add-task-btn"
+                           onclick="openOverlay()">
                            <span>Add new contact</span>
                            <img
-                              class="btn-add-contact__icon"
+                              class="add-task-btn__icon"
                               src="../assets/icons/desktop/person_add.svg"
                               alt="" />
                         </button>
@@ -176,7 +179,11 @@
                                     <img
                                        src="../assets/icons/desktop/subtask__pencil.svg"
                                        alt=""
-                                       class="detail-action__icon" />
+                                       class="detail-action__icon detail-action__icon--default" />
+                                    <img
+                                       src="../assets/icons/desktop/editHover.svg"
+                                       alt=""
+                                       class="detail-action__icon detail-action__icon--hover" />
                                     <span>Edit</span>
                                  </button>
                                  <button
@@ -186,7 +193,11 @@
                                     <img
                                        src="../assets/icons/desktop/subtask__trash.svg"
                                        alt=""
-                                       class="detail-action__icon" />
+                                       class="detail-action__icon detail-action__icon--default" />
+                                    <img
+                                       src="../assets/icons/desktop/deleteHover.svg"
+                                       alt=""
+                                       class="detail-action__icon detail-action__icon--hover" />
                                     <span>Delete</span>
                                  </button>
                               </div>

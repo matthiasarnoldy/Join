@@ -77,11 +77,10 @@
    overflow-y: scroll;
 }
 
-#btn-add-contact {
+.add-task-btn {
    font-size: 21px;
    font-weight: 700;
-   font-family: "Inter";
-   color: white;
+   color: #fff;
    position: static;
    width: 100%;
    height: 56px;
@@ -91,12 +90,26 @@
    justify-content: center;
    align-items: center;
    gap: 16px;
+   border: none;
    border-radius: 10px;
-   background: var(--primary);
+   background-color: #2a3647;
    cursor: pointer;
+   white-space: nowrap;
+   flex-shrink: 0;
 }
 
-#btn-add-contact .btn-add-contact__icon {
+.add-task-btn:hover {
+   background-color: #29abe2;
+   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   transition: all 100ms ease-in-out;
+}
+
+.add-task-btn:active {
+   background-color: #091931;
+   transition: all 100ms ease-in-out;
+}
+
+.add-task-btn__icon {
    width: 32px;
    height: 32px;
    display: block;
@@ -303,6 +316,19 @@
 .detail-action__icon {
    width: 18px;
    height: 18px;
+   display: block;
+   transition: all 100ms ease-in-out;
+}
+
+.detail-action__icon--hover {
+   display: none;
+}
+
+.detail-action:hover .detail-action__icon--default {
+   display: none;
+}
+
+.detail-action:hover .detail-action__icon--hover {
    display: block;
 }
 
