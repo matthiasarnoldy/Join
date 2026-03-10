@@ -1,5 +1,6 @@
 let selectedContactId = null;
 let contactsState = [];
+const USER_COLOR_PALETTE = ["#ff7a00", "#9327FF", "#6e52ff", "#FC71FF", "#FFBB2B", "#1fd7c1", "#462F8A", "#FF4646", "#00BEE8"];
 
 const CONTACTS_BASE_URL =
    window.JOIN_CONFIG.BASE_URL;
@@ -124,6 +125,11 @@ function getInitials(name) {
    return parts[0] ? parts[0].substring(0, 2).toUpperCase() : "??";
 }
 
+function selectUserColor() {
+   const randomIndex = Math.floor(Math.random() * USER_COLOR_PALETTE.length);
+   return USER_COLOR_PALETTE[randomIndex];
+}
+
 function handleContactClick(e) {
    const item = e.target.closest(".contact-item");
    if (!item) return;
@@ -225,7 +231,7 @@ async function handleCreateContact(e) {
       name,
       email,
       phone,
-      color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+      color: selectUserColor(),
    };
 
    try {
