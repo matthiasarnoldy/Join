@@ -43,8 +43,8 @@ function createSubtaskHTML(subtaskText) {
    `;
 }
 
-function createInitialHTML(initialsText) {
-    return `<span class="add-task__assigned-initial">${initialsText}</span>`;
+function createInitialHTML(initialsText, color = "#ff7a00") {
+    return `<span class="add-task__assigned-initial" style="background-color: ${color};">${initialsText}</span>`;
 }
 
 function createOverflowHTML(remainingCount) {

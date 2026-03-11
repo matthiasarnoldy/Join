@@ -687,7 +687,7 @@ function setAssignedInForm(assigned) {
    const assignedNames = new Set((assigned || []).map((person) => person.name));
 
    options.forEach((option) => {
-      const optionName = option.textContent.trim();
+      const optionName = option.dataset.name || option.textContent.trim();
       const optionValue = option.dataset.value || "";
       const isSelected =
          assignedValues.has(optionValue) || assignedNames.has(optionName);
