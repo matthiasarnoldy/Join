@@ -58,6 +58,51 @@ const NAV_LINKS = [
 ];
 
 /**
+ * Returns a singleton container used for toast notifications.
+ *
+ * @returns {HTMLElement}
+ */
+function getToastContainer() {
+   let container = document.getElementById("app-toast-container");
+   if (container) return container;
+   container = document.createElement("div");
+   container.id = "app-toast-container";
+   container.className = "app-toast-container";
+   container.setAttribute("aria-live", "polite");
+   container.setAttribute("aria-atomic", "true");
+   document.body.appendChild(container);
+   return container;
+}
+
+/**
+ * Shows a temporary toast notification.
+ *
+ * @param {string} message - Text content shown in the toast.
+ * @param {{duration?: number, type?: "success" | "error"}} [options] - Toast options.
+ * @returns {HTMLElement}
+ */
+function showAppToast(message, options = {}) {
+   const container = getToastContainer();
+   const toast = document.createElement("div");
+   const type = options.type || "success";
+   toast.className = `app-toast app-toast--${type}`;
+   toast.textContent = message;
+   container.appendChild(toast);
+
+   requestAnimationFrame(() => toast.classList.add("app-toast--visible"));
+
+   const duration = Number(options.duration) > 0 ? Number(options.duration) : 1200;
+   setTimeout(() => {
+      toast.classList.remove("app-toast--visible");
+      setTimeout(() => toast.remove(), 220);
+   }, duration);
+
+   return toast;
+}
+
+window.showAppToast = showAppToast;
+
+/**
  * Returns all navigation elements that can carry the active class.
  *
  * @returns {NodeListOf<Element>}

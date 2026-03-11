@@ -215,6 +215,38 @@
                            </div>
                         </div>
                      </div>
+                     <button
+                        type="button"
+                        id="btn-contact-detail-menu"
+                        aria-label="Kontakt Aktionen"
+                        hidden>
+                        <img
+                           class="btn-add-contact__icon"
+                           src="../assets/icons/desktop/more_vert.svg"
+                           alt="" />
+                     </button>
+                     <div id="contact-detail-menu" class="contact-detail-menu d-none">
+                        <button
+                           type="button"
+                           id="btn-contact-detail-edit"
+                           class="contact-detail-menu__item">
+                           <img
+                              src="../assets/icons/desktop/subtask__pencil.svg"
+                              alt=""
+                              class="contact-detail-menu__icon" />
+                           <span>Edit</span>
+                        </button>
+                        <button
+                           type="button"
+                           id="btn-contact-detail-delete"
+                           class="contact-detail-menu__item">
+                           <img
+                              src="../assets/icons/desktop/subtask__trash.svg"
+                              alt=""
+                              class="contact-detail-menu__icon" />
+                           <span>Delete</span>
+                        </button>
+                     </div>
                   </section>
                </div>
 
@@ -226,7 +258,7 @@
                   <div
                      class="overlay-content"
                      onclick="event.stopPropagation()">
-                     <h2>Add Contact</h2>
+                     <h2 id="contact-form-title">Add Contact</h2>
                      <form id="contact-form">
                         <input type="text" id="add-name" placeholder="Name" />
                         <input type="text" id="add-email" placeholder="Email" />
@@ -236,7 +268,9 @@
                            <button type="button" onclick="closeOverlay()">
                               Cancel
                            </button>
-                           <button type="submit">Create contact</button>
+                           <button type="submit" id="contact-form-submit">
+                              Create contact
+                           </button>
                         </div>
                      </form>
                   </div>
