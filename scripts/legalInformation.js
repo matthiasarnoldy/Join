@@ -20,6 +20,7 @@ function transformNavbarForLogin() {
     }
 }
 
+
 function replaceNavMenuWithBackButton(buttonText, previousPage) {
     const navMenu = document.querySelector(".navBar__menu");
     navMenu.innerHTML = `
@@ -33,12 +34,14 @@ function replaceNavMenuWithBackButton(buttonText, previousPage) {
     });
 }
 
+
 function hideHeaderElements() {
     const helpIcon = document.getElementById("help");
     const userInitials = document.getElementById("login__initials");
     if (helpIcon) helpIcon.style.display = "none";
     if (userInitials) userInitials.style.display = "none";
 }
+
 
 function centerHeaderContent() {
     const header = document.querySelector(".header");

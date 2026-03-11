@@ -15,6 +15,7 @@ function normalizeContact(contact, firebaseKey) {
    };
 }
 
+
 function normalizeFirebaseContacts(data) {
    if (!data) return [];
    const entries = Array.isArray(data)
@@ -24,6 +25,7 @@ function normalizeFirebaseContacts(data) {
       .map(([key, contact]) => normalizeContact(contact, key))
       .filter(Boolean);
 }
+
 
 async function loadContactsFromFirebase() {
    try {
@@ -37,6 +39,7 @@ async function loadContactsFromFirebase() {
    }
 }
 
+
 async function addContactToFirebase(contact) {
    const response = await fetch(`${CONTACTS_BASE_URL}contacts.json`, {
       method: "POST",
@@ -48,11 +51,13 @@ async function addContactToFirebase(contact) {
    }
 }
 
+
 async function findContactKeyById(contactId) {
    const targetId = String(contactId);
    const match = contactsState.find((contact) => String(contact.id) === targetId);
    return match?._firebaseKey || null;
 }
+
 
 async function deleteContactFromFirebase(contactId) {
    const contactKey = await findContactKeyById(contactId);
@@ -67,6 +72,7 @@ async function deleteContactFromFirebase(contactId) {
       throw new Error(`Contact delete failed: HTTP ${response.status}`);
    }
 }
+
 
 async function updateContactInFirebase(contactId, contactData) {
    const contactKey = await findContactKeyById(contactId);
@@ -84,6 +90,7 @@ async function updateContactInFirebase(contactId, contactData) {
    }
 }
 
+
 function showContactToast(message, type = "success") {
    if (typeof window.showAppToast === "function") {
       window.showAppToast(message, { type, duration: 1200 });
@@ -91,12 +98,14 @@ function showContactToast(message, type = "success") {
    }
 }
 
+
 async function initContactsPage() {
    await loadContactsFromFirebase();
    renderContacts();
    bindEvents();
    switchView();
 }
+
 
 function renderContacts() {
    const listContainer = document.getElementById("contacts-list-content");
@@ -128,6 +137,7 @@ function renderContacts() {
    listContainer.innerHTML = html;
 }
 
+
 function groupContacts(contacts) {
    return contacts.reduce((groups, contact) => {
       const letter = (contact.name || "?").charAt(0).toUpperCase();
@@ -136,6 +146,7 @@ function groupContacts(contacts) {
       return groups;
    }, {});
 }
+
 
 function getInitials(name) {
    const parts = String(name || "")
@@ -147,6 +158,7 @@ function getInitials(name) {
    }
    return parts[0] ? parts[0].substring(0, 2).toUpperCase() : "??";
 }
+
 
 function handleContactClick(e) {
    const item = e.target.closest(".contact-item");
@@ -172,6 +184,7 @@ function handleContactClick(e) {
    showDetail(contact);
    switchView();
 }
+
 
 function switchView() {
    const listView = document.querySelector(".contacts-list");
@@ -216,6 +229,7 @@ function switchView() {
    closeContactDetailMenu();
 }
 
+
 function handleBackToList() {
    selectedContactId = null;
    closeContactDetailMenu();
@@ -223,6 +237,7 @@ function handleBackToList() {
    renderContacts();
    switchView();
 }
+
 
 function showDetail(contact) {
    if (!contact) return;
@@ -240,6 +255,7 @@ function showDetail(contact) {
    document.getElementById("detail-phone").innerText = contact.phone;
 }
 
+
 function setContactFormMode(isEditMode) {
    const title = document.getElementById("contact-form-title");
    const submitButton = document.getElementById("contact-form-submit");
@@ -249,10 +265,12 @@ function setContactFormMode(isEditMode) {
    }
 }
 
+
 function resetContactFormMode() {
    editingContactId = null;
    setContactFormMode(false);
 }
+
 
 function handleEditContact() {
    if (!selectedContactId) return;
@@ -274,16 +292,19 @@ function handleEditContact() {
    }
 }
 
+
 function closeContactDetailMenu() {
    const menu = document.getElementById("contact-detail-menu");
    if (menu) menu.classList.add("d-none");
 }
+
 
 function toggleContactDetailMenu() {
    const menu = document.getElementById("contact-detail-menu");
    if (!menu) return;
    menu.classList.toggle("d-none");
 }
+
 
 async function handleCreateContact(e) {
    e.preventDefault();
@@ -342,6 +363,7 @@ async function handleCreateContact(e) {
    }
 }
 
+
 async function deleteContact() {
    if (!selectedContactId) return;
    try {
@@ -358,6 +380,7 @@ async function deleteContact() {
       showContactToast("Contact could not be deleted", "error");
    }
 }
+
 
 function bindEvents() {
    const addContactButton = document.getElementById("btn-add-contact");

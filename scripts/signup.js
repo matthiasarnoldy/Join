@@ -2,6 +2,7 @@ function getSignupForm() {
     return document.querySelector(".main-content--signup .login__formular");
 }
 
+
 function emptySignupFields() {
     return {
         form: null,
@@ -12,6 +13,7 @@ function emptySignupFields() {
         errorElement: null,
     };
 }
+
 
 function mapSignupFields(signupForm) {
     return {
@@ -24,11 +26,13 @@ function mapSignupFields(signupForm) {
     };
 }
 
+
 function getSignupFields() {
     const signupForm = getSignupForm();
     if (!signupForm) return emptySignupFields();
     return mapSignupFields(signupForm);
 }
+
 
 function clearSignupInputErrors(fields) {
     fields.nameInput?.classList.remove("login__input--error");
@@ -37,12 +41,14 @@ function clearSignupInputErrors(fields) {
     fields.confirmPasswordInput?.classList.remove("login__input--error");
 }
 
+
 function markRequiredSignupInputs(fields, values) {
     if (!values?.name) fields.nameInput?.classList.add("login__input--error");
     if (!values?.email) fields.emailInput?.classList.add("login__input--error");
     if (!values?.password) fields.passwordInput?.classList.add("login__input--error");
     if (!values?.confirmPassword) fields.confirmPasswordInput?.classList.add("login__input--error");
 }
+
 
 function applySignupInputErrorStyles(fields, message, values) {
     clearSignupInputErrors(fields);
@@ -51,6 +57,7 @@ function applySignupInputErrorStyles(fields, message, values) {
     if (message === "This email is already registered.") return fields.emailInput?.classList.add("login__input--error");
     if (message === "Your passwords don't match. Please try again.") return fields.confirmPasswordInput?.classList.add("login__input--error");
 }
+
 
 function showSignupError(message, values) {
     const fields = getSignupFields();
@@ -62,6 +69,7 @@ function showSignupError(message, values) {
     applySignupInputErrorStyles(fields, message, values);
 }
 
+
 function hideSignupError() {
     const fields = getSignupFields();
     const { errorElement } = fields;
@@ -71,9 +79,11 @@ function hideSignupError() {
     clearSignupInputErrors(fields);
 }
 
+
 function areSignupFieldsReady(fields) {
     return fields.nameInput && fields.emailInput && fields.passwordInput && fields.confirmPasswordInput;
 }
+
 
 function readSignupValues(fields) {
     return {
@@ -84,9 +94,11 @@ function readSignupValues(fields) {
     };
 }
 
+
 function hasMissingSignupValues(values) {
     return !values.name || !values.email || !values.password || !values.confirmPassword;
 }
+
 
 function getSignupValidationError(values) {
     if (hasMissingSignupValues(values)) return "These fields are required";
@@ -95,10 +107,12 @@ function getSignupValidationError(values) {
     return "";
 }
 
+
 function isPrivacyPolicyAccepted() {
     const checkbox = document.getElementById("privacy-policy");
     return Boolean(checkbox?.checked);
 }
+
 
 function buildSignupPayload() {
     const fields = getSignupFields();
@@ -117,6 +131,7 @@ function buildSignupPayload() {
     return { name: values.name, email: values.email, password: values.password };
 }
 
+
 function generateInitialFromName(name) {
     const trimmedName = name.trim();
     if (!trimmedName) return "?";
@@ -130,6 +145,7 @@ function generateInitialFromName(name) {
     return `${firstInitial}${lastInitial}`;
 }
 
+
 function buildUserPayload(newUser) {
     return {
         name: newUser.name,
@@ -139,6 +155,7 @@ function buildUserPayload(newUser) {
         createdAt: formatGermanTimestamp(new Date()),
     };
 }
+
 
 async function createUserInDatabase(newUser) {
     const response = await fetch(`${getAuthBaseUrl()}users.json`, {
@@ -151,6 +168,7 @@ async function createUserInDatabase(newUser) {
     return String(data?.name || "");
 }
 
+
 function getSignupValidationElements() {
     return {
         signupForm: document.querySelector(".login__formular"),
@@ -159,9 +177,11 @@ function getSignupValidationElements() {
     };
 }
 
+
 function areSignupValidationElementsReady(elements) {
     return elements.signupForm && elements.signupSubmitButton && elements.privacyCheckbox;
 }
+
 
 function bindSignupValidation(inputs, privacyCheckbox, signupSubmitButton) {
     const updateButtonState = () => checkFormValidity(inputs, privacyCheckbox, signupSubmitButton);
@@ -170,6 +190,7 @@ function bindSignupValidation(inputs, privacyCheckbox, signupSubmitButton) {
     privacyCheckbox.addEventListener("change", updateButtonState);
 }
 
+
 function setupSignupFormValidation() {
     const elements = getSignupValidationElements();
     if (!areSignupValidationElementsReady(elements)) return;
@@ -177,16 +198,19 @@ function setupSignupFormValidation() {
     bindSignupValidation(inputs, elements.privacyCheckbox, elements.signupSubmitButton);
 }
 
+
 function checkFormValidity(inputs, checkbox, button) {
     const allInputsFilled = Array.from(inputs).every((input) => input.value.trim() !== "");
     setSignupButtonState(button, allInputsFilled && checkbox.checked);
 }
+
 
 function setSignupButtonState(button, isEnabled) {
     button.disabled = false;
     button.setAttribute("aria-disabled", String(!isEnabled));
     button.classList.toggle("is-disabled", !isEnabled);
 }
+
 
 function bindSignupButton(loginButton) {
     loginButton.addEventListener("click", (event) => {
@@ -195,9 +219,11 @@ function bindSignupButton(loginButton) {
     });
 }
 
+
 function scheduleSummaryRedirect(userId) {
     setTimeout(() => redirectToSummary(userId), 1000);
 }
+
 
 async function registerSignupUser(payload) {
     const users = await getUsersFromDatabase();
@@ -207,6 +233,7 @@ async function registerSignupUser(payload) {
     }
     return createUserInDatabase(payload);
 }
+
 
 async function handleSignup(signupButton) {
     const payload = buildSignupPayload();
@@ -225,6 +252,7 @@ async function handleSignup(signupButton) {
     }
 }
 
+
 function createSignupMessage() {
     const messageDiv = document.createElement("div");
     messageDiv.className = "signup-success-message";
@@ -233,6 +261,7 @@ function createSignupMessage() {
     messageDiv.appendChild(messageText);
     return messageDiv;
 }
+
 
 function showSignupSuccess() {
     const message = createSignupMessage();

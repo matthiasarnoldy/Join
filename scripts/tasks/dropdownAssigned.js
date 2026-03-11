@@ -14,6 +14,7 @@ function assignedAssetPath(relativePath) {
    return `${ASSIGNED_ASSET_BASE_PATH}${relativePath}`;
 }
 
+
 function getInitialsFromName(name) {
    const parts = String(name || "")
       .trim()
@@ -25,6 +26,7 @@ function getInitialsFromName(name) {
    if (parts[0]) return parts[0].slice(0, 2).toUpperCase();
    return "??";
 }
+
 
 function normalizeAssignedContacts(data) {
    if (!data) return [];
@@ -47,6 +49,7 @@ function normalizeAssignedContacts(data) {
       .sort((a, b) => a.name.localeCompare(b.name));
 }
 
+
 async function loadAssignedContactsFromFirebase() {
    const response = await fetch(`${ASSIGNED_CONTACTS_BASE_URL}contacts.json`);
    if (!response.ok) {
@@ -55,6 +58,7 @@ async function loadAssignedContactsFromFirebase() {
    const data = await response.json();
    return normalizeAssignedContacts(data);
 }
+
 
 function createAssignedOptionElement(contact) {
    const option = document.createElement("li");
@@ -82,6 +86,7 @@ function createAssignedOptionElement(contact) {
    return option;
 }
 
+
 function getAssignedElements() {
    const select = document.getElementById("addTaskAssigned");
    if (!select) return null;
@@ -90,13 +95,16 @@ function getAssignedElements() {
    return { select, menu, input, label, initials, group: selectionGroup };
 }
 
+
 function isAssignedMenuOpen(elements) {
    return elements.select.classList.contains(ASSIGNED_OPEN_CLASS);
 }
 
+
 function getSearchInput(select) {
    return select.querySelector(".add-task__select-input");
 }
+
 
 function preventSearchDeletion(event, searchInput) {
    const cursorPosition = searchInput.selectionStart;
@@ -108,6 +116,7 @@ function preventSearchDeletion(event, searchInput) {
    }
 }
 
+
 function ensureSearchPrefix(searchInput) {
    if (!searchInput.value.startsWith("To: ")) {
       const searchText = searchInput.value.replace(/^To: /, "");
@@ -117,18 +126,22 @@ function ensureSearchPrefix(searchInput) {
    }
 }
 
+
 function getSearchText(searchInput) {
    return searchInput.value.substring(4).toLowerCase().trim();
 }
+
 
 function handleSearchKeydown(event, searchInput) {
    preventSearchDeletion(event, searchInput);
 }
 
+
 function handleSearchInput(event, searchInput, menu) {
    ensureSearchPrefix(searchInput);
    filterContactOptions(searchInput, menu);
 }
+
 
 function setupSearchListeners(searchInput, menu) {
    searchInput.addEventListener("keydown", (e) => {
@@ -139,9 +152,11 @@ function setupSearchListeners(searchInput, menu) {
    });
 }
 
+
 function getContainerWidth(container) {
    return container.offsetWidth;
 }
+
 
 function calculateMaxInitials(containerWidth) {
    const initialWidth = 50; // 42px + 8px gap
@@ -149,9 +164,11 @@ function calculateMaxInitials(containerWidth) {
    return totalSlots;
 }
 
+
 function shouldShowOverflow(selectedCount, maxSlots) {
    return selectedCount > maxSlots;
 }
+
 
 function getMaxDisplayCount(selectedCount, maxSlots) {
    if (shouldShowOverflow(selectedCount, maxSlots)) {
@@ -160,9 +177,11 @@ function getMaxDisplayCount(selectedCount, maxSlots) {
    return maxSlots;
 }
 
+
 function getSelectedOptions(menu) {
    return menu.querySelectorAll(`.${ASSIGNED_SELECTED_CLASS}`);
 }
+
 
 function createInitialElementFromOption(option, elements) {
    const initialsText = option.querySelector(".add-task__option-initials")?.textContent;
@@ -179,17 +198,21 @@ function createInitialElementFromOption(option, elements) {
    return initialElement;
 }
 
+
 function getSelectWrapper(select) {
    return select?.closest(".add-task__select-wrapper");
 }
+
 
 function getFooter() {
    return document.querySelector(".add-task__footer");
 }
 
+
 function hasSelectedContacts(selectedOptions) {
    return selectedOptions.length > 0;
 }
+
 
 function getInitialsParameters(elements) {
    if (!elements.initials) return null;
@@ -202,6 +225,7 @@ function getInitialsParameters(elements) {
    return { selectedOptions, menuOpen, maxDisplay };
 }
 
+
 function setupSelectClickListener(elements) {
    elements.select.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -210,11 +234,13 @@ function setupSelectClickListener(elements) {
    });
 }
 
+
 function setupMenuClickListener(elements) {
    elements.menu.addEventListener("click", (event) => {
       handleAssignedOptionClick(event, elements);
    });
 }
+
 
 function setupSearchInputListenersForAssigned(elements) {
    const searchInput = getSearchInput(elements.select);
@@ -226,6 +252,7 @@ function setupSearchInputListenersForAssigned(elements) {
    });
 }
 
+
 function setupDocumentCloseListener(elements) {
    document.addEventListener("click", (event) => {
       const clickedInput = event.target.closest(".add-task__select-input");
@@ -234,6 +261,7 @@ function setupDocumentCloseListener(elements) {
    });
 }
 
+
 function setupAssignedListeners(elements) {
    if (!elements) return;
    setupSelectClickListener(elements);
@@ -241,6 +269,7 @@ function setupAssignedListeners(elements) {
    setupSearchInputListenersForAssigned(elements);
    setupDocumentCloseListener(elements);
 }
+
 
 async function initAssignedSelect() {
    const elements = getAssignedElements();

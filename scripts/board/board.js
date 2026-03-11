@@ -2,9 +2,11 @@ function getAddTaskDialog() {
    return document.getElementById("addTaskDialog");
 }
 
+
 function getTaskDetailDialog() {
    return document.getElementById("taskDetailDialog");
 }
+
 
 function setAddTaskDialogMode(isEditMode) {
    const title = document.getElementById("addTaskDialogTitle");
@@ -12,6 +14,7 @@ function setAddTaskDialogMode(isEditMode) {
    if (title) title.textContent = isEditMode ? "Edit Task" : "Add Tasks";
    if (buttonText) buttonText.textContent = isEditMode ? "Save changes" : "Create Task";
 }
+
 
 function resetAddTaskDialogMode() {
    const dialog = getAddTaskDialog();
@@ -21,6 +24,7 @@ function resetAddTaskDialogMode() {
    setAddTaskDialogMode(false);
 }
 
+
 function openDialog(status = "todo") {
    const dialog = getAddTaskDialog();
    if (!dialog) return;
@@ -29,6 +33,7 @@ function openDialog(status = "todo") {
    dialog.showModal();
 }
 
+
 function closeDialog() {
    const dialog = getAddTaskDialog();
    if (!dialog) return;
@@ -36,6 +41,7 @@ function closeDialog() {
    delete dialog.dataset.taskStatus;
    resetAddTaskDialogMode();
 }
+
 
 async function initializeBoard() {
    const tasks = await window.BoardData.loadTasks();

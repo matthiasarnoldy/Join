@@ -6,11 +6,13 @@ function templateAssetPath(relativePath) {
     return `${TEMPLATE_ASSET_BASE_PATH}${relativePath}`;
 }
 
+
 function setGoodMorning() {
     return `
         Good Morning,
     `;
 }
+
 
 function setGoodAfternoon() {
     return `
@@ -18,17 +20,20 @@ function setGoodAfternoon() {
     `;
 }
 
+
 function setGoodEvening() {
     return `
         Good Evening,
     `;
 }
 
+
 function setGoodNight() {
     return `
         Good Night,
     `;
 }
+
 
 function createSubtaskHTML(subtaskText) {
    return `
@@ -51,13 +56,16 @@ function createSubtaskHTML(subtaskText) {
    `;
 }
 
+
 function createInitialHTML(initialsText, color = "#ff7a00") {
     return `<span class="add-task__assigned-initial" style="background-color: ${color};">${initialsText}</span>`;
 }
 
+
 function createOverflowHTML(remainingCount) {
     return `<span class="add-task__assigned-overflow">+${remainingCount}</span>`;
 }
+
 
 function taskCardSubtasksHTML(completedSubtasks, totalSubtasks, subtaskProgress) {
     return `
@@ -70,13 +78,16 @@ function taskCardSubtasksHTML(completedSubtasks, totalSubtasks, subtaskProgress)
     `;
 }
 
+
 function taskCardAvatarHTML(colorClass, initialsText) {
    return `<span class="avatar avatar--${colorClass}">${initialsText}</span>`;
 }
 
+
 function taskCardAvatarOverflowHTML(remainingCount) {
    return `<span class="avatar avatar--overflow">+${remainingCount}</span>`;
 }
+
 
 function taskCardHTML(categoryClass, categoryLabel, title, description, subtasksHTML, avatarsHTML, priorityIconSrc) {
    return `
@@ -92,6 +103,7 @@ function taskCardHTML(categoryClass, categoryLabel, title, description, subtasks
       </div>
    `;
 }
+
 
 function taskCardFallbackHTML(categoryClass, categoryLabel, title, description, subtasksHTML, avatarsHTML, priorityIconSrc) {
    return `<span class="task-card__label ${categoryClass}">${categoryLabel}</span><h3 class="task-card__title">${title}</h3><p class="task-card__description">${description}</p>${subtasksHTML}<div class="task-card__meta"><div class="task-card__avatars">${avatarsHTML}</div><img class="task-card__priority" src="${priorityIconSrc}" alt="Priority" /></div>`;

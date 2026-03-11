@@ -5,6 +5,7 @@ function initTextareaResize() {
    wrappers.forEach(setupTextareaResize);
 }
 
+
 function setupTextareaResize(wrapper) {
    const textarea = wrapper.querySelector("textarea");
    const handle = wrapper.querySelector(".add-task__textarea-resize");
@@ -14,6 +15,7 @@ function setupTextareaResize(wrapper) {
       startTextareaResize(event, textarea);
    });
 }
+
 
 function startTextareaResize(event, textarea) {
    event.preventDefault();
@@ -30,6 +32,7 @@ function startTextareaResize(event, textarea) {
    document.addEventListener("mouseup", upHandler);
 }
 
+
 function getTextareaHeight(textarea) {
    const styles = getComputedStyle(textarea);
    const minHeight = getPixelValue(styles.minHeight) || 48;
@@ -37,9 +40,11 @@ function getTextareaHeight(textarea) {
    return { minHeight, maxHeight };
 }
 
+
 function getPixelValue(cssValue) {
    return Number.parseFloat(cssValue) || 0;
 }
+
 
 function handleMouseMove(event, startY, startHeight, textarea, minHeight, maxHeight) {
    const deltaY = event.clientY - startY;
@@ -47,16 +52,19 @@ function handleMouseMove(event, startY, startHeight, textarea, minHeight, maxHei
    updateTextareaHeight(textarea, newHeight, minHeight, maxHeight);
 }
 
+
 function updateTextareaHeight(textarea, newHeight, minHeight, maxHeight) {
    const clampedHeight = clampValue(newHeight, minHeight, maxHeight);
    textarea.style.height = `${clampedHeight}px`;
 }
+
 
 function clampValue(value, min, max) {
    if (value < min) return min;
    if (value > max) return max;
    return value;
 }
+
 
 function removeResizeListeners(moveHandler, upHandler) {
    document.removeEventListener("mousemove", moveHandler);
@@ -71,6 +79,7 @@ function initPriorityField() {
    priorityField.addEventListener("click", handlePriorityClick);
 }
 
+
 function handlePriorityClick(clickEvent) {
    const clickedButton = clickEvent.target.closest(".add-task__priority-option");
    if (!clickedButton) return;
@@ -80,11 +89,13 @@ function handlePriorityClick(clickEvent) {
    setButtonActive(clickedButton);
 }
 
+
 function removeActiveFromAll(priorityButtons) {
    priorityButtons.forEach(button => {
       button.classList.remove("add-task__priority-option--active");
    });
 }
+
 
 function setButtonActive(button) {
    button.classList.add("add-task__priority-option--active");
@@ -96,6 +107,7 @@ function initSubtaskControls() {
    const groups = document.querySelectorAll(".add-task__input-group--subtasks");
    groups.forEach(setupSubtaskButtons);
 }
+
 
 function setupSubtaskButtons(group) {
    const input = group.querySelector(".add-task__input--subtasks");
@@ -116,10 +128,12 @@ function setupSubtaskButtons(group) {
    });
 }
 
+
 function clearSubtaskInput(input) {
    input.value = "";
    input.focus();
 }
+
 
 function addSubtaskFromInput(input, list) {
    const inputValue = input.value.trim();
@@ -127,6 +141,7 @@ function addSubtaskFromInput(input, list) {
    addSubtaskToList(list, inputValue);
    clearSubtaskInput(input);
 }
+
 
 function createEditInput(currentText) {
    const input = document.createElement("input");
@@ -136,6 +151,7 @@ function createEditInput(currentText) {
    return input;
 }
 
+
 function createTextElement(text) {
    const span = document.createElement("span");
    span.className = "add-task__subtask-text";
@@ -143,9 +159,11 @@ function createTextElement(text) {
    return span;
 }
 
+
 function replaceInputWithText(inputElement, textElement) {
    inputElement.replaceWith(textElement);
 }
+
 
 function reattachEditListeners(item, textElement, checkButton) {
    setupSubtaskDoubleClick(item, textElement, checkButton);
@@ -154,6 +172,7 @@ function reattachEditListeners(item, textElement, checkButton) {
    editButton.replaceWith(newEditButton);
    setupSubtaskEditButton(item, newEditButton, textElement, checkButton);
 }
+
 
 function saveSubtaskEdit(item, inputElement, checkButton) {
    const newText = inputElement.value.trim();
@@ -167,12 +186,14 @@ function saveSubtaskEdit(item, inputElement, checkButton) {
    }
 }
 
+
 function cancelSubtaskEdit(item, inputElement, originalText, checkButton) {
    const newTextElement = createTextElement(originalText);
    replaceInputWithText(inputElement, newTextElement);
    item.classList.remove("add-task__subtask-item--editing");
    reattachEditListeners(item, newTextElement, checkButton);
 }
+
 
 function setupEditKeyboardEvents(item, inputElement, originalText, checkButton) {
    inputElement.addEventListener("keydown", (e) => {
@@ -184,6 +205,7 @@ function setupEditKeyboardEvents(item, inputElement, originalText, checkButton) 
    });
 }
 
+
 function setupEditBlurEvent(item, inputElement, checkButton) {
    inputElement.addEventListener("blur", () => {
       setTimeout(() => {
@@ -194,11 +216,13 @@ function setupEditBlurEvent(item, inputElement, checkButton) {
    });
 }
 
+
 function addSubtaskToList(list, subtaskText) {
    const item = createSubtaskItem(subtaskText);
    setupSubtaskListeners(item);
    list.prepend(item);
 }
+
 
 function createSubtaskItem(subtaskText) {
    const item = document.createElement("li");
@@ -206,6 +230,7 @@ function createSubtaskItem(subtaskText) {
    item.innerHTML = createSubtaskHTML(subtaskText);
    return item;
 }
+
 
 function setupSubtaskListeners(item) {
    const textElement = item.querySelector(".add-task__subtask-text");
@@ -219,11 +244,13 @@ function setupSubtaskListeners(item) {
    setupSubtaskDoubleClick(item, textElement, checkButton);
 }
 
+
 function setupSubtaskDeleteButton(item, button) {
    button.addEventListener("click", () => {
       deleteSubtaskItem(item);
    });
 }
+
 
 function setupSubtaskEditButton(item, button, textElement, checkButton) {
    button.addEventListener("click", () => {
@@ -232,15 +259,18 @@ function setupSubtaskEditButton(item, button, textElement, checkButton) {
 }
 
 
+
 function setupSubtaskDoubleClick(item, textElement, checkButton) {
    textElement.addEventListener("dblclick", () => {
       enableSubtaskEdit(item, textElement, checkButton);
    });
 }
 
+
 function deleteSubtaskItem(item) {
    item.remove();
 }
+
 
 function enableSubtaskEdit(item, textElement, checkButton) {
    const originalText = textElement.textContent;
@@ -252,11 +282,13 @@ function enableSubtaskEdit(item, textElement, checkButton) {
    setupEditKeyboardEvents(item, inputElement, originalText, checkButton);
 }
 
+
 function replaceTextWithInput(textElement, inputElement) {
    textElement.replaceWith(inputElement);
    inputElement.focus();
    inputElement.select();
 }
+
 
 function setupCheckButtonListener(checkButton, item, inputElement) {
    const checkHandler = (e) => {

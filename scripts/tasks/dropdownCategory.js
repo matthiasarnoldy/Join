@@ -12,6 +12,7 @@ function initCategorySelect() {
    setupCategoryClickListeners(elements);
 }
 
+
 function getCategoryElements() {
    const select = document.getElementById("addTaskCategory");
    const menu = document.getElementById("addTaskCategoryMenu");
@@ -27,6 +28,7 @@ function getCategoryElements() {
    };
 }
 
+
 function setupCategoryClickListeners(elements) {
    elements.select.addEventListener("click", (event) => {
       handleCategorySelectClick(event, elements);
@@ -39,10 +41,12 @@ function setupCategoryClickListeners(elements) {
    });
 }
 
+
 function handleCategorySelectClick(event, elements) {
    event.stopPropagation();
    toggleCategoryMenu(elements);
 }
+
 
 function toggleCategoryMenu(elements) {
    if (isCategoryMenuOpen(elements)) {
@@ -54,9 +58,11 @@ function toggleCategoryMenu(elements) {
    }
 }
 
+
 function isCategoryMenuOpen(elements) {
    return elements.select.classList.contains("add-task__select--open");
 }
+
 
 function closeCategoryMenu(elements) {
    elements.select.classList.remove("add-task__select--open");
@@ -65,6 +71,7 @@ function closeCategoryMenu(elements) {
       elements.group.classList.remove("add-task__selection-group--category-open");
    }
 }
+
 
 function restoreCategorySelection(elements) {
    const lastValue = elements.input.dataset.lastValue;
@@ -75,6 +82,7 @@ function restoreCategorySelection(elements) {
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+
 function openCategoryMenu(elements) {
    elements.select.classList.add("add-task__select--open");
    elements.select.setAttribute("aria-expanded", "true");
@@ -82,6 +90,7 @@ function openCategoryMenu(elements) {
       elements.group.classList.add("add-task__selection-group--category-open");
    }
 }
+
 
 function resetCategoryPlaceholder(elements) {
    const placeholder = elements.label.dataset.placeholder || elements.label.textContent;
@@ -91,6 +100,7 @@ function resetCategoryPlaceholder(elements) {
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+
 function handleCategoryOptionClick(event, elements) {
    event.stopPropagation();
    const option = event.target.closest(".add-task__select-option");
@@ -98,10 +108,12 @@ function handleCategoryOptionClick(event, elements) {
    selectCategoryOption(option, elements);
 }
 
+
 function selectCategoryOption(option, elements) {
    saveCategorySelection(option, elements);
    closeCategoryMenu(elements);
 }
+
 
 function saveCategorySelection(option, elements) {
    const optionValue = option.dataset.value;

@@ -13,9 +13,11 @@ function saveTaskAssetPath(relativePath) {
    return `${SAVE_TASK_ASSET_BASE_PATH}${relativePath}`;
 }
 
+
 function saveTaskPagePath(pageFile) {
    return `${SAVE_TASK_PAGE_BASE_PATH}${pageFile}`;
 }
+
 
 function getSelectedContacts() {
    const selectedOptions = document.querySelectorAll(`.${ASSIGNED_SELECTED_CLASS}`);
@@ -34,6 +36,7 @@ function getSelectedContacts() {
    return contacts;
 }
 
+
 function getSubtasksList() {
    const subtaskItems = document.querySelectorAll(".add-task__subtask-item");
    const subtasks = [];
@@ -51,10 +54,12 @@ function getSubtasksList() {
    return subtasks;
 }
 
+
 function getDialogStatus() {
    const dialog = document.getElementById("addTaskDialog");
    return dialog?.dataset.taskStatus || "todo";
 }
+
 
 function getBasicInputs() {
    const title = document.querySelector("#addTaskTitle")?.value || "";
@@ -75,6 +80,7 @@ function getBasicInputs() {
    return { title, description, date, priority, category };
 }
 
+
 function createTaskData(existingId = null) {
    const status = getDialogStatus();
    const { title, description, date, priority, category } = getBasicInputs();
@@ -91,6 +97,7 @@ function createTaskData(existingId = null) {
    };
 }
 
+
 async function addTaskToFirebase(taskData) {
    const response = await fetch(`${SAVE_TASK_BASE_URL}tasks.json`, {
       method: "POST",
@@ -101,6 +108,7 @@ async function addTaskToFirebase(taskData) {
       throw new Error(`Task save failed: HTTP ${response.status}`);
    }
 }
+
 
 async function updateTaskInFirebase(taskKey, taskData) {
    const response = await fetch(`${SAVE_TASK_BASE_URL}tasks/${taskKey}.json`, {
@@ -113,6 +121,7 @@ async function updateTaskInFirebase(taskKey, taskData) {
    }
 }
 
+
 function getDialogEditContext() {
    const dialog = document.getElementById("addTaskDialog");
    if (!dialog) return { isEdit: false, taskId: null, taskKey: null };
@@ -124,6 +133,7 @@ function getDialogEditContext() {
       taskKey,
    };
 }
+
 
 async function findTaskKeyByIdForSave(taskId) {
    if (!taskId) return null;
@@ -140,10 +150,12 @@ async function findTaskKeyByIdForSave(taskId) {
    return match ? match[0] : null;
 }
 
+
 function isInDialog() {
    const dialog = document.getElementById("addTaskDialog");
    return dialog && dialog.open;
 }
+
 
 function createSuccessMessage(isEdit = false) {
    const messageDiv = document.createElement("div");
@@ -159,6 +171,7 @@ function createSuccessMessage(isEdit = false) {
    return messageDiv;
 }
 
+
 function showSuccessMessage(isEdit = false) {
    const message = createSuccessMessage(isEdit);
    document.body.appendChild(message);
@@ -170,6 +183,7 @@ function showSuccessMessage(isEdit = false) {
    }, 1000);
 }
 
+
 function redirectAfterSave() {
    if (isInDialog()) {
       window.location.reload();
@@ -177,6 +191,7 @@ function redirectAfterSave() {
       window.location.href = saveTaskPagePath("board.html");
    }
 }
+
 
 async function saveTaskToBoard() {
    const { isEdit, taskId, taskKey } = getDialogEditContext();

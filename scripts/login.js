@@ -7,9 +7,11 @@ function getLoginForm() {
     return document.querySelector(".main-content .login__formular");
 }
 
+
 function emptyLoginFields() {
     return { form: null, emailInput: null, passwordInput: null, errorElement: null };
 }
+
 
 function mapLoginFields(loginForm) {
     return {
@@ -20,12 +22,14 @@ function mapLoginFields(loginForm) {
     };
 }
 
+
 function getLoginFields() {
     if (document.querySelector(".main-content--signup")) return emptyLoginFields();
     const loginForm = getLoginForm();
     if (!loginForm) return emptyLoginFields();
     return mapLoginFields(loginForm);
 }
+
 
 function showLoginError() {
     const { emailInput, passwordInput, errorElement } = getLoginFields();
@@ -37,6 +41,7 @@ function showLoginError() {
     passwordInput?.classList.add("login__input--error");
 }
 
+
 function hideLoginError() {
     const { emailInput, passwordInput, errorElement } = getLoginFields();
     if (!errorElement) return;
@@ -46,6 +51,7 @@ function hideLoginError() {
     passwordInput?.classList.remove("login__input--error");
 }
 
+
 function bindLoginErrorHideOnInput() {
     const fields = getLoginFields();
     if (!areLoginFieldsReady(fields)) return;
@@ -53,9 +59,11 @@ function bindLoginErrorHideOnInput() {
     fields.passwordInput.addEventListener("input", hideLoginError);
 }
 
+
 function areLoginFieldsReady(fields) {
     return fields.emailInput && fields.passwordInput;
 }
+
 
 function readLoginValues(fields) {
     return {
@@ -64,10 +72,12 @@ function readLoginValues(fields) {
     };
 }
 
+
 function isValidLoginValues(values) {
     if (!values.email || !values.password) return false;
     return isValidEmailAddress(values.email);
 }
+
 
 function buildLoginPayload() {
     const fields = getLoginFields();
@@ -78,10 +88,12 @@ function buildLoginPayload() {
     return values;
 }
 
+
 function setupLoginButtons() {
     bindMainLoginButton();
     bindGuestLoginButton();
 }
+
 
 function bindMainLoginButton() {
     const loginButton = document.getElementById("login-button");
@@ -90,11 +102,13 @@ function bindMainLoginButton() {
     loginButton.addEventListener("click", () => handleLogin(loginButton));
 }
 
+
 function bindGuestLoginButton() {
     const guestLoginButton = document.getElementById("guest-login-button");
     if (!guestLoginButton) return;
     guestLoginButton.addEventListener("click", () => handleGuestLogin(guestLoginButton));
 }
+
 
 function isMatchingUser(user, payload) {
     if (!user || typeof user !== "object") return false;
@@ -102,9 +116,11 @@ function isMatchingUser(user, payload) {
     return userEmail === payload.email && String(user.password || "") === payload.password;
 }
 
+
 function getMatchingLoginUser(users, payload) {
     return Object.entries(users).find(([, user]) => isMatchingUser(user, payload)) || null;
 }
+
 
 function getUserEntryByEmail(usersObject, email) {
     const normalizedEmail = String(email || "").toLowerCase();
@@ -113,6 +129,7 @@ function getUserEntryByEmail(usersObject, email) {
         return userEmail === normalizedEmail;
     }) || null;
 }
+
 
 function buildGuestUserPayload() {
     return {
@@ -124,12 +141,14 @@ function buildGuestUserPayload() {
     };
 }
 
+
 function guestUserNeedsUpdate(user) {
     const initial = String(user?.initial || "").trim().toUpperCase();
     const name = String(user?.name || "").trim();
     const email = String(user?.email || "").trim().toLowerCase();
     return initial !== GUEST_USER_INITIAL || name !== GUEST_USER_NAME || email !== GUEST_USER_EMAIL;
 }
+
 
 async function updateGuestUserProfile(userId) {
     const response = await fetch(`${getAuthBaseUrl()}users/${encodeURIComponent(userId)}.json`, {
@@ -144,6 +163,7 @@ async function updateGuestUserProfile(userId) {
     if (!response.ok) throw new Error(`Failed updating guest user: HTTP ${response.status}`);
 }
 
+
 async function createGuestUserInDatabase() {
     const response = await fetch(`${getAuthBaseUrl()}users.json`, {
         method: "POST",
@@ -155,6 +175,7 @@ async function createGuestUserInDatabase() {
     return String(data?.name || "");
 }
 
+
 async function getOrCreateGuestUserId() {
     const users = await getUsersFromDatabase();
     const guestUserEntry = getUserEntryByEmail(users, GUEST_USER_EMAIL);
@@ -163,6 +184,7 @@ async function getOrCreateGuestUserId() {
     if (guestUserNeedsUpdate(guestUser)) await updateGuestUserProfile(guestUserId);
     return guestUserId;
 }
+
 
 async function handleGuestLogin(guestLoginButton) {
     try {
@@ -178,6 +200,7 @@ async function handleGuestLogin(guestLoginButton) {
         setButtonDisabled(guestLoginButton, false);
     }
 }
+
 
 async function handleLogin(loginButton) {
     const payload = buildLoginPayload();

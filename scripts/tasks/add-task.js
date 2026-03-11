@@ -17,9 +17,11 @@ function findRequiredFields() {
    return document.querySelectorAll(".add-task__input-field--required");
 }
 
+
 function getFieldInput(field) {
    return field.querySelector("input, textarea, select");
 }
+
 
 function isFieldEmpty(field) {
    const input = getFieldInput(field);
@@ -28,19 +30,23 @@ function isFieldEmpty(field) {
    return inputValue === "";
 }
 
+
 function isFieldFilled(field) {
    return !isFieldEmpty(field);
 }
+
 
 function enableButton(button) {
    button.classList.remove("is-disabled");
    button.setAttribute("aria-disabled", "false");
 }
 
+
 function disableButton(button) {
    button.classList.add("is-disabled");
    button.setAttribute("aria-disabled", "true");
 }
+
 
 function updateButtonState(button, isValid) {
    if (isValid) {
@@ -50,13 +56,16 @@ function updateButtonState(button, isValid) {
    }
 }
 
+
 function showFieldError(field) {
    field.classList.add("add-task__input-field--error");
 }
 
+
 function hideFieldError(field) {
    field.classList.remove("add-task__input-field--error");
 }
+
 
 function showErrorsOnEmptyFields(fields) {
    fields.forEach((field) => {
@@ -66,15 +75,18 @@ function showErrorsOnEmptyFields(fields) {
    });
 }
 
+
 function checkAllFieldsFilled(fields) {
    return Array.from(fields).every(isFieldFilled);
 }
+
 
 function handleFieldInput(field, allFields, button) {
    hideFieldError(field);
    const allValid = checkAllFieldsFilled(allFields);
    updateButtonState(button, allValid);
 }
+
 
 function addInputListener(field, allFields, button) {
    const input = getFieldInput(field);
@@ -84,11 +96,13 @@ function addInputListener(field, allFields, button) {
    });
 }
 
+
 function setupLiveValidation(fields, button) {
    fields.forEach((field) => {
       addInputListener(field, fields, button);
    });
 }
+
 
 function handleCreateButtonClick(event, fields) {
    const allFilled = checkAllFieldsFilled(fields);
@@ -100,6 +114,7 @@ function handleCreateButtonClick(event, fields) {
    event.preventDefault();
    saveTaskToBoard();
 }
+
 
 function setupCreateButton(button) {
    const form = button.closest("form") || document;
@@ -113,6 +128,7 @@ function setupCreateButton(button) {
    });
 }
 
+
 function initFormValidation() {
    const createButtons = document.querySelectorAll(".add-task__button--create");
    createButtons.forEach(setupCreateButton);
@@ -125,11 +141,13 @@ function initClearButtons() {
    clearButtons.forEach(setupClearButton);
 }
 
+
 function setupClearButton(button) {
    button.addEventListener("click", (event) => {
       handleClearClick(event, button);
    });
 }
+
 
 function handleClearClick(event, button) {
    event.preventDefault();
@@ -141,6 +159,7 @@ function handleClearClick(event, button) {
    clearSubtasks(container);
    resetValidation(container);
 }
+
 
 function clearAllInputs(container) {
    const inputs = container.querySelectorAll("input, textarea, select");
@@ -154,6 +173,7 @@ function clearAllInputs(container) {
    });
 }
 
+
 function resetPriority(container) {
    const priorityField = container.querySelector(".add-task__priority-field");
    if (!priorityField) return;
@@ -165,6 +185,7 @@ function resetPriority(container) {
    }
 }
 
+
 function resetAssigned(container) {
    const select = container.querySelector(".add-task__select--assigned");
    if (!select) return;
@@ -175,6 +196,7 @@ function resetAssigned(container) {
    resetAssignedMenuState(select);
    resetAssignedSpacing(select);
 }
+
 
 function resetAssignedOptions(menu) {
    if (!menu) return;
@@ -188,26 +210,31 @@ function resetAssignedOptions(menu) {
    });
 }
 
+
 function resetAssignedLabel(label) {
    if (!label) return;
    label.textContent = ASSIGNED_PLACEHOLDER_TEXT;
 }
+
 
 function resetAssignedInput(input) {
    if (!input) return;
    input.value = "";
 }
 
+
 function resetAssignedInitials(initialsContainer) {
    if (!initialsContainer) return;
    initialsContainer.innerHTML = "";
 }
+
 
 function resetAssignedMenuState(select) {
    if (!select) return;
    select.classList.remove(ASSIGNED_OPEN_CLASS);
    select.setAttribute("aria-expanded", "false");
 }
+
 
 function resetAssignedSpacing(select) {
    const wrapper = getSelectWrapper(select);
@@ -219,6 +246,7 @@ function resetAssignedSpacing(select) {
       footer.style.transform = "translateY(0)";
    }
 }
+
 
 function resetCategory(container) {
    const select = container.querySelector(".add-task__select--category");
@@ -237,12 +265,14 @@ function resetCategory(container) {
    input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+
 function clearSubtasks(container) {
    const lists = container.querySelectorAll(".add-task__subtask-list");
    lists.forEach((list) => {
       list.innerHTML = "";
    });
 }
+
 
 function resetValidation(container) {
    const fields = container.querySelectorAll(".add-task__input-field--required");

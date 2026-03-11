@@ -13,16 +13,19 @@ async function initSummary() {
     showGreetingFullscreen();
 }
 
+
 function getSummaryAuthUserId() {
     const params = new URLSearchParams(window.location.search);
     return String(params.get(SUMMARY_AUTH_USER_QUERY_KEY) || "").trim();
 }
+
 
 async function fetchSummaryUser(userId) {
     const response = await fetch(`${SUMMARY_BASE_URL}users/${encodeURIComponent(userId)}.json`);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return await response.json();
 }
+
 
 function setGreetingUserName(name) {
     const nameElement = document.querySelector(".greetings__name");
@@ -33,17 +36,20 @@ function setGreetingUserName(name) {
     nameElement.textContent = trimmedName;
 }
 
+
 function isSummaryGuestUser(user) {
     const name = String(user?.name || "").trim().toLowerCase();
     const email = String(user?.email || "").trim().toLowerCase();
     return name === SUMMARY_GUEST_NAME || email === SUMMARY_GUEST_EMAIL;
 }
 
+
 function hideGreetingUserName() {
     const nameElement = document.querySelector(".greetings__name");
     if (!nameElement) return;
     nameElement.style.display = "none";
 }
+
 
 async function loadGreetingUserName() {
     const userId = getSummaryAuthUserId();
@@ -58,10 +64,12 @@ async function loadGreetingUserName() {
     }
 }
 
+
 function formatGuestGreeting(greetingText) {
     const normalized = String(greetingText || "").replace(",", "").trim();
     return `${normalized}!`;
 }
+
 
 function showGreetingFullscreen() {
     const isMobile = window.matchMedia("(max-width: 1160px)").matches;
@@ -73,30 +81,36 @@ function showGreetingFullscreen() {
     setTimeout(() => hideGreetingAndLoad(summaryMain, greetings), 1200);
 }
 
+
 function shouldPlayGreetingAnimation() {
     if (isReloadNavigation()) return true;
     return isFromLoginPage();
 }
+
 
 function isReloadNavigation() {
     const navEntry = performance.getEntriesByType("navigation")[0];
     return navEntry?.type === "reload";
 }
 
+
 function isFromLoginPage() {
     return document.referrer.includes("index.html");
 }
+
 
 function loadSummaryWithGreeting() {
     getCurrentTime();
     loadSummaryData();
 }
 
+
 function activateGreetingView(summaryMain, greetings) {
     getCurrentTime();
     summaryMain.classList.add("summary-greeting-active");
     greetings.classList.add("greeting-fullscreen");
 }
+
 
 function hideGreetingAndLoad(summaryMain, greetings) {
     summaryMain.classList.remove("summary-greeting-active");
@@ -105,12 +119,14 @@ function hideGreetingAndLoad(summaryMain, greetings) {
     animateSummaryFadeIn(summaryMain);
 }
 
+
 function animateSummaryFadeIn(summaryMain) {
     summaryMain.classList.remove("summary-fade-in");
     requestAnimationFrame(() => {
         summaryMain.classList.add("summary-fade-in");
     });
 }
+
 
 async function loadSummaryData() {
     const tasks = await loadTasksFromFirebase();
@@ -122,6 +138,7 @@ async function loadSummaryData() {
     updateUrgentCount(tasks);
     updateUpcomingDeadline(tasks);
 }
+
 
 async function loadTasksFromFirebase() {
     try {
@@ -139,11 +156,13 @@ async function loadTasksFromFirebase() {
     }
 }
 
+
 function updateBacklogCount(tasks) {
     const todoCount = tasks.filter(task => task.status === "todo").length;
     const backlogElement = document.getElementById("backlogCount");
     if (backlogElement) backlogElement.textContent = todoCount;
 }
+
 
 function updateDoneCount(tasks) {
     const doneCount = tasks.filter(task => task.status === "done").length;
@@ -151,11 +170,13 @@ function updateDoneCount(tasks) {
     if (doneElement) doneElement.textContent = doneCount;
 }
 
+
 function updateTasksOnBoardCount(tasks) {
     const totalCount = tasks.length;
     const boardElement = document.getElementById("tasksOnBoardCount");
     if (boardElement) boardElement.textContent = totalCount;
 }
+
 
 function updateTasksInProgressCount(tasks) {
     const progressCount = tasks.filter(task => task.status === "in-progress").length;
@@ -163,17 +184,20 @@ function updateTasksInProgressCount(tasks) {
     if (progressElement) progressElement.textContent = progressCount;
 }
 
+
 function updateAwaitingFeedbackCount(tasks) {
     const feedbackCount = tasks.filter(task => task.status === "await-feedback").length;
     const feedbackElement = document.getElementById("awaitingFeedbackCount");
     if (feedbackElement) feedbackElement.textContent = feedbackCount;
 }
 
+
 function updateUrgentCount(tasks) {
     const urgentCount = tasks.filter(task => task.priority === "urgent").length;
     const urgentElement = document.getElementById("urgentCount");
     if (urgentElement) urgentElement.textContent = urgentCount;
 }
+
 
 function updateUpcomingDeadline(tasks) {
     const urgentTasks = tasks.filter(task => task.priority === "urgent" && task.date);
@@ -188,6 +212,7 @@ function updateUpcomingDeadline(tasks) {
     if (deadlineElement) deadlineElement.textContent = formatDeadlineDate(nextDeadline);
 }
 
+
 function parseGermanDate(dateString) {
     const parts = dateString.split('/');
     if (parts.length !== 3) return new Date(dateString);
@@ -196,6 +221,7 @@ function parseGermanDate(dateString) {
     const year = parseInt(parts[2], 10);
     return new Date(year, month, day);
 }
+
 
 function formatDeadlineDate(dateString) {
     const date = parseGermanDate(dateString);
@@ -206,11 +232,13 @@ function formatDeadlineDate(dateString) {
     return `${month} ${day}, ${year}`;
 }
 
+
 function getCurrentTime() {
     let currentDate = new Date();
     let currentHour = currentDate.getHours();
     setCurrentTime(currentHour);
 }
+
 
 function setCurrentTime(currentHour) {
     let greetings = document.getElementById('greetings');

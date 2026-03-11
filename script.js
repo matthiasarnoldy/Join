@@ -251,18 +251,22 @@ function bindSummaryCardRedirect() {
    });
 }
 
+
 function getAuthUserIdFromUrl() {
    const params = new URLSearchParams(window.location.search);
    return String(params.get(GLOBAL_AUTH_USER_QUERY_KEY) || "").trim();
 }
 
+
 function getCurrentPageFileName() {
    return String(window.location.pathname.split("/").pop() || "").toLowerCase();
 }
 
+
 function isProtectedPage() {
    return PROTECTED_PAGE_FILES.has(getCurrentPageFileName());
 }
+
 
 function enforceAuthGuard() {
    if (!isProtectedPage()) return false;
@@ -271,6 +275,7 @@ function enforceAuthGuard() {
    return true;
 }
 
+
 function withAuthUserQuery(path) {
    const userId = getAuthUserIdFromUrl();
    if (!userId) return path;
@@ -278,13 +283,16 @@ function withAuthUserQuery(path) {
    return `${path}${separator}${GLOBAL_AUTH_USER_QUERY_KEY}=${encodeURIComponent(userId)}`;
 }
 
+
 function getLoginEntryPath() {
    return IS_IN_TEMPLATES ? "../index.html" : "./index.html";
 }
 
+
 function getSignupEntryPath() {
    return IS_IN_TEMPLATES ? "./signup.html" : "./templates/signup.html";
 }
+
 
 function bindAuthEntryButtons() {
    bindClick(document.getElementById("signup-button"), () => {
@@ -295,11 +303,13 @@ function bindAuthEntryButtons() {
    });
 }
 
+
 function bindLogoutButton(logoutButton) {
    bindClick(logoutButton, () => {
       location.href = getLoginEntryPath();
    });
 }
+
 
 async function fetchAuthUserFromDatabase(userId) {
    const response = await fetch(
@@ -308,6 +318,7 @@ async function fetchAuthUserFromDatabase(userId) {
    if (!response.ok) throw new Error(`Failed loading user: HTTP ${response.status}`);
    return await response.json();
 }
+
 
 function buildInitialFromName(name) {
    const trimmedName = String(name || "").trim();
@@ -322,11 +333,13 @@ function buildInitialFromName(name) {
    return `${firstInitial}${lastInitial}`;
 }
 
+
 function resolveHeaderInitial(user) {
    const storedInitial = String(user?.initial || "").trim().toUpperCase();
    if (storedInitial) return storedInitial;
    return buildInitialFromName(user?.name);
 }
+
 
 async function applyHeaderInitials() {
    const initialsElement = document.getElementById("login__initials");

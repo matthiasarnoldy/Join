@@ -9,9 +9,11 @@ function assetPath(relativePath) {
     return `${ASSET_BASE_PATH}${relativePath}`;
 }
 
+
 function pagePath(pageFile) {
     return `${INDEX_PAGE_BASE_PATH}${pageFile}`;
 }
+
 
 function initLogin() {
     setSplashLogoByViewport();
@@ -25,14 +27,17 @@ function initLogin() {
     bindLoginErrorHideOnInput();
 }
 
+
 function getAuthBaseUrl() {
     return (window.JOIN_CONFIG && window.JOIN_CONFIG.BASE_URL) || "";
 }
+
 
 function isValidEmailAddress(email) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     return emailPattern.test(email);
 }
+
 
 async function getUsersFromDatabase() {
     const response = await fetch(`${getAuthBaseUrl()}users.json`);
@@ -40,15 +45,18 @@ async function getUsersFromDatabase() {
     return (await response.json()) || {};
 }
 
+
 function isEmailAlreadyRegistered(usersObject, email) {
     return Object.values(usersObject).some((user) => {
         return user && typeof user.email === "string" && user.email.toLowerCase() === email;
     });
 }
 
+
 function padToTwoDigits(value) {
     return String(value).padStart(2, "0");
 }
+
 
 function formatGermanTimestamp(date) {
     const day = padToTwoDigits(date.getDate());
@@ -60,13 +68,16 @@ function formatGermanTimestamp(date) {
     return `${day}${month}${year}${hour}${minute}${second}`;
 }
 
+
 function getSplashLogoElement() {
     return document.querySelector(".splash__logo--image");
 }
 
+
 function isMobileViewport() {
     return window.matchMedia("(max-width: 600px)").matches;
 }
+
 
 function setSplashLogoByViewport() {
     const splashLogo = getSplashLogoElement();
@@ -76,6 +87,7 @@ function setSplashLogoByViewport() {
         : assetPath("icons/desktop/Dark_Logo.svg");
 }
 
+
 function getMobileSplashElements() {
     return {
         splash: document.querySelector(".splash__logo"),
@@ -83,9 +95,11 @@ function getMobileSplashElements() {
     };
 }
 
+
 function shouldApplyMobileSplash(splash) {
     return Boolean(splash) && isMobileViewport();
 }
+
 
 function buildSplashBackgroundReset(originalBg, splashLogo) {
     return () => {
@@ -93,6 +107,7 @@ function buildSplashBackgroundReset(originalBg, splashLogo) {
         if (splashLogo) splashLogo.src = assetPath("icons/desktop/Dark_Logo.svg");
     };
 }
+
 
 function setMobileSplashBackground() {
     const { splash, splashLogo } = getMobileSplashElements();
@@ -104,6 +119,7 @@ function setMobileSplashBackground() {
     setTimeout(resetBg, 700);
 }
 
+
 function setMainOpacity() {
     const mainContent = document.getElementById("main-content");
     if (!mainContent) return;
@@ -112,10 +128,12 @@ function setMainOpacity() {
     }, 700);
 }
 
+
 function setupPasswordVisibility() {
     const passwordFields = getPasswordFields();
     passwordFields.forEach((field) => setupPasswordField(field));
 }
+
 
 function getPasswordFieldByIconId(iconId) {
     const icon = document.getElementById(iconId);
@@ -124,11 +142,13 @@ function getPasswordFieldByIconId(iconId) {
     return input ? { input, icon } : null;
 }
 
+
 function getPasswordFields() {
     const passwordField = getPasswordFieldByIconId("password-icon");
     const confirmField = getPasswordFieldByIconId("confirm-password-icon");
     return [passwordField, confirmField].filter(Boolean);
 }
+
 
 function setupPasswordField(field) {
     field.input.addEventListener("focus", () => showVisibilityIcon(field));
@@ -137,11 +157,13 @@ function setupPasswordField(field) {
     field.icon.addEventListener("click", () => togglePasswordVisibility(field));
 }
 
+
 function showVisibilityIcon(field) {
     if (field.input.type !== "password") return;
     field.icon.src = assetPath("icons/desktop/visibility_off.svg");
     field.icon.style.cursor = "pointer";
 }
+
 
 function hideVisibilityIcon(field) {
     field.input.type = "password";
@@ -149,19 +171,23 @@ function hideVisibilityIcon(field) {
     field.icon.style.cursor = "default";
 }
 
+
 function isLockIcon(field) {
     return field.icon.src.includes("lock.svg");
 }
+
 
 function showPassword(field) {
     field.input.type = "text";
     field.icon.src = assetPath("icons/desktop/visibility.svg");
 }
 
+
 function hidePassword(field) {
     field.input.type = "password";
     field.icon.src = assetPath("icons/desktop/visibility_off.svg");
 }
+
 
 function togglePasswordVisibility(field) {
     if (isLockIcon(field)) return;
@@ -170,16 +196,19 @@ function togglePasswordVisibility(field) {
     field.input.focus();
 }
 
+
 function setButtonDisabled(button, disabled) {
     if (!button) return;
     button.disabled = disabled;
 }
+
 
 function buildSummaryPathWithUserId(userId) {
     if (!userId) return pagePath("summary.html");
     const query = `${AUTH_USER_QUERY_KEY}=${encodeURIComponent(userId)}`;
     return `${pagePath("summary.html")}?${query}`;
 }
+
 
 function redirectToSummary(userId = "") {
     location.href = buildSummaryPathWithUserId(userId);

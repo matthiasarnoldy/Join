@@ -5,6 +5,7 @@ function renderAssignedContacts(menu, contacts) {
    });
 }
 
+
 function openAssignedMenu(elements) {
    elements.select.classList.add(ASSIGNED_OPEN_CLASS);
    elements.select.setAttribute("aria-expanded", "true");
@@ -19,12 +20,14 @@ function openAssignedMenu(elements) {
    }
 }
 
+
 function clearSearchAndReset(elements) {
    const searchInput = getSearchInput(elements.select);
    if (!searchInput) return;
    hideSearchInput(searchInput, elements.label);
    searchInput.value = "";
 }
+
 
 function resetAssignedPlaceholderIfEmpty(elements) {
    const selectedOptions = getSelectedOptions(elements.menu);
@@ -34,6 +37,7 @@ function resetAssignedPlaceholderIfEmpty(elements) {
    }
 }
 
+
 function closeAssignedMenu(elements) {
    elements.select.classList.remove(ASSIGNED_OPEN_CLASS);
    elements.select.setAttribute("aria-expanded", "false");
@@ -41,6 +45,7 @@ function closeAssignedMenu(elements) {
    clearSearchAndReset(elements);
    resetAssignedPlaceholderIfEmpty(elements);
 }
+
 
 function showSearchInput(searchInput, label) {
    searchInput.style.display = "block";
@@ -52,11 +57,13 @@ function showSearchInput(searchInput, label) {
    }, 0);
 }
 
+
 function hideSearchInput(searchInput, label) {
    searchInput.style.display = "none";
    searchInput.value = "";
    label.style.display = "block";
 }
+
 
 function filterContactOptions(searchInput, menu) {
    const searchText = getSearchText(searchInput);
@@ -67,6 +74,7 @@ function filterContactOptions(searchInput, menu) {
       option.style.display = matches ? "flex" : "none";
    });
 }
+
 
 function resetAssignedPlaceholder(elements) {
    const searchInput = getSearchInput(elements.select);
@@ -80,12 +88,14 @@ function resetAssignedPlaceholder(elements) {
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+
 function showAllContacts(menu) {
    const options = menu.querySelectorAll(".add-task__select-option--assigned");
    options.forEach((option) => {
       option.style.display = "flex";
    });
 }
+
 
 function restoreAssignedSelection(elements) {
    const searchInput = getSearchInput(elements.select);
@@ -100,6 +110,7 @@ function restoreAssignedSelection(elements) {
    elements.input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+
 function toggleAssignedMenu(elements) {
    if (isAssignedMenuOpen(elements)) {
       closeAssignedMenu(elements);
@@ -109,13 +120,16 @@ function toggleAssignedMenu(elements) {
    updateContactInitials(elements);
 }
 
+
 function checkCheckbox(checkbox) {
    checkbox.src = assignedAssetPath("icons/desktop/checkBox--checked.svg");
 }
 
+
 function uncheckCheckbox(checkbox) {
    checkbox.src = assignedAssetPath("icons/desktop/checkBox.svg");
 }
+
 
 function toggleContactSelection(option) {
    const isSelected = option.classList.toggle(ASSIGNED_SELECTED_CLASS);
@@ -123,6 +137,7 @@ function toggleContactSelection(option) {
    if (!checkbox) return;
    if (isSelected) checkCheckbox(checkbox); else uncheckCheckbox(checkbox);
 }
+
 
 function handleAssignedOptionClick(event, elements) {
    event.stopPropagation();
@@ -132,6 +147,7 @@ function handleAssignedOptionClick(event, elements) {
    updateContactInitials(elements);
 }
 
+
 function removeContactSelection(option) {
    option.classList.remove(ASSIGNED_SELECTED_CLASS);
    const checkbox = option.querySelector(".add-task__option-checkbox");
@@ -140,9 +156,11 @@ function removeContactSelection(option) {
    }
 }
 
+
 function clearInitialsContainer(container) {
    container.innerHTML = "";
 }
+
 
 function addInitialsToContainer(selectedOptions, container, maxDisplay, elements) {
    let displayCount = 0;
@@ -156,6 +174,7 @@ function addInitialsToContainer(selectedOptions, container, maxDisplay, elements
    return displayCount;
 }
 
+
 function addOverflowIndicator(container, totalCount, displayedCount) {
    const remainingCount = totalCount - displayedCount;
    if (remainingCount > 0) {
@@ -167,6 +186,7 @@ function addOverflowIndicator(container, totalCount, displayedCount) {
    }
 }
 
+
 function updateWrapperPadding(wrapper, hasContacts, menuOpen) {
    if (!wrapper) return;
    if (hasContacts && !menuOpen) {
@@ -176,6 +196,7 @@ function updateWrapperPadding(wrapper, hasContacts, menuOpen) {
    }
 }
 
+
 function updateFooterPosition(footer, hasContacts, menuOpen) {
    if (!footer) return;
    if (hasContacts && !menuOpen) {
@@ -184,6 +205,7 @@ function updateFooterPosition(footer, hasContacts, menuOpen) {
       footer.style.transform = "translateY(0)";
    }
 }
+
 
 function renderInitials(elements, selectedOptions, maxDisplay) {
    const displayedCount = addInitialsToContainer(
@@ -195,6 +217,7 @@ function renderInitials(elements, selectedOptions, maxDisplay) {
    addOverflowIndicator(elements.initials, selectedOptions.length, displayedCount);
    return displayedCount;
 }
+
 
 function updateContactInitials(elements) {
    const params = getInitialsParameters(elements);
