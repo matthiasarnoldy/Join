@@ -18,7 +18,8 @@ body {
 }
 
 .main-content--signup-logo {
-    position: absolute;
+    position: fixed;
+    z-index: 10;
     top: 80px;
     left: 77px;
     width: 100px;
@@ -134,6 +135,17 @@ body {
    background-color: #2a3647;
 }
 
+.login__button.is-disabled {
+    opacity: 0.5;
+    pointer-events: auto;
+    cursor: default;
+}
+
+.login__button.is-disabled:hover {
+    filter: none;
+    background-color: #2a3647;
+}
+
 .login__button--guest {
     color: #2a3647;
     border: 1px solid #2a3647;
@@ -245,6 +257,12 @@ body {
     color: rgba(230, 0, 38, 1);
 }
 
+.login__input--error,
+.login__input--error:focus {
+    border: 1px solid rgba(230, 0, 38, 1);
+    outline: none;
+}
+
 .login__buttonArea {
     display: flex;
     gap: 35px;
@@ -343,7 +361,7 @@ body {
     }
     100% {
         top: 80px;
-        left: 80px;
+        left: 77px;
         width: 100px;
         transform: translate(0, 0);
     }
@@ -380,6 +398,45 @@ body {
 
     .signup__arrowBack {
         left: -104px;
+    }
+}
+
+@media (max-height: 760px) {
+    .main-content,
+    .main-content--signup {
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-content main {
+        height: auto;
+        min-height: 0;
+        flex: 1;
+        align-items: flex-start;
+        padding: 124px 0 120px;
+    }
+
+    .main-content--signup main {
+        height: auto;
+        min-height: 0;
+        flex: 1;
+        align-items: flex-start;
+        padding-top: 124px;
+        padding-bottom: 24px;
+    }
+
+    .login__signup {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        padding: 0 16px;
+        justify-content: center;
+    }
+
+    .login__legalInformation--area {
+        position: static;
+        padding: 0 16px 24px;
     }
 }
 

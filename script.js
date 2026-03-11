@@ -2,6 +2,13 @@
 
 const ACTIVE_CLASS = "navBar__quicklink--active";
 const NAV_ITEM_SELECTOR = ".navBar__quicklink, .legalInformation";
+const DEFAULT_BASE_URL =
+   "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+const GLOBAL_AUTH_USER_QUERY_KEY = "uid";
+
+window.JOIN_CONFIG = window.JOIN_CONFIG || {};
+window.JOIN_CONFIG.BASE_URL = window.JOIN_CONFIG.BASE_URL || DEFAULT_BASE_URL;
+
 const UI_IDS = {
    navSummary: "nav-summary",
    navAddTask: "nav-add-task",
@@ -14,19 +21,40 @@ const UI_IDS = {
    dropdownHelp: "dropdownHelp",
    dropdownPrivacyPolicy: "dropdownPrivacyPolicy",
    dropdownLegalNotice: "dropdownLegalNotice",
+   dropdownLog: "dropdownLog",
    arrowBack: "help__arrowBack",
 };
+const PAGE_FILES = {
+   summary: "summary.html",
+   addTask: "add-task.html",
+   board: "board.html",
+   contacts: "contacts.html",
+   privacy: "privacy-Policy.html",
+   legal: "legalnotice.html",
+   help: "help.html",
+};
+const PROTECTED_PAGE_FILES = new Set([
+   PAGE_FILES.summary,
+   PAGE_FILES.addTask,
+   PAGE_FILES.board,
+   PAGE_FILES.contacts,
+]);
+const IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
+const PAGE_BASE_PATH = IS_IN_TEMPLATES ? "./" : "./templates/";
+function getPagePath(pageFile) {
+   return `${PAGE_BASE_PATH}${pageFile}`;
+}
 const NAV_LINKS = [
-   ["navSummary", "./summary.html", "navSummary"],
-   ["navAddTask", "./add-task.html", "navAddTask"],
-   ["navBoard", "./board.html", "navBoard"],
-   ["navContacts", "./contacts.html", "navContacts"],
-   ["navPrivacyPolicy", "./privacy-Policy.html", "navPrivacyPolicy"],
-   ["navLegalNotice", "./legalnotice.html", "navLegalNotice"],
-   ["help", "./help.html", null],
-   ["dropdownHelp", "./help.html", null],
-   ["dropdownPrivacyPolicy", "./privacy-Policy.html", "navPrivacyPolicy"],
-   ["dropdownLegalNotice", "./legalnotice.html", "navLegalNotice"],
+   ["navSummary", getPagePath(PAGE_FILES.summary), "navSummary"],
+   ["navAddTask", getPagePath(PAGE_FILES.addTask), "navAddTask"],
+   ["navBoard", getPagePath(PAGE_FILES.board), "navBoard"],
+   ["navContacts", getPagePath(PAGE_FILES.contacts), "navContacts"],
+   ["navPrivacyPolicy", getPagePath(PAGE_FILES.privacy), "navPrivacyPolicy"],
+   ["navLegalNotice", getPagePath(PAGE_FILES.legal), "navLegalNotice"],
+   ["help", getPagePath(PAGE_FILES.help), null],
+   ["dropdownHelp", getPagePath(PAGE_FILES.help), null],
+   ["dropdownPrivacyPolicy", getPagePath(PAGE_FILES.privacy), "navPrivacyPolicy"],
+   ["dropdownLegalNotice", getPagePath(PAGE_FILES.legal), "navLegalNotice"],
 ];
 
 /**
@@ -94,7 +122,7 @@ function bindNavLink(element, targetPath, activeItem) {
    bindClick(element, () => {
       if (activeItem) setActiveNav(activeItem);
       else clearActiveNav();
-      location.href = targetPath;
+      location.href = withAuthUserQuery(targetPath);
    });
 }
 
@@ -170,8 +198,101 @@ function bindBackArrow(arrowBack) {
  */
 function bindSummaryCardRedirect() {
    document.addEventListener("click", (event) => {
-      if (event.target.closest(".summary__card")) location.href = "./board.html";
+      if (event.target.closest(".summary__card")) {
+         location.href = withAuthUserQuery(getPagePath(PAGE_FILES.board));
+      }
    });
+}
+
+function getAuthUserIdFromUrl() {
+   const params = new URLSearchParams(window.location.search);
+   return String(params.get(GLOBAL_AUTH_USER_QUERY_KEY) || "").trim();
+}
+
+function getCurrentPageFileName() {
+   return String(window.location.pathname.split("/").pop() || "").toLowerCase();
+}
+
+function isProtectedPage() {
+   return PROTECTED_PAGE_FILES.has(getCurrentPageFileName());
+}
+
+function enforceAuthGuard() {
+   if (!isProtectedPage()) return false;
+   if (getAuthUserIdFromUrl()) return false;
+   location.replace(getLoginEntryPath());
+   return true;
+}
+
+function withAuthUserQuery(path) {
+   const userId = getAuthUserIdFromUrl();
+   if (!userId) return path;
+   const separator = path.includes("?") ? "&" : "?";
+   return `${path}${separator}${GLOBAL_AUTH_USER_QUERY_KEY}=${encodeURIComponent(userId)}`;
+}
+
+function getLoginEntryPath() {
+   return IS_IN_TEMPLATES ? "../index.html" : "./index.html";
+}
+
+function getSignupEntryPath() {
+   return IS_IN_TEMPLATES ? "./signup.html" : "./templates/signup.html";
+}
+
+function bindAuthEntryButtons() {
+   bindClick(document.getElementById("signup-button"), () => {
+      location.href = getSignupEntryPath();
+   });
+   bindClick(document.getElementById("signup__arrowBack"), () => {
+      location.href = getLoginEntryPath();
+   });
+}
+
+function bindLogoutButton(logoutButton) {
+   bindClick(logoutButton, () => {
+      location.href = getLoginEntryPath();
+   });
+}
+
+async function fetchAuthUserFromDatabase(userId) {
+   const response = await fetch(
+      `${window.JOIN_CONFIG.BASE_URL}users/${encodeURIComponent(userId)}.json`
+   );
+   if (!response.ok) throw new Error(`Failed loading user: HTTP ${response.status}`);
+   return await response.json();
+}
+
+function buildInitialFromName(name) {
+   const trimmedName = String(name || "").trim();
+   if (!trimmedName) return "";
+   const parts = trimmedName.split(/\s+/).filter(Boolean);
+   const firstInitial = parts[0].charAt(0).toUpperCase();
+   const secondLetter = parts[0].charAt(1).toUpperCase();
+   const lastInitial =
+      parts.length > 1
+         ? parts[parts.length - 1].charAt(0).toUpperCase()
+         : secondLetter || firstInitial;
+   return `${firstInitial}${lastInitial}`;
+}
+
+function resolveHeaderInitial(user) {
+   const storedInitial = String(user?.initial || "").trim().toUpperCase();
+   if (storedInitial) return storedInitial;
+   return buildInitialFromName(user?.name);
+}
+
+async function applyHeaderInitials() {
+   const initialsElement = document.getElementById("login__initials");
+   if (!initialsElement) return;
+   const userId = getAuthUserIdFromUrl();
+   if (!userId) return;
+   try {
+      const authUser = await fetchAuthUserFromDatabase(userId);
+      const initial = resolveHeaderInitial(authUser);
+      if (initial) initialsElement.textContent = initial;
+   } catch (error) {
+      console.error("Loading header initials failed:", error);
+   }
 }
 
 /**
@@ -181,12 +302,16 @@ function bindSummaryCardRedirect() {
  * @returns {void}
  */
 function initGlobalUi() {
+   if (enforceAuthGuard()) return;
    const ui = getUiElements();
+   applyHeaderInitials();
    bindNavigation(ui);
    bindLoginToggle(ui.loginInitials);
    bindWindowDropdownClose(ui.loginInitials);
    bindBackArrow(ui.arrowBack);
    bindSummaryCardRedirect();
+   bindAuthEntryButtons();
+   bindLogoutButton(ui.dropdownLog);
 }
 
 if (document.readyState === "loading") {

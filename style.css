@@ -235,7 +235,8 @@ h1 {
 }
 
 .login__initials {
-   font-size: 14px;
+   font-size: 18px;
+   font-weight: 700;
    color: #29abe2;
    width: 56px;
    height: 56px;

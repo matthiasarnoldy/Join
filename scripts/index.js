@@ -1,160 +1,186 @@
 document.addEventListener("DOMContentLoaded", initLogin);
 
+const INDEX_IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
+const ASSET_BASE_PATH = INDEX_IS_IN_TEMPLATES ? "../assets/" : "./assets/";
+const INDEX_PAGE_BASE_PATH = INDEX_IS_IN_TEMPLATES ? "./" : "./templates/";
+const AUTH_USER_QUERY_KEY = "uid";
+
+function assetPath(relativePath) {
+    return `${ASSET_BASE_PATH}${relativePath}`;
+}
+
+function pagePath(pageFile) {
+    return `${INDEX_PAGE_BASE_PATH}${pageFile}`;
+}
+
 function initLogin() {
     setSplashLogoByViewport();
     setMobileSplashBackground();
     setMainOpacity();
     setupSignupFormValidation();
+    hideLoginError();
+    hideSignupError();
     setupPasswordVisibility();
     setupLoginButtons();
+    bindLoginErrorHideOnInput();
+}
+
+function getAuthBaseUrl() {
+    return (window.JOIN_CONFIG && window.JOIN_CONFIG.BASE_URL) || "";
+}
+
+function isValidEmailAddress(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    return emailPattern.test(email);
+}
+
+async function getUsersFromDatabase() {
+    const response = await fetch(`${getAuthBaseUrl()}users.json`);
+    if (!response.ok) throw new Error(`Failed loading users: HTTP ${response.status}`);
+    return (await response.json()) || {};
+}
+
+function isEmailAlreadyRegistered(usersObject, email) {
+    return Object.values(usersObject).some((user) => {
+        return user && typeof user.email === "string" && user.email.toLowerCase() === email;
+    });
+}
+
+function padToTwoDigits(value) {
+    return String(value).padStart(2, "0");
+}
+
+function formatGermanTimestamp(date) {
+    const day = padToTwoDigits(date.getDate());
+    const month = padToTwoDigits(date.getMonth() + 1);
+    const year = String(date.getFullYear());
+    const hour = padToTwoDigits(date.getHours());
+    const minute = padToTwoDigits(date.getMinutes());
+    const second = padToTwoDigits(date.getSeconds());
+    return `${day}${month}${year}${hour}${minute}${second}`;
+}
+
+function getSplashLogoElement() {
+    return document.querySelector(".splash__logo--image");
+}
+
+function isMobileViewport() {
+    return window.matchMedia("(max-width: 600px)").matches;
 }
 
 function setSplashLogoByViewport() {
-    const splashLogo = document.querySelector(".splash__logo--image");
+    const splashLogo = getSplashLogoElement();
     if (!splashLogo) return;
-    const isMobile = window.matchMedia("(max-width: 600px)").matches;
-    splashLogo.src = isMobile
-        ? "./assets/icons/desktop/logo.svg"
-        : "./assets/icons/desktop/Dark_Logo.svg";
+    splashLogo.src = isMobileViewport()
+        ? assetPath("icons/desktop/logo.svg")
+        : assetPath("icons/desktop/Dark_Logo.svg");
+}
+
+function getMobileSplashElements() {
+    return {
+        splash: document.querySelector(".splash__logo"),
+        splashLogo: getSplashLogoElement(),
+    };
+}
+
+function shouldApplyMobileSplash(splash) {
+    return Boolean(splash) && isMobileViewport();
+}
+
+function buildSplashBackgroundReset(originalBg, splashLogo) {
+    return () => {
+        document.body.style.backgroundColor = originalBg;
+        if (splashLogo) splashLogo.src = assetPath("icons/desktop/Dark_Logo.svg");
+    };
 }
 
 function setMobileSplashBackground() {
-    const splash = document.querySelector(".splash__logo");
-    const splashLogo = document.querySelector(".splash__logo--image");
-    if (!splash || !window.matchMedia("(max-width: 600px)").matches) return;
+    const { splash, splashLogo } = getMobileSplashElements();
+    if (!shouldApplyMobileSplash(splash)) return;
     const originalBg = getComputedStyle(document.body).backgroundColor;
+    const resetBg = buildSplashBackgroundReset(originalBg, splashLogo);
     document.body.style.backgroundColor = "#2a3647";
-    const resetBg = () => {
-        document.body.style.backgroundColor = originalBg;
-        if (splashLogo) splashLogo.src = "./assets/icons/desktop/Dark_Logo.svg";
-    };
     splash.addEventListener("animationend", resetBg, { once: true });
     setTimeout(resetBg, 700);
 }
 
 function setMainOpacity() {
-    const mainContent = document.getElementById('main-content');
+    const mainContent = document.getElementById("main-content");
+    if (!mainContent) return;
     setTimeout(() => {
-        mainContent.classList.add('main-content--opacity');
+        mainContent.classList.add("main-content--opacity");
     }, 700);
-}
-
-function setupSignupFormValidation() {
-    const signupForm = document.querySelector(".login__formular");
-    const signupSubmitButton = document.getElementById("login-button");
-    const privacyCheckbox = document.getElementById("privacy-policy");
-    if (!signupForm || !signupSubmitButton || !privacyCheckbox) return;
-    const inputs = signupForm.querySelectorAll("input[type='text'], input[type='email'], input[type='password']");
-    const updateButtonState = () => checkFormValidity(inputs, privacyCheckbox, signupSubmitButton);
-    signupSubmitButton.disabled = true;
-    inputs.forEach(input => input.addEventListener("input", updateButtonState));
-    privacyCheckbox.addEventListener("change", updateButtonState);
-}
-
-function checkFormValidity(inputs, checkbox, button) {
-    const allInputsFilled = Array.from(inputs).every(input => input.value.trim() !== "");
-    const checkboxChecked = checkbox.checked;
-    button.disabled = !(allInputsFilled && checkboxChecked);
 }
 
 function setupPasswordVisibility() {
     const passwordFields = getPasswordFields();
-    passwordFields.forEach(field => setupPasswordField(field));
+    passwordFields.forEach((field) => setupPasswordField(field));
+}
+
+function getPasswordFieldByIconId(iconId) {
+    const icon = document.getElementById(iconId);
+    if (!icon) return null;
+    const input = icon.closest(".login__input-field")?.querySelector(".login__input--password");
+    return input ? { input, icon } : null;
 }
 
 function getPasswordFields() {
-    const fields = [];
-    const passwordIcon = document.getElementById("password-icon");
-    const confirmIcon = document.getElementById("confirm-password-icon");
-    if (passwordIcon) {
-        const input = passwordIcon.closest(".login__input-field").querySelector(".login__input--password");
-        if (input) fields.push({ input, icon: passwordIcon });
-    }
-    if (confirmIcon) {
-        const input = confirmIcon.closest(".login__input-field").querySelector(".login__input--password");
-        if (input) fields.push({ input, icon: confirmIcon });
-    }
-    return fields;
+    const passwordField = getPasswordFieldByIconId("password-icon");
+    const confirmField = getPasswordFieldByIconId("confirm-password-icon");
+    return [passwordField, confirmField].filter(Boolean);
 }
 
 function setupPasswordField(field) {
     field.input.addEventListener("focus", () => showVisibilityIcon(field));
     field.input.addEventListener("blur", () => hideVisibilityIcon(field));
-    field.icon.addEventListener("mousedown", (e) => e.preventDefault());
+    field.icon.addEventListener("mousedown", (event) => event.preventDefault());
     field.icon.addEventListener("click", () => togglePasswordVisibility(field));
 }
 
 function showVisibilityIcon(field) {
-    if (field.input.type === "password") {
-        field.icon.src = "./assets/icons/desktop/visibility_off.svg";
-        field.icon.style.cursor = "pointer";
-    }
+    if (field.input.type !== "password") return;
+    field.icon.src = assetPath("icons/desktop/visibility_off.svg");
+    field.icon.style.cursor = "pointer";
 }
 
 function hideVisibilityIcon(field) {
     field.input.type = "password";
-    field.icon.src = "./assets/icons/desktop/lock.svg";
+    field.icon.src = assetPath("icons/desktop/lock.svg");
     field.icon.style.cursor = "default";
 }
 
+function isLockIcon(field) {
+    return field.icon.src.includes("lock.svg");
+}
+
+function showPassword(field) {
+    field.input.type = "text";
+    field.icon.src = assetPath("icons/desktop/visibility.svg");
+}
+
+function hidePassword(field) {
+    field.input.type = "password";
+    field.icon.src = assetPath("icons/desktop/visibility_off.svg");
+}
+
 function togglePasswordVisibility(field) {
-    const isLockIcon = field.icon.src.includes("lock.svg");
-    if (isLockIcon) return;
-    if (field.input.type === "password") {
-        field.input.type = "text";
-        field.icon.src = "./assets/icons/desktop/visibility.svg";
-    } else {
-        field.input.type = "password";
-        field.icon.src = "./assets/icons/desktop/visibility_off.svg";
-    }
+    if (isLockIcon(field)) return;
+    if (field.input.type === "password") showPassword(field);
+    else hidePassword(field);
     field.input.focus();
 }
 
-// Vorübergehened
-
-function setupLoginButtons() {
-    const loginButton = document.getElementById("login-button");
-    const guestLoginButton = document.getElementById("guest-login-button");
-    const isSignupPage = document.querySelector(".main-content--signup");
-    if (loginButton) {
-        if (isSignupPage) {
-            loginButton.addEventListener("click", handleSignup);
-        } else {
-            loginButton.addEventListener("click", redirectToSummary);
-        }
-    }
-    if (guestLoginButton) {
-        guestLoginButton.addEventListener("click", redirectToSummary);
-    }
+function setButtonDisabled(button, disabled) {
+    if (!button) return;
+    button.disabled = disabled;
 }
 
-function handleSignup() {
-    showSignupSuccess();
-    setTimeout(redirectToIndex, 1000);
+function buildSummaryPathWithUserId(userId) {
+    if (!userId) return pagePath("summary.html");
+    const query = `${AUTH_USER_QUERY_KEY}=${encodeURIComponent(userId)}`;
+    return `${pagePath("summary.html")}?${query}`;
 }
 
-function redirectToSummary() {
-    location.href = "./summary.html";
-}
-
-function redirectToIndex() {
-    location.href = "./index.html";
-}
-
-function createSignupMessage() {
-    const messageDiv = document.createElement("div");
-    messageDiv.className = "signup-success-message";
-    const messageText = document.createElement("span");
-    messageText.textContent = "You signed up successfully";
-    messageDiv.appendChild(messageText);
-    return messageDiv;
-}
-
-function showSignupSuccess() {
-    const message = createSignupMessage();
-    document.body.appendChild(message);
-    requestAnimationFrame(() => {
-        message.classList.add("signup-success-message--visible");
-    });
-    setTimeout(() => message.remove(), 1000);
+function redirectToSummary(userId = "") {
+    location.href = buildSummaryPathWithUserId(userId);
 }
