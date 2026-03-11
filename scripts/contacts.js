@@ -91,11 +91,28 @@ async function updateContactInFirebase(contactId, contactData) {
 }
 
 
-function showContactToast(message, type = "success") {
-   if (typeof window.showAppToast === "function") {
-      window.showAppToast(message, { type, duration: 1200 });
-      return;
+function createContactToastMessage(message, type = "success") {
+   const messageDiv = document.createElement("div");
+   messageDiv.className = "contact-success-message";
+   if (type === "error") {
+      messageDiv.classList.add("contact-success-message--error");
    }
+   messageDiv.textContent = message;
+   return messageDiv;
+}
+
+
+function showContactToast(message, type = "success") {
+   const existingMessages = document.querySelectorAll(".contact-success-message");
+   existingMessages.forEach((item) => item.remove());
+   const toast = createContactToastMessage(message, type);
+   document.body.appendChild(toast);
+   requestAnimationFrame(() => {
+      toast.classList.add("contact-success-message--visible");
+   });
+   setTimeout(() => {
+      toast.remove();
+   }, 1200);
 }
 
 
@@ -357,8 +374,7 @@ async function handleCreateContact(e) {
       switchView();
       showContactToast(wasEdit ? "Contact updated" : "Contact successfully created");
    } catch (error) {
-      console.error("Contact creation failed:", error);
-      errorMsg.innerText = "Kontakt konnte nicht gespeichert werden.";
+      errorMsg.innerText = "Contact could not be saved. Please try again.";
       showContactToast("Contact could not be saved", "error");
    }
 }
