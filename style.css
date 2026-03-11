@@ -61,6 +61,10 @@ h1 {
    flex-direction: column;
 }
 
+.app-loading button {
+   pointer-events: none;
+}
+
 /* Navigation */
 .navBar {
    color: #fff;

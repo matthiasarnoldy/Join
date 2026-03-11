@@ -6,6 +6,8 @@ const DEFAULT_BASE_URL =
    "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
 const GLOBAL_AUTH_USER_QUERY_KEY = "uid";
 
+document.documentElement.classList.add("app-loading");
+
 window.JOIN_CONFIG = window.JOIN_CONFIG || {};
 window.JOIN_CONFIG.BASE_URL = window.JOIN_CONFIG.BASE_URL || DEFAULT_BASE_URL;
 
@@ -347,16 +349,20 @@ async function applyHeaderInitials() {
  * @returns {void}
  */
 function initGlobalUi() {
-   if (enforceAuthGuard()) return;
-   const ui = getUiElements();
-   applyHeaderInitials();
-   bindNavigation(ui);
-   bindLoginToggle(ui.loginInitials);
-   bindWindowDropdownClose(ui.loginInitials);
-   bindBackArrow(ui.arrowBack);
-   bindSummaryCardRedirect();
-   bindAuthEntryButtons();
-   bindLogoutButton(ui.dropdownLog);
+   try {
+      if (enforceAuthGuard()) return;
+      const ui = getUiElements();
+      applyHeaderInitials();
+      bindNavigation(ui);
+      bindLoginToggle(ui.loginInitials);
+      bindWindowDropdownClose(ui.loginInitials);
+      bindBackArrow(ui.arrowBack);
+      bindSummaryCardRedirect();
+      bindAuthEntryButtons();
+      bindLogoutButton(ui.dropdownLog);
+   } finally {
+      document.documentElement.classList.remove("app-loading");
+   }
 }
 
 if (document.readyState === "loading") {
