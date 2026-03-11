@@ -109,6 +109,11 @@ function setupSubtaskButtons(group) {
    addButton.addEventListener("click", () => {
       addSubtaskFromInput(input, list);
    });
+   input.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      addSubtaskFromInput(input, list);
+   });
 }
 
 function clearSubtaskInput(input) {
