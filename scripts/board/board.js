@@ -7,6 +7,14 @@ function getTaskDetailDialog() {
    return document.getElementById("taskDetailDialog");
 }
 
+function updateBoardDialogScrollLock() {
+   const addDialogOpen = Boolean(getAddTaskDialog()?.open);
+   const detailDialogOpen = Boolean(getTaskDetailDialog()?.open);
+   const shouldLockScroll = addDialogOpen || detailDialogOpen;
+   document.documentElement.classList.toggle("board-dialog-open", shouldLockScroll);
+   document.body.classList.toggle("board-dialog-open", shouldLockScroll);
+}
+
 
 function setAddTaskDialogMode(isEditMode) {
    const title = document.getElementById("addTaskDialogTitle");
@@ -31,6 +39,7 @@ function openDialog(status = "todo") {
    dialog.dataset.taskStatus = status;
    resetAddTaskDialogMode();
    dialog.showModal();
+   updateBoardDialogScrollLock();
 }
 
 
@@ -40,6 +49,7 @@ function closeDialog() {
    dialog.close();
    delete dialog.dataset.taskStatus;
    resetAddTaskDialogMode();
+   updateBoardDialogScrollLock();
 }
 
 
@@ -80,8 +90,16 @@ window.addEventListener("click", (event) => {
    }
 });
 
+window.addEventListener("DOMContentLoaded", () => {
+   const addDialog = getAddTaskDialog();
+   const detailDialog = getTaskDetailDialog();
+   addDialog?.addEventListener("close", updateBoardDialogScrollLock);
+   detailDialog?.addEventListener("close", updateBoardDialogScrollLock);
+});
+
 window.getAddTaskDialog = getAddTaskDialog;
 window.getTaskDetailDialog = getTaskDetailDialog;
+window.updateBoardDialogScrollLock = updateBoardDialogScrollLock;
 window.setAddTaskDialogMode = setAddTaskDialogMode;
 window.resetAddTaskDialogMode = resetAddTaskDialogMode;
 window.openDialog = openDialog;

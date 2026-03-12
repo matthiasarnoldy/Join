@@ -2,7 +2,8 @@
    padding: 0 136px 0 108px;
    display: flex;
    flex-direction: column;
-   gap: 96px;
+   min-height: calc(100vh - 320px);
+   gap: 0;
 }
 
 .mainArea,
@@ -13,6 +14,8 @@
 .add-task__overview {
    display: flex;
    justify-content: space-between;
+   flex: 1;
+   min-height: 0;
 }
 
 .headline_tasks {
@@ -158,11 +161,8 @@
 }
 
 .add-task__subtask-list {
-   position: absolute;
-   top: calc(100% + 8px);
-   right: 0;
-   left: 0;
-   z-index: 2;
+   position: static;
+   margin-top: 8px;
    max-height: 110px;
    display: flex;
    flex-direction: column;
@@ -782,10 +782,9 @@
 }
 
 .add-task__footer {
-   position: sticky;
-   bottom: 0;
-   z-index: 10;
-   padding-bottom: 32px;
+   position: static;
+   padding-bottom: 16px;
+   margin-top: auto;
    display: flex;
    justify-content: space-between;
    align-items: flex-end;
@@ -980,7 +979,8 @@
       width: 100%;
       padding: 110px 32px 48px 32px;
       align-items: center;
-      gap: 8px;
+      min-height: 0;
+      gap: 0;
    }
 
    .add-task__form-buttons {
@@ -994,10 +994,9 @@
    }
 
    .add-task__footer {
-      position: fixed;
-      bottom: 80px;
+      position: static;
       width: 100%;
-      padding: 16px 0;
+      padding: 12px 0;
       background-color: #f6f7f8;
    }
 

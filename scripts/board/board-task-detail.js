@@ -16,6 +16,7 @@
       if (!dialog) return;
       dialog.close();
       delete dialog.dataset.taskId;
+      window.updateBoardDialogScrollLock?.();
    }
 
    function setTaskDetailLabel(category) {
@@ -101,6 +102,7 @@
       dialog.dataset.taskId = String(taskId);
       renderTaskDetail(taskData);
       dialog.showModal();
+      window.updateBoardDialogScrollLock?.();
    }
 
    function getTaskDetailSubtaskTogglePayload(event) {
