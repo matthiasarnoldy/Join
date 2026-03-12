@@ -57,7 +57,9 @@ function showContactFormError(message, invalidIds = ["add-name", "add-email"]) {
    errorEl.style.display = "block";
    errorEl.style.opacity = "1";
    invalidIds.forEach((id) => {
-      document.getElementById(id)?.classList.add("login__input--error");
+      const input = document.getElementById(id);
+      input?.classList.add("login__input--error");
+      input?.closest(".contact-modal__field")?.classList.add("contact-modal__field--error");
    });
 }
 
@@ -67,13 +69,17 @@ function hideContactFormError() {
    if (!errorEl) return;
    errorEl.style.opacity = "0";
    ["add-name", "add-email", "add-phone"].forEach((id) => {
-      document.getElementById(id)?.classList.remove("login__input--error");
+      const input = document.getElementById(id);
+      input?.classList.remove("login__input--error");
+      input?.closest(".contact-modal__field")?.classList.remove("contact-modal__field--error");
    });
 }
 
 
 function clearContactFieldError(id) {
-   document.getElementById(id)?.classList.remove("login__input--error");
+   const input = document.getElementById(id);
+   input?.classList.remove("login__input--error");
+   input?.closest(".contact-modal__field")?.classList.remove("contact-modal__field--error");
    const anyStillInvalid = ["add-name", "add-email", "add-phone"].some((fieldId) =>
       document.getElementById(fieldId)?.classList.contains("login__input--error")
    );

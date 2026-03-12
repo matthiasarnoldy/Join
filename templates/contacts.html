@@ -258,21 +258,82 @@
                   <div
                      class="overlay-content"
                      onclick="event.stopPropagation()">
-                     <h2 id="contact-form-title">Add Contact</h2>
-                     <form id="contact-form">
-                        <input type="text" id="add-name" placeholder="Name" />
-                        <input type="text" id="add-email" placeholder="Email" />
-                        <input type="text" id="add-phone" placeholder="Phone" />
-                        <span id="contactFormError" class="login__input--required" style="display: block; opacity: 0;"></span>
-                        <div class="form-actions">
-                           <button type="button" onclick="closeOverlay()">
-                              Cancel
-                           </button>
-                           <button type="submit" id="contact-form-submit">
-                              Create contact
-                           </button>
-                        </div>
-                     </form>
+                     <div class="contact-modal__brand">
+                        <img
+                           src="../assets/icons/desktop/logo.svg"
+                           alt="Join Logo"
+                           class="contact-modal__logo" />
+                        <h2 id="contact-form-title">Add Contact</h2>
+                        <p>Tasks are better with a team!</p>
+                        <span class="contact-modal__divider"></span>
+                     </div>
+
+                     <div class="contact-modal__body">
+                        <button
+                           type="button"
+                           class="contact-modal__close"
+                           onclick="closeOverlay()"
+                           aria-label="Close add contact dialog">
+                           <img src="../assets/icons/desktop/close.svg" alt="" />
+                        </button>
+
+                        <form id="contact-form" class="contact-modal__form">
+                           <div class="contact-modal__avatar" aria-hidden="true">
+                              <img
+                                 src="../assets/icons/desktop/person.svg"
+                                 alt="" />
+                           </div>
+
+                           <div class="contact-modal__fields">
+                              <label class="contact-modal__field" for="add-name">
+                                 <input
+                                    type="text"
+                                    id="add-name"
+                                    placeholder="Name" />
+                                 <img
+                                    src="../assets/icons/desktop/person.svg"
+                                    alt="" />
+                              </label>
+
+                              <label class="contact-modal__field" for="add-email">
+                                 <input
+                                    type="text"
+                                    id="add-email"
+                                    placeholder="Email" />
+                                 <img
+                                    src="../assets/icons/desktop/mail.svg"
+                                    alt="" />
+                              </label>
+
+                              <label class="contact-modal__field" for="add-phone">
+                                 <input
+                                    type="text"
+                                    id="add-phone"
+                                    placeholder="Phone" />
+                                 <span class="contact-modal__field-symbol" aria-hidden="true">☎</span>
+                              </label>
+
+                              <span
+                                 id="contactFormError"
+                                 class="login__input--required"
+                                 style="display: block; opacity: 0"></span>
+
+                              <div class="form-actions">
+                                 <button
+                                    type="button"
+                                    id="contact-form-cancel"
+                                    onclick="closeOverlay()">
+                                    Cancel
+                                 </button>
+                                 <button
+                                    type="submit"
+                                    id="contact-form-submit">
+                                    Create contact
+                                 </button>
+                              </div>
+                           </div>
+                        </form>
+                     </div>
                   </div>
                </div>
 
