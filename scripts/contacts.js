@@ -5,6 +5,51 @@ let contactsState = [];
 const CONTACTS_BASE_URL =
    "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
 
+/**
+ * Formatiert eine Telefonnummer in ein lesbares Format.
+ * Beispiel: 004915129827139 → +49 1512 9827139
+ * @param {string} number - Rohe Telefonnummer
+ * @returns {string} Formatierte Telefonnummer
+ */
+function formatPhoneNumber(number) {
+   if (!number) return "";
+
+   // Leerzeichen, Bindestriche, Klammern entfernen
+   let cleaned = String(number).replace(/[\s\-().]/g, "");
+
+   // 00XX → +XX
+   if (cleaned.startsWith("00")) {
+      cleaned = "+" + cleaned.slice(2);
+   }
+
+   // Führende 0 ohne Landesvorwahl → +49 (Deutschland)
+   if (cleaned.startsWith("0") && !cleaned.startsWith("+")) {
+      cleaned = "+49" + cleaned.slice(1);
+   }
+
+   // +49-Nummern formatieren
+   if (cleaned.startsWith("+49")) {
+      const local = cleaned.slice(3); // nationale Nummer ohne führende 0
+
+      // Mobilfunk: 015x, 016x, 017x → 4-stellige Vorwahl + Rest
+      if (/^1[567]/.test(local) && local.length > 4) {
+         return `+49 ${local.slice(0, 4)} ${local.slice(4)}`;
+      }
+
+      // Festnetz: 2-stellige Vorwahl (z. B. 30, 40, 89) + Rest
+      if (/^[2-9][0-9]/.test(local) && local.length > 2) {
+         return `+49 ${local.slice(0, 2)} ${local.slice(2)}`;
+      }
+
+      // Fallback: Landesvorwahl + Rest ohne weitere Gruppierung
+      return `+49 ${local}`;
+   }
+
+   // Andere Ländervorwahl: +CC unverändert lassen
+   return cleaned;
+}
+
+
 function normalizeContact(contact, firebaseKey) {
    if (!contact || typeof contact !== "object") return null;
    const resolvedId = contact.id ?? firebaseKey;
@@ -269,7 +314,7 @@ function showDetail(contact) {
    document.getElementById("detail-name").innerText = contact.name;
    document.getElementById("detail-email").innerText = contact.email;
    document.getElementById("detail-email").href = `mailto:${contact.email}`;
-   document.getElementById("detail-phone").innerText = contact.phone;
+   document.getElementById("detail-phone").innerText = formatPhoneNumber(contact.phone);
 }
 
 
