@@ -50,7 +50,7 @@ function formatPhoneNumber(number) {
 }
 
 
-function showContactFormError(message, invalidIds = ["add-name", "add-email", "add-phone"]) {
+function showContactFormError(message, invalidIds = ["add-name", "add-email"]) {
    const errorEl = document.getElementById("contactFormError");
    if (!errorEl) return;
    errorEl.textContent = message;
@@ -420,8 +420,6 @@ async function handleCreateContact(e) {
    const invalidIds = [];
    if (!name) invalidIds.push("add-name");
    if (!email || !email.includes("@") || !email.includes(".")) invalidIds.push("add-email");
-   if (!phone) invalidIds.push("add-phone");
-
    if (invalidIds.length > 0) {
       showContactFormError("These fields are required", invalidIds);
       return;
