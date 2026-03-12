@@ -974,7 +974,7 @@
    .add-task__overview {
       width: 100%;
       height: calc(100vh - 280px);
-      padding: 144px 0 0;
+      padding: 144px 0 176px;
       flex-direction: column;
       gap: 16px;
       overflow-y: auto;
