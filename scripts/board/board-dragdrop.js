@@ -1,6 +1,20 @@
 (function () {
    let draggedCard = null;
-   let dragPreviewCard = null;
+   let dragGhostCard = null;
+   let dragGhostOffsetX = 0;
+   let dragGhostOffsetY = 0;
+   const transparentDragImage = new Image();
+   transparentDragImage.src =
+      "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+
+   function updateDragGhostPosition(event) {
+      if (!dragGhostCard) return;
+      const { clientX, clientY } = event;
+      if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) return;
+      if (clientX <= 0 && clientY <= 0) return;
+      dragGhostCard.style.left = `${clientX - dragGhostOffsetX}px`;
+      dragGhostCard.style.top = `${clientY - dragGhostOffsetY}px`;
+   }
 
    function clearDropHighlights() {
       const directories = document.querySelectorAll(".board-task-directory");
@@ -32,25 +46,31 @@
    function handleCardDragStart(card, event) {
       draggedCard = card;
       card.classList.add("task-card--dragging");
+
+      dragGhostOffsetX = card.offsetWidth / 2;
+      dragGhostOffsetY = card.offsetHeight / 2;
+      dragGhostCard = card.cloneNode(true);
+      dragGhostCard.classList.remove("task-card--dragging");
+      dragGhostCard.classList.add("task-card--drag-ghost");
+      dragGhostCard.style.width = `${card.offsetWidth}px`;
+      document.body.appendChild(dragGhostCard);
+      updateDragGhostPosition(event);
+
       if (!event.dataTransfer) return;
       event.dataTransfer.effectAllowed = "move";
-      dragPreviewCard = card.cloneNode(true);
-      dragPreviewCard.classList.add("task-card--drag-preview");
-      dragPreviewCard.style.width = `${card.offsetWidth}px`;
-      document.body.appendChild(dragPreviewCard);
-      event.dataTransfer.setDragImage(
-         dragPreviewCard,
-         card.offsetWidth / 2,
-         card.offsetHeight / 2,
-      );
+      event.dataTransfer.setDragImage(transparentDragImage, 0, 0);
       event.dataTransfer.setData("text/plain", card.dataset.taskId || "demo-card");
+   }
+
+   function handleCardDrag(event) {
+      updateDragGhostPosition(event);
    }
 
    function handleCardDragEnd(card) {
       card.classList.remove("task-card--dragging");
-      if (dragPreviewCard) {
-         dragPreviewCard.remove();
-         dragPreviewCard = null;
+      if (dragGhostCard) {
+         dragGhostCard.remove();
+         dragGhostCard = null;
       }
       clearDropHighlights();
       draggedCard = null;
@@ -64,6 +84,7 @@
       card.addEventListener("dragstart", (event) =>
          handleCardDragStart(card, event),
       );
+      card.addEventListener("drag", (event) => handleCardDrag(event));
       card.addEventListener("dragend", () => handleCardDragEnd(card));
    }
 
@@ -75,6 +96,7 @@
    function handleDirectoryDragOver(directory, event) {
       if (!draggedCard) return;
       event.preventDefault();
+      updateDragGhostPosition(event);
       directory.classList.add("board-task-directory--dragover");
       const placeholder = directory.querySelector(".board-task-placeholder");
       if (placeholder) placeholder.style.display = "none";
