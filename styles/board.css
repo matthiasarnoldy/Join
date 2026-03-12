@@ -500,7 +500,7 @@ body.board-dialog-open {
    display: flex;
    justify-content: space-between;
    align-items: center;
-   padding: 32px 40px 0;
+   padding: 24px 24px 0;
 }
 
 .task-detail__label {
@@ -536,7 +536,7 @@ body.board-dialog-open {
    display: flex;
    flex-direction: column;
    gap: 20px;
-   padding: 12px 40px 24px;
+   padding: 12px 24px 20px;
    overflow-y: auto;
 }
 
@@ -639,7 +639,7 @@ body.board-dialog-open {
 
 .task-detail__footer {
    display: flex;
-   justify-content: center;
+   justify-content: flex-end;
    align-items: center;
    gap: 10px;
    margin-top: auto;
