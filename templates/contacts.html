@@ -263,7 +263,7 @@
                         <input type="text" id="add-name" placeholder="Name" />
                         <input type="text" id="add-email" placeholder="Email" />
                         <input type="text" id="add-phone" placeholder="Phone" />
-                        <div id="contactFormError" class="error"></div>
+                        <span id="contactFormError" class="login__input--required" style="display: block; opacity: 0;"></span>
                         <div class="form-actions">
                            <button type="button" onclick="closeOverlay()">
                               Cancel
@@ -285,11 +285,16 @@
                      document
                         .getElementById("overlay")
                         .classList.remove("d-none");
+                     if (typeof bindContactFormErrorHideOnInput === "function") {
+                        bindContactFormErrorHideOnInput();
+                     }
                   }
                   function closeOverlay() {
                      document.getElementById("overlay").classList.add("d-none");
                      document.getElementById("contact-form").reset();
-                     document.getElementById("contactFormError").innerText = "";
+                     if (typeof hideContactFormError === "function") {
+                        hideContactFormError();
+                     }
                   }
                </script>
             </div>

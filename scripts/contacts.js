@@ -50,6 +50,49 @@ function formatPhoneNumber(number) {
 }
 
 
+function showContactFormError(message, invalidIds = ["add-name", "add-email", "add-phone"]) {
+   const errorEl = document.getElementById("contactFormError");
+   if (!errorEl) return;
+   errorEl.textContent = message;
+   errorEl.style.display = "block";
+   errorEl.style.opacity = "1";
+   invalidIds.forEach((id) => {
+      document.getElementById(id)?.classList.add("login__input--error");
+   });
+}
+
+
+function hideContactFormError() {
+   const errorEl = document.getElementById("contactFormError");
+   if (!errorEl) return;
+   errorEl.style.opacity = "0";
+   ["add-name", "add-email", "add-phone"].forEach((id) => {
+      document.getElementById(id)?.classList.remove("login__input--error");
+   });
+}
+
+
+function clearContactFieldError(id) {
+   document.getElementById(id)?.classList.remove("login__input--error");
+   const anyStillInvalid = ["add-name", "add-email", "add-phone"].some((fieldId) =>
+      document.getElementById(fieldId)?.classList.contains("login__input--error")
+   );
+   if (!anyStillInvalid) hideContactFormError();
+}
+
+
+function bindContactFormErrorHideOnInput() {
+   ["add-name", "add-email", "add-phone"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const handler = () => clearContactFieldError(id);
+      el.removeEventListener("input", el._contactErrorHandler);
+      el._contactErrorHandler = handler;
+      el.addEventListener("input", handler);
+   });
+}
+
+
 function normalizeContact(contact, firebaseKey) {
    if (!contact || typeof contact !== "object") return null;
    const resolvedId = contact.id ?? firebaseKey;
@@ -347,7 +390,7 @@ function handleEditContact() {
    document.getElementById("add-name").value = contact.name || "";
    document.getElementById("add-email").value = contact.email || "";
    document.getElementById("add-phone").value = contact.phone || "";
-   document.getElementById("contactFormError").innerText = "";
+   hideContactFormError();
 
    if (typeof window.openOverlay === "function") {
       window.openOverlay();
@@ -370,13 +413,17 @@ function toggleContactDetailMenu() {
 
 async function handleCreateContact(e) {
    e.preventDefault();
-   const name = document.getElementById("add-name").value;
-   const email = document.getElementById("add-email").value;
-   const phone = document.getElementById("add-phone").value;
-   const errorMsg = document.getElementById("contactFormError");
+   const name = document.getElementById("add-name").value.trim();
+   const email = document.getElementById("add-email").value.trim();
+   const phone = document.getElementById("add-phone").value.trim();
 
-   if (!name || !email.includes("@") || !email.includes(".") || !phone) {
-      errorMsg.innerText = "Bitte gültige Daten eingeben.";
+   const invalidIds = [];
+   if (!name) invalidIds.push("add-name");
+   if (!email || !email.includes("@") || !email.includes(".")) invalidIds.push("add-email");
+   if (!phone) invalidIds.push("add-phone");
+
+   if (invalidIds.length > 0) {
+      showContactFormError("These fields are required", invalidIds);
       return;
    }
 
@@ -419,7 +466,7 @@ async function handleCreateContact(e) {
       switchView();
       showContactToast(wasEdit ? "Contact updated" : "Contact successfully created");
    } catch (error) {
-      errorMsg.innerText = "Contact could not be saved. Please try again.";
+      showContactFormError("Contact could not be saved. Please try again.");
       showContactToast("Contact could not be saved", "error");
    }
 }
