@@ -309,14 +309,17 @@
                return;
             }
 
+            const updatedContact = {
+               id: selectedContact?.id ?? editedContactId,
+               name,
+               email,
+               phone,
+               color: selectedContact?.color || buildRandomColor(),
+            };
+
             await data.updateContact(
                editedContactId,
-               {
-                  name,
-                  email,
-                  phone,
-                  color: selectedContact?.color || buildRandomColor(),
-               },
+               updatedContact,
                state.editingContactKey
             );
          } else {

@@ -113,16 +113,23 @@
     * @returns {Promise<void>} A promise that resolves when the operation is complete.
     */
    async function updateContact(contactId, contactData, contactKeyOverride = null) {
-      const contactKey = contactKeyOverride || (await findContactKeyById(contactId));
+      const contactKey =
+         (await findContactKeyById(contactId)) || contactKeyOverride;
       if (!contactKey) {
          throw new Error(`Contact key not found for id ${contactId}`);
       }
+
+      const payload = {
+         ...contactData,
+         id: contactData.id ?? contactId,
+      };
+
       const response = await fetch(
          `${getContactsBaseUrl()}contacts/${contactKey}.json`,
          {
-            method: "PATCH",
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(contactData),
+            body: JSON.stringify(payload),
          }
       );
       if (!response.ok) {
