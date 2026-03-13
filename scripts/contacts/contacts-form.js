@@ -205,9 +205,7 @@
 
       const invalidIds = [];
       if (!name) invalidIds.push("add-name");
-      if (!email || !email.includes("@") || !email.includes(".")) {
-         invalidIds.push("add-email");
-      }
+      if (!email) invalidIds.push("add-email");
       if (invalidIds.length > 0) {
          showError("These fields are required", invalidIds);
          return;
@@ -241,10 +239,10 @@
             await data.updateContact(
                editedContactId,
                {
-               name,
-               email,
-               phone,
-               color: selectedContact?.color || buildRandomColor(),
+                  name,
+                  email,
+                  phone,
+                  color: selectedContact?.color || buildRandomColor(),
                },
                state.editingContactKey
             );
