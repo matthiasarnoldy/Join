@@ -2,7 +2,6 @@
    padding: 0 136px 0 108px;
    display: flex;
    flex-direction: column;
-   min-height: calc(100vh - 320px);
    gap: 0;
 }
 
@@ -70,8 +69,9 @@
 
 .add-task__footer {
    position: static;
-   padding-bottom: 16px;
+   padding-top: 30px;
    margin-top: auto;
+   z-index: 10;
    display: flex;
    justify-content: space-between;
    align-items: flex-end;
