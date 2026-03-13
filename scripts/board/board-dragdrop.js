@@ -7,6 +7,12 @@
    transparentDragImage.src =
       "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
+   /**
+    * Updates the drag ghost position.
+    *
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {void} Nothing.
+    */
    function updateDragGhostPosition(event) {
       if (!dragGhostCard) return;
       const { clientX, clientY } = event;
@@ -16,6 +22,10 @@
       dragGhostCard.style.top = `${clientY - dragGhostOffsetY}px`;
    }
 
+   /**
+    * Clears the drop highlights.
+    * @returns {void} Nothing.
+    */
    function clearDropHighlights() {
       const directories = document.querySelectorAll(".board-task-directory");
       directories.forEach((directory) =>
@@ -23,6 +33,13 @@
       );
    }
 
+   /**
+    * Returns the insert before element.
+    *
+    * @param {HTMLElement|null} container - The container.
+    * @param {*} mouseY - The mouse y.
+    * @returns {*} The insert before element result.
+    */
    function getInsertBeforeElement(container, mouseY) {
       const cards = Array.from(container.querySelectorAll(".task-card")).filter(
          (card) => card !== draggedCard && card.style.display !== "none",
@@ -43,6 +60,13 @@
       return closest.element;
    }
 
+   /**
+    * Handles the card drag start.
+    *
+    * @param {HTMLElement|null} card - The card.
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {void} Nothing.
+    */
    function handleCardDragStart(card, event) {
       draggedCard = card;
       card.classList.add("task-card--dragging");
@@ -62,10 +86,22 @@
       event.dataTransfer.setData("text/plain", card.dataset.taskId || "demo-card");
    }
 
+   /**
+    * Handles the card drag.
+    *
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {void} Nothing.
+    */
    function handleCardDrag(event) {
       updateDragGhostPosition(event);
    }
 
+   /**
+    * Handles the card drag end.
+    *
+    * @param {HTMLElement|null} card - The card.
+    * @returns {void} Nothing.
+    */
    function handleCardDragEnd(card) {
       card.classList.remove("task-card--dragging");
       if (dragGhostCard) {
@@ -77,6 +113,12 @@
       window.BoardCards?.updatePlaceholders?.();
    }
 
+   /**
+    * Makes the card draggable.
+    *
+    * @param {HTMLElement|null} card - The card.
+    * @returns {void} Nothing.
+    */
    function makeCardDraggable(card) {
       if (!card || card.dataset.dndInitialized === "true") return;
       card.dataset.dndInitialized = "true";
@@ -88,11 +130,22 @@
       card.addEventListener("dragend", () => handleCardDragEnd(card));
    }
 
+   /**
+    * Initializes the draggable cards.
+    * @returns {void} Nothing.
+    */
    function initializeDraggableCards() {
       const cards = document.querySelectorAll(".task-card");
       cards.forEach(makeCardDraggable);
    }
 
+   /**
+    * Handles the directory drag over.
+    *
+    * @param {HTMLElement|null} directory - The directory.
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {void} Nothing.
+    */
    function handleDirectoryDragOver(directory, event) {
       if (!draggedCard) return;
       event.preventDefault();
@@ -105,6 +158,13 @@
       else directory.appendChild(draggedCard);
    }
 
+   /**
+    * Handles the directory drag leave.
+    *
+    * @param {HTMLElement|null} directory - The directory.
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {void} Nothing.
+    */
    function handleDirectoryDragLeave(directory, event) {
       if (directory.contains(event.relatedTarget)) return;
       directory.classList.remove("board-task-directory--dragover");
@@ -116,6 +176,13 @@
       placeholder.style.display = hasVisibleCards ? "none" : "";
    }
 
+   /**
+    * Handles the directory drop.
+    *
+    * @param {HTMLElement|null} directory - The directory.
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function handleDirectoryDrop(directory, event) {
       event.preventDefault();
       directory.classList.remove("board-task-directory--dragover");
@@ -131,6 +198,12 @@
       window.BoardCards?.updatePlaceholders?.();
    }
 
+   /**
+    * Initializes the drop zone.
+    *
+    * @param {HTMLElement|null} directory - The directory.
+    * @returns {void} Nothing.
+    */
    function initializeDropZone(directory) {
       if (directory.dataset.dropzoneInitialized === "true") return;
       directory.dataset.dropzoneInitialized = "true";
@@ -145,11 +218,19 @@
       );
    }
 
+   /**
+    * Sets up the drop zones.
+    * @returns {void} Nothing.
+    */
    function setupDropZones() {
       const directories = document.querySelectorAll(".board-task-directory");
       directories.forEach((directory) => initializeDropZone(directory));
    }
 
+   /**
+    * Checks whether it is dragging.
+    * @returns {boolean} Whether it is dragging.
+    */
    function isDragging() {
       return Boolean(draggedCard);
    }

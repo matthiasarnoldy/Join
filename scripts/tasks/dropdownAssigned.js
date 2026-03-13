@@ -10,11 +10,23 @@ const ASSIGNED_ASSET_BASE_PATH = window.location.pathname.includes("/templates/"
 const ASSIGNED_CONTACTS_BASE_URL =
    window.JOIN_CONFIG.BASE_URL;
 
+/**
+ * Returns the assigned asset path.
+ *
+ * @param {string} relativePath - The relative path.
+ * @returns {string} The assigned asset path.
+ */
 function assignedAssetPath(relativePath) {
    return `${ASSIGNED_ASSET_BASE_PATH}${relativePath}`;
 }
 
 
+/**
+ * Returns the initials from name.
+ *
+ * @param {string} name - The name.
+ * @returns {string} The initials from name.
+ */
 function getInitialsFromName(name) {
    const parts = String(name || "")
       .trim()
@@ -28,6 +40,12 @@ function getInitialsFromName(name) {
 }
 
 
+/**
+ * Normalizes the assigned contacts.
+ *
+ * @param {object} data - The data object.
+ * @returns {object} The assigned contacts object.
+ */
 function normalizeAssignedContacts(data) {
    if (!data) return [];
    const entries = Array.isArray(data)
@@ -50,6 +68,10 @@ function normalizeAssignedContacts(data) {
 }
 
 
+/**
+ * Loads the assigned contacts from Firebase.
+ * @returns {Promise<Array<object>>} A promise that resolves to the assigned contacts from Firebase list.
+ */
 async function loadAssignedContactsFromFirebase() {
    const response = await fetch(`${ASSIGNED_CONTACTS_BASE_URL}contacts.json`);
    if (!response.ok) {
@@ -60,6 +82,12 @@ async function loadAssignedContactsFromFirebase() {
 }
 
 
+/**
+ * Creates the assigned option element.
+ *
+ * @param {object} contact - The contact object.
+ * @returns {HTMLLIElement} The assigned option element element.
+ */
 function createAssignedOptionElement(contact) {
    const option = document.createElement("li");
    option.className = "add-task__select-option add-task__select-option--assigned";
@@ -87,6 +115,10 @@ function createAssignedOptionElement(contact) {
 }
 
 
+/**
+ * Returns the assigned elements.
+ * @returns {object|null} The assigned elements object, or null when it is not available.
+ */
 function getAssignedElements() {
    const select = document.getElementById("addTaskAssigned");
    if (!select) return null;
@@ -96,16 +128,35 @@ function getAssignedElements() {
 }
 
 
+/**
+ * Checks whether the assigned menu is open.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {boolean} Whether the assigned menu is open.
+ */
 function isAssignedMenuOpen(elements) {
    return elements.select.classList.contains(ASSIGNED_OPEN_CLASS);
 }
 
 
+/**
+ * Returns the search input.
+ *
+ * @param {HTMLElement|null} select - The select.
+ * @returns {*} The search input result.
+ */
 function getSearchInput(select) {
    return select.querySelector(".add-task__select-input");
 }
 
 
+/**
+ * Prevents the search deletion.
+ *
+ * @param {Event} event - The event object that triggered the handler.
+ * @param {HTMLInputElement|null} searchInput - The search input.
+ * @returns {void} Nothing.
+ */
 function preventSearchDeletion(event, searchInput) {
    const cursorPosition = searchInput.selectionStart;
    if (event.key === "Backspace" && cursorPosition <= 4) {
@@ -117,6 +168,12 @@ function preventSearchDeletion(event, searchInput) {
 }
 
 
+/**
+ * Ensures the search prefix.
+ *
+ * @param {HTMLInputElement|null} searchInput - The search input.
+ * @returns {void} Nothing.
+ */
 function ensureSearchPrefix(searchInput) {
    if (!searchInput.value.startsWith("To: ")) {
       const searchText = searchInput.value.replace(/^To: /, "");
@@ -127,22 +184,50 @@ function ensureSearchPrefix(searchInput) {
 }
 
 
+/**
+ * Returns the search text.
+ *
+ * @param {HTMLInputElement|null} searchInput - The search input.
+ * @returns {string} The search text.
+ */
 function getSearchText(searchInput) {
    return searchInput.value.substring(4).toLowerCase().trim();
 }
 
 
+/**
+ * Handles the search keydown.
+ *
+ * @param {Event} event - The event object that triggered the handler.
+ * @param {HTMLInputElement|null} searchInput - The search input.
+ * @returns {void} Nothing.
+ */
 function handleSearchKeydown(event, searchInput) {
    preventSearchDeletion(event, searchInput);
 }
 
 
+/**
+ * Handles the search input.
+ *
+ * @param {Event} event - The event object that triggered the handler.
+ * @param {HTMLInputElement|null} searchInput - The search input.
+ * @param {HTMLElement|null} menu - The menu.
+ * @returns {void} Nothing.
+ */
 function handleSearchInput(event, searchInput, menu) {
    ensureSearchPrefix(searchInput);
    filterContactOptions(searchInput, menu);
 }
 
 
+/**
+ * Sets up the search listeners.
+ *
+ * @param {HTMLInputElement|null} searchInput - The search input.
+ * @param {HTMLElement|null} menu - The menu.
+ * @returns {void} Nothing.
+ */
 function setupSearchListeners(searchInput, menu) {
    searchInput.addEventListener("keydown", (e) => {
       handleSearchKeydown(e, searchInput);
@@ -153,11 +238,23 @@ function setupSearchListeners(searchInput, menu) {
 }
 
 
+/**
+ * Returns the container width.
+ *
+ * @param {HTMLElement|null} container - The container.
+ * @returns {number} The container width value.
+ */
 function getContainerWidth(container) {
    return container.offsetWidth;
 }
 
 
+/**
+ * Calculates the max initials.
+ *
+ * @param {number} containerWidth - The container width.
+ * @returns {*} The max initials result.
+ */
 function calculateMaxInitials(containerWidth) {
    const initialWidth = 50; // 42px + 8px gap
    const totalSlots = Math.floor(containerWidth / initialWidth);
@@ -165,11 +262,25 @@ function calculateMaxInitials(containerWidth) {
 }
 
 
+/**
+ * Checks whether the overflow should show.
+ *
+ * @param {number} selectedCount - The selected count.
+ * @param {number} maxSlots - The max slots.
+ * @returns {boolean} Whether the overflow should show.
+ */
 function shouldShowOverflow(selectedCount, maxSlots) {
    return selectedCount > maxSlots;
 }
 
 
+/**
+ * Returns the max display count.
+ *
+ * @param {number} selectedCount - The selected count.
+ * @param {number} maxSlots - The max slots.
+ * @returns {number} The max display count value.
+ */
 function getMaxDisplayCount(selectedCount, maxSlots) {
    if (shouldShowOverflow(selectedCount, maxSlots)) {
       return maxSlots - 1;
@@ -178,11 +289,24 @@ function getMaxDisplayCount(selectedCount, maxSlots) {
 }
 
 
+/**
+ * Returns the selected options.
+ *
+ * @param {HTMLElement|null} menu - The menu.
+ * @returns {string} The selected options.
+ */
 function getSelectedOptions(menu) {
    return menu.querySelectorAll(`.${ASSIGNED_SELECTED_CLASS}`);
 }
 
 
+/**
+ * Creates the initial element from option.
+ *
+ * @param {*} option - The option.
+ * @param {object} elements - The elements object.
+ * @returns {HTMLDivElement|null} The initial element from option element, or null when it is not available.
+ */
 function createInitialElementFromOption(option, elements) {
    const initialsText = option.querySelector(".add-task__option-initials")?.textContent;
    if (!initialsText) return null;
@@ -199,21 +323,43 @@ function createInitialElementFromOption(option, elements) {
 }
 
 
+/**
+ * Returns the select wrapper.
+ *
+ * @param {HTMLElement|null} select - The select.
+ * @returns {*} The select wrapper result.
+ */
 function getSelectWrapper(select) {
    return select?.closest(".add-task__select-wrapper");
 }
 
 
+/**
+ * Returns the footer.
+ * @returns {HTMLElement|null} The footer element, or null when it is not available.
+ */
 function getFooter() {
    return document.querySelector(".add-task__footer");
 }
 
 
+/**
+ * Checks whether there are selected contacts.
+ *
+ * @param {NodeListOf<Element>|Array<Element>} selectedOptions - The selected options collection.
+ * @returns {boolean} Whether there are selected contacts.
+ */
 function hasSelectedContacts(selectedOptions) {
    return selectedOptions.length > 0;
 }
 
 
+/**
+ * Returns the initials parameters.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {object|null} The initials parameters object, or null when it is not available.
+ */
 function getInitialsParameters(elements) {
    if (!elements.initials) return null;
    const selectedOptions = getSelectedOptions(elements.menu);
@@ -226,6 +372,12 @@ function getInitialsParameters(elements) {
 }
 
 
+/**
+ * Sets up the select click listener.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function setupSelectClickListener(elements) {
    elements.select.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -235,6 +387,12 @@ function setupSelectClickListener(elements) {
 }
 
 
+/**
+ * Sets up the menu click listener.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function setupMenuClickListener(elements) {
    elements.menu.addEventListener("click", (event) => {
       handleAssignedOptionClick(event, elements);
@@ -242,6 +400,12 @@ function setupMenuClickListener(elements) {
 }
 
 
+/**
+ * Sets up the search input listeners for assigned.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function setupSearchInputListenersForAssigned(elements) {
    const searchInput = getSearchInput(elements.select);
    if (!searchInput) return;
@@ -253,6 +417,12 @@ function setupSearchInputListenersForAssigned(elements) {
 }
 
 
+/**
+ * Sets up the document close listener.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function setupDocumentCloseListener(elements) {
    document.addEventListener("click", (event) => {
       const clickedInput = event.target.closest(".add-task__select-input");
@@ -262,6 +432,12 @@ function setupDocumentCloseListener(elements) {
 }
 
 
+/**
+ * Sets up the assigned listeners.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function setupAssignedListeners(elements) {
    if (!elements) return;
    setupSelectClickListener(elements);
@@ -271,6 +447,10 @@ function setupAssignedListeners(elements) {
 }
 
 
+/**
+ * Initializes the assigned select.
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ */
 async function initAssignedSelect() {
    const elements = getAssignedElements();
    if (!elements) return;

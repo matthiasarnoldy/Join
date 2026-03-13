@@ -1,8 +1,16 @@
+/**
+ * Returns the signup form.
+ * @returns {HTMLFormElement|null} The signup form element, or null when it is not available.
+ */
 function getSignupForm() {
     return document.querySelector(".main-content--signup .login__formular");
 }
 
 
+/**
+ * Returns the empty signup fields.
+ * @returns {object} The empty signup fields object.
+ */
 function emptySignupFields() {
     return {
         form: null,
@@ -15,6 +23,12 @@ function emptySignupFields() {
 }
 
 
+/**
+ * Maps the signup fields.
+ *
+ * @param {HTMLFormElement|null} signupForm - The signup form.
+ * @returns {object} The signup fields object.
+ */
 function mapSignupFields(signupForm) {
     return {
         form: signupForm,
@@ -27,6 +41,10 @@ function mapSignupFields(signupForm) {
 }
 
 
+/**
+ * Returns the signup fields.
+ * @returns {object} The signup fields object.
+ */
 function getSignupFields() {
     const signupForm = getSignupForm();
     if (!signupForm) return emptySignupFields();
@@ -34,6 +52,12 @@ function getSignupFields() {
 }
 
 
+/**
+ * Clears the signup input errors.
+ *
+ * @param {object} fields - The fields object.
+ * @returns {void} Nothing.
+ */
 function clearSignupInputErrors(fields) {
     fields.nameInput?.classList.remove("login__input--error");
     fields.emailInput?.classList.remove("login__input--error");
@@ -42,6 +66,13 @@ function clearSignupInputErrors(fields) {
 }
 
 
+/**
+ * Marks the required signup inputs.
+ *
+ * @param {object} fields - The fields object.
+ * @param {object} values - The values object.
+ * @returns {void} Nothing.
+ */
 function markRequiredSignupInputs(fields, values) {
     if (!values?.name) fields.nameInput?.classList.add("login__input--error");
     if (!values?.email) fields.emailInput?.classList.add("login__input--error");
@@ -50,6 +81,14 @@ function markRequiredSignupInputs(fields, values) {
 }
 
 
+/**
+ * Applies the signup input error styles.
+ *
+ * @param {object} fields - The fields object.
+ * @param {string} message - The message.
+ * @param {object} values - The values object.
+ * @returns {void} Nothing.
+ */
 function applySignupInputErrorStyles(fields, message, values) {
     clearSignupInputErrors(fields);
     if (message === "These fields are required") return markRequiredSignupInputs(fields, values);
@@ -59,6 +98,13 @@ function applySignupInputErrorStyles(fields, message, values) {
 }
 
 
+/**
+ * Shows the signup error.
+ *
+ * @param {string} message - The message.
+ * @param {object} values - The values object.
+ * @returns {void} Nothing.
+ */
 function showSignupError(message, values) {
     const fields = getSignupFields();
     const { errorElement } = fields;
@@ -70,6 +116,10 @@ function showSignupError(message, values) {
 }
 
 
+/**
+ * Hides the signup error.
+ * @returns {void} Nothing.
+ */
 function hideSignupError() {
     const fields = getSignupFields();
     const { errorElement } = fields;
@@ -80,11 +130,23 @@ function hideSignupError() {
 }
 
 
+/**
+ * Checks whether the signup fields are ready.
+ *
+ * @param {object} fields - The fields object.
+ * @returns {boolean} Whether the signup fields are ready.
+ */
 function areSignupFieldsReady(fields) {
     return fields.nameInput && fields.emailInput && fields.passwordInput && fields.confirmPasswordInput;
 }
 
 
+/**
+ * Reads the signup values.
+ *
+ * @param {object} fields - The fields object.
+ * @returns {object} The signup values object.
+ */
 function readSignupValues(fields) {
     return {
         name: fields.nameInput.value.trim(),
@@ -95,11 +157,23 @@ function readSignupValues(fields) {
 }
 
 
+/**
+ * Checks whether there are missing signup values.
+ *
+ * @param {object} values - The values object.
+ * @returns {boolean} Whether there are missing signup values.
+ */
 function hasMissingSignupValues(values) {
     return !values.name || !values.email || !values.password || !values.confirmPassword;
 }
 
 
+/**
+ * Returns the signup validation error.
+ *
+ * @param {object} values - The values object.
+ * @returns {string} The signup validation error.
+ */
 function getSignupValidationError(values) {
     if (hasMissingSignupValues(values)) return "These fields are required";
     if (!isValidEmailAddress(values.email)) return "Please enter a valid email address.";
@@ -108,12 +182,20 @@ function getSignupValidationError(values) {
 }
 
 
+/**
+ * Checks whether the privacy policy is accepted.
+ * @returns {boolean} Whether the privacy policy is accepted.
+ */
 function isPrivacyPolicyAccepted() {
     const checkbox = document.getElementById("privacy-policy");
     return Boolean(checkbox?.checked);
 }
 
 
+/**
+ * Builds the signup payload.
+ * @returns {object|null} The signup payload object, or null when it is not available.
+ */
 function buildSignupPayload() {
     const fields = getSignupFields();
     if (!areSignupFieldsReady(fields)) {
@@ -132,6 +214,12 @@ function buildSignupPayload() {
 }
 
 
+/**
+ * Generates the initial from name.
+ *
+ * @param {string} name - The name.
+ * @returns {string} The initial from name.
+ */
 function generateInitialFromName(name) {
     const trimmedName = name.trim();
     if (!trimmedName) return "?";
@@ -146,6 +234,12 @@ function generateInitialFromName(name) {
 }
 
 
+/**
+ * Builds the user payload.
+ *
+ * @param {object} newUser - The new user object.
+ * @returns {object} The user payload object.
+ */
 function buildUserPayload(newUser) {
     return {
         name: newUser.name,
@@ -157,6 +251,12 @@ function buildUserPayload(newUser) {
 }
 
 
+/**
+ * Creates the user in database.
+ *
+ * @param {object} newUser - The new user object.
+ * @returns {Promise<string>} A promise that resolves to the user in database.
+ */
 async function createUserInDatabase(newUser) {
     const response = await fetch(`${getAuthBaseUrl()}users.json`, {
         method: "POST",
@@ -169,6 +269,10 @@ async function createUserInDatabase(newUser) {
 }
 
 
+/**
+ * Returns the signup validation elements.
+ * @returns {object} The signup validation elements object.
+ */
 function getSignupValidationElements() {
     return {
         signupForm: document.querySelector(".login__formular"),
@@ -178,11 +282,25 @@ function getSignupValidationElements() {
 }
 
 
+/**
+ * Checks whether the signup validation elements are ready.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {boolean} Whether the signup validation elements are ready.
+ */
 function areSignupValidationElementsReady(elements) {
     return elements.signupForm && elements.signupSubmitButton && elements.privacyCheckbox;
 }
 
 
+/**
+ * Binds the signup validation.
+ *
+ * @param {NodeListOf<Element>|Array<Element>} inputs - The inputs collection.
+ * @param {HTMLInputElement|null} privacyCheckbox - The privacy checkbox.
+ * @param {HTMLElement|null} signupSubmitButton - The signup submit button.
+ * @returns {void} Nothing.
+ */
 function bindSignupValidation(inputs, privacyCheckbox, signupSubmitButton) {
     const updateButtonState = () => checkFormValidity(inputs, privacyCheckbox, signupSubmitButton);
     setSignupButtonState(signupSubmitButton, false);
@@ -191,6 +309,10 @@ function bindSignupValidation(inputs, privacyCheckbox, signupSubmitButton) {
 }
 
 
+/**
+ * Sets up the signup form validation.
+ * @returns {void} Nothing.
+ */
 function setupSignupFormValidation() {
     const elements = getSignupValidationElements();
     if (!areSignupValidationElementsReady(elements)) return;
@@ -199,12 +321,27 @@ function setupSignupFormValidation() {
 }
 
 
+/**
+ * Checks the form validity.
+ *
+ * @param {NodeListOf<Element>|Array<Element>} inputs - The inputs collection.
+ * @param {HTMLElement|null} checkbox - The checkbox.
+ * @param {HTMLElement|null} button - The button.
+ * @returns {void} Nothing.
+ */
 function checkFormValidity(inputs, checkbox, button) {
     const allInputsFilled = Array.from(inputs).every((input) => input.value.trim() !== "");
     setSignupButtonState(button, allInputsFilled && checkbox.checked);
 }
 
 
+/**
+ * Sets the signup button state.
+ *
+ * @param {HTMLElement|null} button - The button.
+ * @param {boolean} isEnabled - Whether it is enabled.
+ * @returns {void} Nothing.
+ */
 function setSignupButtonState(button, isEnabled) {
     button.disabled = false;
     button.setAttribute("aria-disabled", String(!isEnabled));
@@ -212,6 +349,12 @@ function setSignupButtonState(button, isEnabled) {
 }
 
 
+/**
+ * Binds the signup button.
+ *
+ * @param {HTMLElement|null} loginButton - The login button.
+ * @returns {void} Nothing.
+ */
 function bindSignupButton(loginButton) {
     loginButton.addEventListener("click", (event) => {
         event.preventDefault();
@@ -220,11 +363,23 @@ function bindSignupButton(loginButton) {
 }
 
 
+/**
+ * Schedules the summary redirect.
+ *
+ * @param {string|number} userId - The user ID used for this operation.
+ * @returns {void} Nothing.
+ */
 function scheduleSummaryRedirect(userId) {
     setTimeout(() => redirectToSummary(userId), 1000);
 }
 
 
+/**
+ * Registers the signup user.
+ *
+ * @param {object} payload - The payload object.
+ * @returns {Promise<string>} A promise that resolves to the signup user.
+ */
 async function registerSignupUser(payload) {
     const users = await getUsersFromDatabase();
     if (isEmailAlreadyRegistered(users, payload.email)) {
@@ -235,6 +390,12 @@ async function registerSignupUser(payload) {
 }
 
 
+/**
+ * Handles the signup.
+ *
+ * @param {HTMLElement|null} signupButton - The signup button.
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ */
 async function handleSignup(signupButton) {
     const payload = buildSignupPayload();
     if (!payload) return;
@@ -253,6 +414,10 @@ async function handleSignup(signupButton) {
 }
 
 
+/**
+ * Creates the signup message.
+ * @returns {HTMLDivElement} The signup message element.
+ */
 function createSignupMessage() {
     const messageDiv = document.createElement("div");
     messageDiv.className = "signup-success-message";
@@ -263,6 +428,10 @@ function createSignupMessage() {
 }
 
 
+/**
+ * Shows the signup success.
+ * @returns {void} Nothing.
+ */
 function showSignupSuccess() {
     const message = createSignupMessage();
     document.body.appendChild(message);

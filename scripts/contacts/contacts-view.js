@@ -9,6 +9,12 @@
 
    const state = ContactsFeature.state;
 
+   /**
+    * Formats the phone number.
+    *
+    * @param {*} number - The number.
+    * @returns {string} The phone number.
+    */
    function formatPhoneNumber(number) {
       if (!number) return "";
 
@@ -39,6 +45,12 @@
       return cleaned;
    }
 
+   /**
+    * Returns the initials.
+    *
+    * @param {string} name - The name.
+    * @returns {string} The initials.
+    */
    function getInitials(name) {
       const parts = String(name || "")
          .trim()
@@ -50,6 +62,12 @@
       return parts[0] ? parts[0].substring(0, 2).toUpperCase() : "??";
    }
 
+   /**
+    * Groups the contacts.
+    *
+    * @param {Array<object>} contacts - The contacts list.
+    * @returns {Array<object>} The contacts list.
+    */
    function groupContacts(contacts) {
       return contacts.reduce((groups, contact) => {
          const letter = (contact.name || "?").charAt(0).toUpperCase();
@@ -59,6 +77,10 @@
       }, {});
    }
 
+   /**
+    * Renders the contacts.
+    * @returns {void} Nothing.
+    */
    function renderContacts() {
       const listContainer = document.getElementById("contacts-list-content");
       if (!listContainer) return;
@@ -92,6 +114,12 @@
       listContainer.innerHTML = html;
    }
 
+   /**
+    * Shows the detail.
+    *
+    * @param {object} contact - The contact object.
+    * @returns {void} Nothing.
+    */
    function showDetail(contact) {
       if (!contact) return;
       const view = document.getElementById("detail-view");
@@ -117,17 +145,29 @@
       }
    }
 
+   /**
+    * Closes the detail menu.
+    * @returns {void} Nothing.
+    */
    function closeDetailMenu() {
       const menu = document.getElementById("contact-detail-menu");
       if (menu) menu.classList.add("d-none");
    }
 
+   /**
+    * Toggles the detail menu.
+    * @returns {void} Nothing.
+    */
    function toggleDetailMenu() {
       const menu = document.getElementById("contact-detail-menu");
       if (!menu) return;
       menu.classList.toggle("d-none");
    }
 
+   /**
+    * Switches the view.
+    * @returns {void} Nothing.
+    */
    function switchView() {
       const listView = document.querySelector(".contacts-list");
       const detailContainer = document.querySelector(".contacts-detail");
@@ -171,6 +211,13 @@
       closeDetailMenu();
    }
 
+   /**
+    * Creates the toast message.
+    *
+    * @param {string} message - The message.
+    * @param {string} type - The type.
+    * @returns {HTMLDivElement} The toast message element.
+    */
    function createToastMessage(message, type) {
       const messageDiv = document.createElement("div");
       messageDiv.className = "contact-success-message";
@@ -181,6 +228,13 @@
       return messageDiv;
    }
 
+   /**
+    * Shows the toast.
+    *
+    * @param {string} message - The message.
+    * @param {string} [type="success"] - The type. Defaults to "success".
+    * @returns {void} Nothing.
+    */
    function showToast(message, type = "success") {
       const existingMessages = document.querySelectorAll(
          ".contact-success-message"

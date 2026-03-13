@@ -1,11 +1,23 @@
+/**
+ * Returns the add task dialog.
+ * @returns {HTMLDialogElement|null} The add task dialog element, or null when it is not available.
+ */
 function getAddTaskDialog() {
    return document.getElementById("addTaskDialog");
 }
 
+/**
+ * Returns the task detail dialog.
+ * @returns {HTMLDialogElement|null} The task detail dialog element, or null when it is not available.
+ */
 function getTaskDetailDialog() {
    return document.getElementById("taskDetailDialog");
 }
 
+/**
+ * Updates the board dialog scroll lock.
+ * @returns {void} Nothing.
+ */
 function updateBoardDialogScrollLock() {
    const addDialogOpen = Boolean(getAddTaskDialog()?.open);
    const detailDialogOpen = Boolean(getTaskDetailDialog()?.open);
@@ -17,6 +29,12 @@ function updateBoardDialogScrollLock() {
    document.body.classList.toggle("board-dialog-open", shouldLockScroll);
 }
 
+/**
+ * Sets the add task dialog mode.
+ *
+ * @param {boolean} isEditMode - Whether the mode is edit.
+ * @returns {void} Nothing.
+ */
 function setAddTaskDialogMode(isEditMode) {
    const title = document.getElementById("addTaskDialogTitle");
    const buttonText = document.querySelector(".add-task__button-text");
@@ -25,6 +43,10 @@ function setAddTaskDialogMode(isEditMode) {
       buttonText.textContent = isEditMode ? "Save changes" : "Create Task";
 }
 
+/**
+ * Resets the add task dialog mode.
+ * @returns {void} Nothing.
+ */
 function resetAddTaskDialogMode() {
    const dialog = getAddTaskDialog();
    if (!dialog) return;
@@ -33,6 +55,12 @@ function resetAddTaskDialogMode() {
    setAddTaskDialogMode(false);
 }
 
+/**
+ * Opens the dialog.
+ *
+ * @param {string} [status="todo"] - The status. Defaults to "todo".
+ * @returns {void} Nothing.
+ */
 function openDialog(status = "todo") {
    const dialog = getAddTaskDialog();
    if (!dialog) return;
@@ -42,6 +70,10 @@ function openDialog(status = "todo") {
    updateBoardDialogScrollLock();
 }
 
+/**
+ * Closes the dialog.
+ * @returns {void} Nothing.
+ */
 function closeDialog() {
    const dialog = getAddTaskDialog();
    if (!dialog) return;
@@ -51,6 +83,10 @@ function closeDialog() {
    updateBoardDialogScrollLock();
 }
 
+/**
+ * Initializes the board.
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ */
 async function initializeBoard() {
    const tasks = await window.BoardData.loadTasks();
    window.BoardCards.renderBoardFromTasks(tasks);

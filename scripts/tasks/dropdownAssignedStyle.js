@@ -1,3 +1,10 @@
+/**
+ * Renders the assigned contacts.
+ *
+ * @param {HTMLElement|null} menu - The menu.
+ * @param {Array<object>} contacts - The contacts list.
+ * @returns {void} Nothing.
+ */
 function renderAssignedContacts(menu, contacts) {
    menu.innerHTML = "";
    contacts.forEach((contact) => {
@@ -6,6 +13,12 @@ function renderAssignedContacts(menu, contacts) {
 }
 
 
+/**
+ * Opens the assigned menu.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function openAssignedMenu(elements) {
    elements.select.classList.add(ASSIGNED_OPEN_CLASS);
    elements.select.setAttribute("aria-expanded", "true");
@@ -21,6 +34,12 @@ function openAssignedMenu(elements) {
 }
 
 
+/**
+ * Clears the search and reset.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function clearSearchAndReset(elements) {
    const searchInput = getSearchInput(elements.select);
    if (!searchInput) return;
@@ -29,6 +48,12 @@ function clearSearchAndReset(elements) {
 }
 
 
+/**
+ * Resets the assigned placeholder if empty.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function resetAssignedPlaceholderIfEmpty(elements) {
    const selectedOptions = getSelectedOptions(elements.menu);
    if (selectedOptions.length === 0) {
@@ -38,6 +63,12 @@ function resetAssignedPlaceholderIfEmpty(elements) {
 }
 
 
+/**
+ * Closes the assigned menu.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function closeAssignedMenu(elements) {
    elements.select.classList.remove(ASSIGNED_OPEN_CLASS);
    elements.select.setAttribute("aria-expanded", "false");
@@ -47,6 +78,13 @@ function closeAssignedMenu(elements) {
 }
 
 
+/**
+ * Shows the search input.
+ *
+ * @param {HTMLInputElement|null} searchInput - The search input.
+ * @param {HTMLElement|null} label - The label.
+ * @returns {void} Nothing.
+ */
 function showSearchInput(searchInput, label) {
    searchInput.style.display = "block";
    searchInput.value = "To: ";
@@ -58,6 +96,13 @@ function showSearchInput(searchInput, label) {
 }
 
 
+/**
+ * Hides the search input.
+ *
+ * @param {HTMLInputElement|null} searchInput - The search input.
+ * @param {HTMLElement|null} label - The label.
+ * @returns {void} Nothing.
+ */
 function hideSearchInput(searchInput, label) {
    searchInput.style.display = "none";
    searchInput.value = "";
@@ -65,6 +110,13 @@ function hideSearchInput(searchInput, label) {
 }
 
 
+/**
+ * Filters the contact options.
+ *
+ * @param {HTMLInputElement|null} searchInput - The search input.
+ * @param {HTMLElement|null} menu - The menu.
+ * @returns {void} Nothing.
+ */
 function filterContactOptions(searchInput, menu) {
    const searchText = getSearchText(searchInput);
    const options = menu.querySelectorAll(".add-task__select-option--assigned");
@@ -76,6 +128,12 @@ function filterContactOptions(searchInput, menu) {
 }
 
 
+/**
+ * Resets the assigned placeholder.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function resetAssignedPlaceholder(elements) {
    const searchInput = getSearchInput(elements.select);
    if (!searchInput) return;
@@ -89,6 +147,12 @@ function resetAssignedPlaceholder(elements) {
 }
 
 
+/**
+ * Shows the all contacts.
+ *
+ * @param {HTMLElement|null} menu - The menu.
+ * @returns {void} Nothing.
+ */
 function showAllContacts(menu) {
    const options = menu.querySelectorAll(".add-task__select-option--assigned");
    options.forEach((option) => {
@@ -97,6 +161,12 @@ function showAllContacts(menu) {
 }
 
 
+/**
+ * Restores the assigned selection.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function restoreAssignedSelection(elements) {
    const searchInput = getSearchInput(elements.select);
    if (searchInput) {
@@ -111,6 +181,12 @@ function restoreAssignedSelection(elements) {
 }
 
 
+/**
+ * Toggles the assigned menu.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function toggleAssignedMenu(elements) {
    if (isAssignedMenuOpen(elements)) {
       closeAssignedMenu(elements);
@@ -121,16 +197,34 @@ function toggleAssignedMenu(elements) {
 }
 
 
+/**
+ * Checks the checkbox.
+ *
+ * @param {HTMLElement|null} checkbox - The checkbox.
+ * @returns {void} Nothing.
+ */
 function checkCheckbox(checkbox) {
    checkbox.src = assignedAssetPath("icons/desktop/checkBox--checked.svg");
 }
 
 
+/**
+ * Unchecks the checkbox.
+ *
+ * @param {HTMLElement|null} checkbox - The checkbox.
+ * @returns {void} Nothing.
+ */
 function uncheckCheckbox(checkbox) {
    checkbox.src = assignedAssetPath("icons/desktop/checkBox.svg");
 }
 
 
+/**
+ * Toggles the contact selection.
+ *
+ * @param {*} option - The option.
+ * @returns {void} Nothing.
+ */
 function toggleContactSelection(option) {
    const isSelected = option.classList.toggle(ASSIGNED_SELECTED_CLASS);
    const checkbox = option.querySelector(".add-task__option-checkbox");
@@ -139,6 +233,13 @@ function toggleContactSelection(option) {
 }
 
 
+/**
+ * Handles the assigned option click.
+ *
+ * @param {Event} event - The event object that triggered the handler.
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function handleAssignedOptionClick(event, elements) {
    event.stopPropagation();
    const option = event.target.closest(".add-task__select-option");
@@ -148,6 +249,12 @@ function handleAssignedOptionClick(event, elements) {
 }
 
 
+/**
+ * Removes the contact selection.
+ *
+ * @param {*} option - The option.
+ * @returns {void} Nothing.
+ */
 function removeContactSelection(option) {
    option.classList.remove(ASSIGNED_SELECTED_CLASS);
    const checkbox = option.querySelector(".add-task__option-checkbox");
@@ -157,11 +264,26 @@ function removeContactSelection(option) {
 }
 
 
+/**
+ * Clears the initials container.
+ *
+ * @param {HTMLElement|null} container - The container.
+ * @returns {void} Nothing.
+ */
 function clearInitialsContainer(container) {
    container.innerHTML = "";
 }
 
 
+/**
+ * Adds the initials to container.
+ *
+ * @param {NodeListOf<Element>|Array<Element>} selectedOptions - The selected options collection.
+ * @param {HTMLElement|null} container - The container.
+ * @param {*} maxDisplay - The max display.
+ * @param {object} elements - The elements object.
+ * @returns {*} The initials to container result.
+ */
 function addInitialsToContainer(selectedOptions, container, maxDisplay, elements) {
    let displayCount = 0;
    selectedOptions.forEach((option) => {
@@ -175,6 +297,14 @@ function addInitialsToContainer(selectedOptions, container, maxDisplay, elements
 }
 
 
+/**
+ * Adds the overflow indicator.
+ *
+ * @param {HTMLElement|null} container - The container.
+ * @param {number} totalCount - The total count.
+ * @param {number} displayedCount - The displayed count.
+ * @returns {void} Nothing.
+ */
 function addOverflowIndicator(container, totalCount, displayedCount) {
    const remainingCount = totalCount - displayedCount;
    if (remainingCount > 0) {
@@ -187,6 +317,14 @@ function addOverflowIndicator(container, totalCount, displayedCount) {
 }
 
 
+/**
+ * Updates the wrapper padding.
+ *
+ * @param {HTMLElement|null} wrapper - The wrapper.
+ * @param {boolean} hasContacts - Whether there are contacts.
+ * @param {HTMLElement|null} menuOpen - The menu open.
+ * @returns {void} Nothing.
+ */
 function updateWrapperPadding(wrapper, hasContacts, menuOpen) {
    if (!wrapper) return;
    if (hasContacts && !menuOpen) {
@@ -197,6 +335,14 @@ function updateWrapperPadding(wrapper, hasContacts, menuOpen) {
 }
 
 
+/**
+ * Updates the footer position.
+ *
+ * @param {HTMLElement|null} footer - The footer.
+ * @param {boolean} hasContacts - Whether there are contacts.
+ * @param {HTMLElement|null} menuOpen - The menu open.
+ * @returns {void} Nothing.
+ */
 function updateFooterPosition(footer, hasContacts, menuOpen) {
    if (!footer) return;
    if (hasContacts && !menuOpen) {
@@ -207,6 +353,14 @@ function updateFooterPosition(footer, hasContacts, menuOpen) {
 }
 
 
+/**
+ * Renders the initials.
+ *
+ * @param {object} elements - The elements object.
+ * @param {NodeListOf<Element>|Array<Element>} selectedOptions - The selected options collection.
+ * @param {*} maxDisplay - The max display.
+ * @returns {*} The initials result.
+ */
 function renderInitials(elements, selectedOptions, maxDisplay) {
    const displayedCount = addInitialsToContainer(
       selectedOptions,
@@ -219,6 +373,12 @@ function renderInitials(elements, selectedOptions, maxDisplay) {
 }
 
 
+/**
+ * Updates the contact initials.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function updateContactInitials(elements) {
    const params = getInitialsParameters(elements);
    if (!params) return;

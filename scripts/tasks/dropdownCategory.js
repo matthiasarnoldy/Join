@@ -1,5 +1,9 @@
 // ===== CATEGORY SELECT =====
 
+/**
+ * Initializes the category select.
+ * @returns {void} Nothing.
+ */
 function initCategorySelect() {
    const elements = getCategoryElements();
    if (!elements) return;
@@ -13,6 +17,10 @@ function initCategorySelect() {
 }
 
 
+/**
+ * Returns the category elements.
+ * @returns {object|null} The category elements object, or null when it is not available.
+ */
 function getCategoryElements() {
    const select = document.getElementById("addTaskCategory");
    const menu = document.getElementById("addTaskCategoryMenu");
@@ -29,6 +37,12 @@ function getCategoryElements() {
 }
 
 
+/**
+ * Sets up the category click listeners.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function setupCategoryClickListeners(elements) {
    elements.select.addEventListener("click", (event) => {
       handleCategorySelectClick(event, elements);
@@ -42,12 +56,25 @@ function setupCategoryClickListeners(elements) {
 }
 
 
+/**
+ * Handles the category select click.
+ *
+ * @param {Event} event - The event object that triggered the handler.
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function handleCategorySelectClick(event, elements) {
    event.stopPropagation();
    toggleCategoryMenu(elements);
 }
 
 
+/**
+ * Toggles the category menu.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function toggleCategoryMenu(elements) {
    if (isCategoryMenuOpen(elements)) {
       closeCategoryMenu(elements);
@@ -59,11 +86,23 @@ function toggleCategoryMenu(elements) {
 }
 
 
+/**
+ * Checks whether the category menu is open.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {boolean} Whether the category menu is open.
+ */
 function isCategoryMenuOpen(elements) {
    return elements.select.classList.contains("add-task__select--open");
 }
 
 
+/**
+ * Closes the category menu.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function closeCategoryMenu(elements) {
    elements.select.classList.remove("add-task__select--open");
    elements.select.setAttribute("aria-expanded", "false");
@@ -73,6 +112,12 @@ function closeCategoryMenu(elements) {
 }
 
 
+/**
+ * Restores the category selection.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function restoreCategorySelection(elements) {
    const lastValue = elements.input.dataset.lastValue;
    const lastLabel = elements.label.dataset.lastLabel;
@@ -83,6 +128,12 @@ function restoreCategorySelection(elements) {
 }
 
 
+/**
+ * Opens the category menu.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function openCategoryMenu(elements) {
    elements.select.classList.add("add-task__select--open");
    elements.select.setAttribute("aria-expanded", "true");
@@ -92,6 +143,12 @@ function openCategoryMenu(elements) {
 }
 
 
+/**
+ * Resets the category placeholder.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function resetCategoryPlaceholder(elements) {
    const placeholder = elements.label.dataset.placeholder || elements.label.textContent;
    elements.label.textContent = placeholder;
@@ -101,6 +158,13 @@ function resetCategoryPlaceholder(elements) {
 }
 
 
+/**
+ * Handles the category option click.
+ *
+ * @param {Event} event - The event object that triggered the handler.
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function handleCategoryOptionClick(event, elements) {
    event.stopPropagation();
    const option = event.target.closest(".add-task__select-option");
@@ -109,12 +173,26 @@ function handleCategoryOptionClick(event, elements) {
 }
 
 
+/**
+ * Selects the category option.
+ *
+ * @param {*} option - The option.
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function selectCategoryOption(option, elements) {
    saveCategorySelection(option, elements);
    closeCategoryMenu(elements);
 }
 
 
+/**
+ * Saves the category selection.
+ *
+ * @param {*} option - The option.
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
 function saveCategorySelection(option, elements) {
    const optionValue = option.dataset.value;
    const optionText = option.textContent.trim();

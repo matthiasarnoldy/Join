@@ -12,6 +12,10 @@
 
    const state = ContactsFeature.state;
 
+   /**
+    * Returns the contacts base URL.
+    * @returns {string} The contacts base URL.
+    */
    function getContactsBaseUrl() {
       return (
          (window.JOIN_CONFIG && window.JOIN_CONFIG.BASE_URL) ||
@@ -19,6 +23,13 @@
       );
    }
 
+   /**
+    * Normalizes the contact.
+    *
+    * @param {object} contact - The contact object.
+    * @param {string} firebaseKey - The Firebase key.
+    * @returns {object|null} The contact object, or null when it is not available.
+    */
    function normalizeContact(contact, firebaseKey) {
       if (!contact || typeof contact !== "object") return null;
       const resolvedId = contact.id ?? firebaseKey;
@@ -29,6 +40,12 @@
       };
    }
 
+   /**
+    * Normalizes the Firebase contacts.
+    *
+    * @param {object} data - The data object.
+    * @returns {Array<object>} The Firebase contacts list.
+    */
    function normalizeFirebaseContacts(data) {
       if (!data) return [];
       const entries = Array.isArray(data)
@@ -39,6 +56,10 @@
          .filter(Boolean);
    }
 
+   /**
+    * Loads the contacts.
+    * @returns {Promise<Array<object>>} A promise that resolves to the contacts list.
+    */
    async function loadContacts() {
       try {
          const response = await fetch(`${getContactsBaseUrl()}contacts.json`);
@@ -52,6 +73,12 @@
       return state.contacts;
    }
 
+   /**
+    * Adds the contact.
+    *
+    * @param {object} contact - The contact object.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function addContact(contact) {
       const response = await fetch(`${getContactsBaseUrl()}contacts.json`, {
          method: "POST",
@@ -63,6 +90,12 @@
       }
    }
 
+   /**
+    * Finds the contact key by ID.
+    *
+    * @param {string|number} contactId - The contact ID used for this operation.
+    * @returns {Promise<string|null>} A promise that resolves to the contact key by ID, or null when it is not available.
+    */
    async function findContactKeyById(contactId) {
       const targetId = String(contactId);
       const match = state.contacts.find(
@@ -71,6 +104,14 @@
       return match?._firebaseKey || null;
    }
 
+   /**
+    * Updates the contact.
+    *
+    * @param {string|number} contactId - The contact ID used for this operation.
+    * @param {object} contactData - The contact data object.
+    * @param {string|null} [contactKeyOverride=null] - The contact key override. Defaults to null.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function updateContact(contactId, contactData, contactKeyOverride = null) {
       const contactKey = contactKeyOverride || (await findContactKeyById(contactId));
       if (!contactKey) {
@@ -89,6 +130,12 @@
       }
    }
 
+   /**
+    * Deletes the contact.
+    *
+    * @param {string|number} contactId - The contact ID used for this operation.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function deleteContact(contactId) {
       const contactKey = await findContactKeyById(contactId);
       if (!contactKey) {

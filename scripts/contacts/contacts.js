@@ -12,10 +12,20 @@
    const view = ContactsFeature.view;
    const form = ContactsFeature.form;
 
+   /**
+    * Returns the contact by ID.
+    *
+    * @param {string|number} contactId - The contact ID used for this operation.
+    * @returns {string} The contact by ID.
+    */
    function getContactById(contactId) {
       return state.contacts.find((contact) => String(contact.id) === String(contactId));
    }
 
+   /**
+    * Initializes the contacts page.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function initContactsPage() {
       await data.loadContacts();
       view.renderContacts();
@@ -23,6 +33,12 @@
       view.switchView();
    }
 
+   /**
+    * Handles the contact click.
+    *
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {void} Nothing.
+    */
    function handleContactClick(event) {
       const item = event.target.closest(".contact-item");
       if (!item) return;
@@ -46,6 +62,10 @@
       view.switchView();
    }
 
+   /**
+    * Handles the back to list.
+    * @returns {void} Nothing.
+    */
    function handleBackToList() {
       state.selectedContactId = null;
       view.closeDetailMenu();
@@ -54,6 +74,10 @@
       view.switchView();
    }
 
+   /**
+    * Binds the events.
+    * @returns {void} Nothing.
+    */
    function bindEvents() {
       const addContactButton = document.getElementById("btn-add-contact");
       const contactsList = document.getElementById("contacts-list-content");

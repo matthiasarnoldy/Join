@@ -5,16 +5,32 @@ const ASSET_BASE_PATH = INDEX_IS_IN_TEMPLATES ? "../assets/" : "./assets/";
 const INDEX_PAGE_BASE_PATH = INDEX_IS_IN_TEMPLATES ? "./" : "./templates/";
 const AUTH_USER_QUERY_KEY = "uid";
 
+/**
+ * Returns the asset path.
+ *
+ * @param {string} relativePath - The relative path.
+ * @returns {string} The asset path.
+ */
 function assetPath(relativePath) {
     return `${ASSET_BASE_PATH}${relativePath}`;
 }
 
 
+/**
+ * Returns the page path.
+ *
+ * @param {string} pageFile - The page file.
+ * @returns {string} The page path.
+ */
 function pagePath(pageFile) {
     return `${INDEX_PAGE_BASE_PATH}${pageFile}`;
 }
 
 
+/**
+ * Initializes the login.
+ * @returns {void} Nothing.
+ */
 function initLogin() {
     setSplashLogoByViewport();
     setMobileSplashBackground();
@@ -28,17 +44,31 @@ function initLogin() {
 }
 
 
+/**
+ * Returns the auth base URL.
+ * @returns {string} The auth base URL.
+ */
 function getAuthBaseUrl() {
     return (window.JOIN_CONFIG && window.JOIN_CONFIG.BASE_URL) || "";
 }
 
 
+/**
+ * Checks whether the valid email is address.
+ *
+ * @param {string} email - The email.
+ * @returns {boolean} Whether the valid email is address.
+ */
 function isValidEmailAddress(email) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     return emailPattern.test(email);
 }
 
 
+/**
+ * Returns the users from database.
+ * @returns {Promise<Array<object>>} A promise that resolves to the users from database list.
+ */
 async function getUsersFromDatabase() {
     const response = await fetch(`${getAuthBaseUrl()}users.json`);
     if (!response.ok) throw new Error(`Failed loading users: HTTP ${response.status}`);
@@ -46,6 +76,13 @@ async function getUsersFromDatabase() {
 }
 
 
+/**
+ * Checks whether the email already is registered.
+ *
+ * @param {Array<object>} usersObject - The users object list.
+ * @param {string} email - The email.
+ * @returns {boolean} Whether the email already is registered.
+ */
 function isEmailAlreadyRegistered(usersObject, email) {
     return Object.values(usersObject).some((user) => {
         return user && typeof user.email === "string" && user.email.toLowerCase() === email;
@@ -53,11 +90,23 @@ function isEmailAlreadyRegistered(usersObject, email) {
 }
 
 
+/**
+ * Returns the pad to two digits.
+ *
+ * @param {string} value - The value.
+ * @returns {string} The pad to two digits.
+ */
 function padToTwoDigits(value) {
     return String(value).padStart(2, "0");
 }
 
 
+/**
+ * Formats the german timestamp.
+ *
+ * @param {string} date - The date.
+ * @returns {string} The german timestamp.
+ */
 function formatGermanTimestamp(date) {
     const day = padToTwoDigits(date.getDate());
     const month = padToTwoDigits(date.getMonth() + 1);
@@ -69,16 +118,28 @@ function formatGermanTimestamp(date) {
 }
 
 
+/**
+ * Returns the splash logo element.
+ * @returns {HTMLElement|null} The splash logo element element, or null when it is not available.
+ */
 function getSplashLogoElement() {
     return document.querySelector(".splash__logo--image");
 }
 
 
+/**
+ * Checks whether the viewport is mobile.
+ * @returns {boolean} Whether the viewport is mobile.
+ */
 function isMobileViewport() {
     return window.matchMedia("(max-width: 600px)").matches;
 }
 
 
+/**
+ * Sets the splash logo by viewport.
+ * @returns {void} Nothing.
+ */
 function setSplashLogoByViewport() {
     const splashLogo = getSplashLogoElement();
     if (!splashLogo) return;
@@ -88,6 +149,10 @@ function setSplashLogoByViewport() {
 }
 
 
+/**
+ * Returns the mobile splash elements.
+ * @returns {object} The mobile splash elements object.
+ */
 function getMobileSplashElements() {
     return {
         splash: document.querySelector(".splash__logo"),
@@ -96,11 +161,24 @@ function getMobileSplashElements() {
 }
 
 
+/**
+ * Checks whether the mobile splash should apply.
+ *
+ * @param {*} splash - The splash.
+ * @returns {boolean} Whether the mobile splash should apply.
+ */
 function shouldApplyMobileSplash(splash) {
     return Boolean(splash) && isMobileViewport();
 }
 
 
+/**
+ * Builds the splash background reset.
+ *
+ * @param {*} originalBg - The original bg.
+ * @param {*} splashLogo - The splash logo.
+ * @returns {*} The splash background reset result.
+ */
 function buildSplashBackgroundReset(originalBg, splashLogo) {
     return () => {
         document.body.style.backgroundColor = originalBg;
@@ -109,6 +187,10 @@ function buildSplashBackgroundReset(originalBg, splashLogo) {
 }
 
 
+/**
+ * Sets the mobile splash background.
+ * @returns {void} Nothing.
+ */
 function setMobileSplashBackground() {
     const { splash, splashLogo } = getMobileSplashElements();
     if (!shouldApplyMobileSplash(splash)) return;
@@ -120,6 +202,10 @@ function setMobileSplashBackground() {
 }
 
 
+/**
+ * Sets the main opacity.
+ * @returns {void} Nothing.
+ */
 function setMainOpacity() {
     const mainContent = document.getElementById("main-content");
     if (!mainContent) return;
@@ -129,12 +215,22 @@ function setMainOpacity() {
 }
 
 
+/**
+ * Sets up the password visibility.
+ * @returns {void} Nothing.
+ */
 function setupPasswordVisibility() {
     const passwordFields = getPasswordFields();
     passwordFields.forEach((field) => setupPasswordField(field));
 }
 
 
+/**
+ * Returns the password field by icon ID.
+ *
+ * @param {string|number} iconId - The icon ID used for this operation.
+ * @returns {string|null} The password field by icon ID, or null when it is not available.
+ */
 function getPasswordFieldByIconId(iconId) {
     const icon = document.getElementById(iconId);
     if (!icon) return null;
@@ -143,6 +239,10 @@ function getPasswordFieldByIconId(iconId) {
 }
 
 
+/**
+ * Returns the password fields.
+ * @returns {Array<*>} The password fields list.
+ */
 function getPasswordFields() {
     const passwordField = getPasswordFieldByIconId("password-icon");
     const confirmField = getPasswordFieldByIconId("confirm-password-icon");
@@ -150,6 +250,12 @@ function getPasswordFields() {
 }
 
 
+/**
+ * Sets up the password field.
+ *
+ * @param {HTMLElement|null} field - The field.
+ * @returns {void} Nothing.
+ */
 function setupPasswordField(field) {
     field.input.addEventListener("focus", () => showVisibilityIcon(field));
     field.input.addEventListener("blur", () => hideVisibilityIcon(field));
@@ -158,6 +264,12 @@ function setupPasswordField(field) {
 }
 
 
+/**
+ * Shows the visibility icon.
+ *
+ * @param {HTMLElement|null} field - The field.
+ * @returns {void} Nothing.
+ */
 function showVisibilityIcon(field) {
     if (field.input.type !== "password") return;
     field.icon.src = assetPath("icons/desktop/visibility_off.svg");
@@ -165,6 +277,12 @@ function showVisibilityIcon(field) {
 }
 
 
+/**
+ * Hides the visibility icon.
+ *
+ * @param {HTMLElement|null} field - The field.
+ * @returns {void} Nothing.
+ */
 function hideVisibilityIcon(field) {
     field.input.type = "password";
     field.icon.src = assetPath("icons/desktop/lock.svg");
@@ -172,23 +290,47 @@ function hideVisibilityIcon(field) {
 }
 
 
+/**
+ * Checks whether the icon is lock.
+ *
+ * @param {HTMLElement|null} field - The field.
+ * @returns {boolean} Whether the icon is lock.
+ */
 function isLockIcon(field) {
     return field.icon.src.includes("lock.svg");
 }
 
 
+/**
+ * Shows the password.
+ *
+ * @param {HTMLElement|null} field - The field.
+ * @returns {void} Nothing.
+ */
 function showPassword(field) {
     field.input.type = "text";
     field.icon.src = assetPath("icons/desktop/visibility.svg");
 }
 
 
+/**
+ * Hides the password.
+ *
+ * @param {HTMLElement|null} field - The field.
+ * @returns {void} Nothing.
+ */
 function hidePassword(field) {
     field.input.type = "password";
     field.icon.src = assetPath("icons/desktop/visibility_off.svg");
 }
 
 
+/**
+ * Toggles the password visibility.
+ *
+ * @param {HTMLElement|null} field - The field.
+ * @returns {void} Nothing.
+ */
 function togglePasswordVisibility(field) {
     if (isLockIcon(field)) return;
     if (field.input.type === "password") showPassword(field);
@@ -197,12 +339,25 @@ function togglePasswordVisibility(field) {
 }
 
 
+/**
+ * Sets the button disabled.
+ *
+ * @param {HTMLElement|null} button - The button.
+ * @param {*} disabled - The disabled.
+ * @returns {void} Nothing.
+ */
 function setButtonDisabled(button, disabled) {
     if (!button) return;
     button.disabled = disabled;
 }
 
 
+/**
+ * Builds the summary path with user ID.
+ *
+ * @param {string|number} userId - The user ID used for this operation.
+ * @returns {string} The summary path with user ID.
+ */
 function buildSummaryPathWithUserId(userId) {
     if (!userId) return pagePath("summary.html");
     const query = `${AUTH_USER_QUERY_KEY}=${encodeURIComponent(userId)}`;
@@ -210,6 +365,12 @@ function buildSummaryPathWithUserId(userId) {
 }
 
 
+/**
+ * Redirects the to summary.
+ *
+ * @param {string} [userId=""] - The user ID used for this operation. Defaults to "".
+ * @returns {void} Nothing.
+ */
 function redirectToSummary(userId = "") {
     location.href = buildSummaryPathWithUserId(userId);
 }

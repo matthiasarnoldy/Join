@@ -11,16 +11,33 @@
    const data = ContactsFeature.data;
    const view = ContactsFeature.view;
 
+   /**
+    * Returns the contact by ID.
+    *
+    * @param {string|number} contactId - The contact ID used for this operation.
+    * @returns {string} The contact by ID.
+    */
    function getContactById(contactId) {
       return state.contacts.find((contact) => String(contact.id) === String(contactId));
    }
 
+   /**
+    * Builds the random color.
+    * @returns {string} The random color.
+    */
    function buildRandomColor() {
       return `#${Math.floor(Math.random() * 16777215)
          .toString(16)
          .padStart(6, "0")}`;
    }
 
+   /**
+    * Shows the error.
+    *
+    * @param {string} message - The message.
+    * @param {Array<*>} [invalidIds=["add-name", "add-email"]] - The invalid IDs used for this operation. Defaults to ["add-name", "add-email"].
+    * @returns {void} Nothing.
+    */
    function showError(message, invalidIds = ["add-name", "add-email"]) {
       const errorEl = document.getElementById("contactFormError");
       if (!errorEl) return;
@@ -36,6 +53,10 @@
       });
    }
 
+   /**
+    * Hides the error.
+    * @returns {void} Nothing.
+    */
    function hideError() {
       const errorEl = document.getElementById("contactFormError");
       if (!errorEl) return;
@@ -49,6 +70,12 @@
       });
    }
 
+   /**
+    * Clears the field error.
+    *
+    * @param {string} id - The element ID.
+    * @returns {void} Nothing.
+    */
    function clearFieldError(id) {
       const input = document.getElementById(id);
       input?.classList.remove("login__input--error");
@@ -64,6 +91,10 @@
       if (!anyStillInvalid) hideError();
    }
 
+   /**
+    * Binds the error hide on input.
+    * @returns {void} Nothing.
+    */
    function bindErrorHideOnInput() {
       ["add-name", "add-email", "add-phone"].forEach((id) => {
          const field = document.getElementById(id);
@@ -75,6 +106,12 @@
       });
    }
 
+   /**
+    * Sets the mode.
+    *
+    * @param {boolean} isEditMode - Whether the mode is edit.
+    * @returns {void} Nothing.
+    */
    function setMode(isEditMode) {
       const title = document.getElementById("contact-form-title");
       const submitButton = document.getElementById("contact-form-submit");
@@ -95,6 +132,12 @@
       }
    }
 
+   /**
+    * Sets the avatar.
+    *
+    * @param {object|null} [contact=null] - The contact object. Defaults to null.
+    * @returns {void} Nothing.
+    */
    function setAvatar(contact = null) {
       const avatar = document.querySelector(".contact-modal__avatar");
       if (!avatar) return;
@@ -116,6 +159,10 @@
       avatar.classList.remove("contact-modal__avatar--initials");
    }
 
+   /**
+    * Resets the mode.
+    * @returns {void} Nothing.
+    */
    function resetMode() {
       state.editingContactId = null;
       state.editingContactKey = null;
@@ -123,11 +170,19 @@
       setAvatar(null);
    }
 
+   /**
+    * Opens the overlay.
+    * @returns {void} Nothing.
+    */
    function openOverlay() {
       document.getElementById("overlay")?.classList.remove("d-none");
       bindErrorHideOnInput();
    }
 
+   /**
+    * Closes the overlay.
+    * @returns {void} Nothing.
+    */
    function closeOverlay() {
       document.getElementById("overlay")?.classList.add("d-none");
       document.getElementById("contact-form")?.reset();
@@ -135,6 +190,10 @@
       resetMode();
    }
 
+   /**
+    * Handles the edit.
+    * @returns {void} Nothing.
+    */
    function handleEdit() {
       if (!state.selectedContactId) return;
       const contact = getContactById(state.selectedContactId);
@@ -157,6 +216,10 @@
       openOverlay();
    }
 
+   /**
+    * Deletes the selected.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function deleteSelected() {
       if (!state.selectedContactId) return;
       try {
@@ -184,6 +247,10 @@
       }
    }
 
+   /**
+    * Handles the secondary action.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function handleSecondaryAction() {
       if (state.editingContactId !== null) {
          if (state.selectedContactId === null) {
@@ -196,6 +263,12 @@
       closeOverlay();
    }
 
+   /**
+    * Handles the submit.
+    *
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function handleSubmit(event) {
       event.preventDefault();
 
