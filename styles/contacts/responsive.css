@@ -209,10 +209,6 @@
    #contact-form-cancel[data-mode="cancel"] {
       display: none;
    }
-
-   /* .form-actions {
-      flex-direction: column;
-   } */
 }
 
 @media (max-width: 360px) {
