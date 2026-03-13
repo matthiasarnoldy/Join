@@ -1,0 +1,123 @@
+.login__input-field {
+    position: relative;
+}
+
+.login__input--email,
+.login__input--password {
+    padding-right: 48px;
+}
+
+.login__email-icon,
+.login__lock-icon {
+    position: absolute;
+    top: 50%;
+    right: 21px;
+    width: 24px;
+    height: 24px;
+    transform: translateY(-50%);
+}
+
+.login__email-icon {
+    pointer-events: none;
+}
+
+.login__formular {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login__inputFieldError {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.login__input {
+    font-size: 20px;
+    width: 422px;
+    padding: 12px 21px;
+    border: 1px solid #d1d1d1;
+    border-radius: 10px;
+}
+
+.login__input:focus {
+    border: 1px solid #29abe2;
+    outline: none;
+}
+
+.login__input::placeholder {
+    color: #d1d1d1;
+}
+
+.login__input--required {
+    font-size: 12px;
+    font-weight: 400;
+    font-family: "Poppins";
+    color: rgba(230, 0, 38, 1);
+}
+
+.login__input--error,
+.login__input--error:focus {
+    border: 1px solid rgba(230, 0, 38, 1);
+    outline: none;
+}
+
+.signup__privacy-checkbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.signup__checkbox {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("../../assets/icons/desktop/checkBox.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+}
+
+.signup__checkbox:checked {
+    background-image: url("../../assets/icons/desktop/checkBox--checked-dark.svg");
+}
+
+.signup__checkbox-label {
+    cursor: pointer;
+}
+
+.signup__privacy-link {
+    color: #29abe2;
+}
+
+.signup-success-message {
+    font-size: 20px;
+    font-weight: 400;
+    text-align: center;
+    color: #fff;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 10000;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-radius: 20px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+    background: #2a3647;
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(100vh);
+    transition: all 800ms ease-in-out;
+}
+
+.signup-success-message--visible {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}

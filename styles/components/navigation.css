@@ -1,0 +1,127 @@
+.navBar {
+   color: #fff;
+   position: fixed;
+   z-index: 7;
+   height: 100vh;
+   padding-bottom: 64px;
+   display: flex;
+   align-items: center;
+   flex-direction: column;
+   background-color: #2b3647;
+}
+
+.navBar__logo {
+   width: 100%;
+   padding: 64px 0;
+   display: flex;
+   justify-content: center;
+   background-color: #2b3647;
+}
+
+.logo__dark {
+   display: none;
+}
+
+.navBar__menu {
+   width: 100%;
+   padding: 48px 0;
+   display: flex;
+   justify-content: center;
+}
+
+.navBar__list {
+   display: flex;
+   justify-content: space-between;
+   flex-direction: column;
+   gap: 15px;
+}
+
+.navBar__quicklink {
+   padding: 8px 56px;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   transition: all 100ms ease-in;
+}
+
+.navBar__quicklink:hover {
+   background-color: #2a3d59;
+   cursor: pointer;
+}
+
+.navBar__quicklink--active {
+   background-color: #091931;
+}
+
+.navBar__quicklink--active:hover {
+   background-color: #091931;
+   cursor: default;
+}
+
+.navBar__backToLogin {
+   color: #fff;
+   width: 100%;
+   padding: 8px 56px;
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   gap: 8px;
+   border: none;
+   background: none;
+   box-sizing: border-box;
+   cursor: pointer;
+   transition: all 100ms ease-in;
+}
+
+.navBar__backToLogin:hover {
+   background-color: #2a3d59;
+}
+
+.navBar__backToLogin-icon {
+   width: 24px;
+   height: 24px;
+}
+
+.navBar__backToLogin-text {
+   font-size: 16px;
+   font-weight: 400;
+   font-family: "Inter";
+   color: #fff;
+}
+
+.navBar__legalInformation {
+   color: #a8a8a8;
+   width: 100%;
+   height: 100%;
+   display: flex;
+   justify-content: flex-end;
+   align-content: center;
+   align-items: stretch;
+   flex-direction: column;
+   gap: 4px;
+}
+
+.legalInformation {
+   line-height: 24px;
+   color: #cdcdcd;
+   width: 100%;
+   min-height: 24px;
+   padding: 8px 56px;
+   display: flex;
+   align-items: center;
+   box-sizing: border-box;
+   transition: all 125ms;
+}
+
+.legalInformation:hover {
+   font-weight: 700;
+   color: #29abe2;
+   cursor: pointer;
+}
+
+.legalInformation.navBar__quicklink--active {
+   font-weight: 400;
+   color: #cdcdcd;
+   background-color: #091931;
+   cursor: default;
+}

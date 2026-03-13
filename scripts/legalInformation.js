@@ -3,6 +3,10 @@ document.addEventListener("DOMContentLoaded", transformNavbarForLogin);
 const IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
 const ASSET_BASE_PATH = IS_IN_TEMPLATES ? "../assets/" : "./assets/";
 
+/**
+ * Transforms the navbar for login.
+ * @returns {void} Nothing.
+ */
 function transformNavbarForLogin() {
     const urlParams = new URLSearchParams(window.location.search);
     const from = urlParams.get("from");
@@ -20,6 +24,14 @@ function transformNavbarForLogin() {
     }
 }
 
+
+/**
+ * Replaces the nav menu with back button.
+ *
+ * @param {HTMLElement|null} buttonText - The button text.
+ * @param {*} previousPage - The previous page.
+ * @returns {void} Nothing.
+ */
 function replaceNavMenuWithBackButton(buttonText, previousPage) {
     const navMenu = document.querySelector(".navBar__menu");
     navMenu.innerHTML = `
@@ -33,6 +45,11 @@ function replaceNavMenuWithBackButton(buttonText, previousPage) {
     });
 }
 
+
+/**
+ * Hides the header elements.
+ * @returns {void} Nothing.
+ */
 function hideHeaderElements() {
     const helpIcon = document.getElementById("help");
     const userInitials = document.getElementById("login__initials");
@@ -40,6 +57,11 @@ function hideHeaderElements() {
     if (userInitials) userInitials.style.display = "none";
 }
 
+
+/**
+ * Centers the header content.
+ * @returns {void} Nothing.
+ */
 function centerHeaderContent() {
     const header = document.querySelector(".header");
     const topBar = document.querySelector(".topBar");

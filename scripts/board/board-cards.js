@@ -3,14 +3,33 @@
       ? "../assets/"
       : "./assets/";
 
+   /**
+    * Returns the board cards asset path.
+    *
+    * @param {string} relativePath - The relative path.
+    * @returns {string} The board cards asset path.
+    */
    function boardCardsAssetPath(relativePath) {
       return `${BOARD_CARDS_ASSET_BASE_PATH}${relativePath}`;
    }
 
+   /**
+    * Sets the card visibility.
+    *
+    * @param {HTMLElement|null} card - The card.
+    * @param {boolean} shouldShow - Whether it should show.
+    * @returns {void} Nothing.
+    */
    function setCardVisibility(card, shouldShow) {
       card.style.display = shouldShow ? "" : "none";
    }
 
+   /**
+    * Filters the tasks.
+    *
+    * @param {*} searchTerm - The search term.
+    * @returns {void} Nothing.
+    */
    function filterTasks(searchTerm) {
       const allCards = document.querySelectorAll(".task-card");
       const lowerSearchTerm = String(searchTerm || "")
@@ -31,6 +50,12 @@
       updatePlaceholders();
    }
 
+   /**
+    * Ensures the placeholder exists.
+    *
+    * @param {HTMLElement|null} column - The column.
+    * @returns {HTMLDivElement|null} The placeholder exists element, or null when it is not available.
+    */
    function ensurePlaceholderExists(column) {
       const taskDirectory = column.querySelector(".board-task-directory");
       if (!taskDirectory) return null;
@@ -44,6 +69,12 @@
       return placeholder;
    }
 
+   /**
+    * Processes the column placeholder.
+    *
+    * @param {HTMLElement|null} column - The column.
+    * @returns {void} Nothing.
+    */
    function processColumnPlaceholder(column) {
       const taskDirectory = column.querySelector(".board-task-directory");
       if (!taskDirectory) return;
@@ -62,11 +93,19 @@
       }
    }
 
+   /**
+    * Updates the placeholders.
+    * @returns {void} Nothing.
+    */
    function updatePlaceholders() {
       const columns = document.querySelectorAll(".board-task-column");
       columns.forEach(processColumnPlaceholder);
    }
 
+   /**
+    * Sets up the task search.
+    * @returns {void} Nothing.
+    */
    function setupTaskSearch() {
       const searchInputs = [
          document.getElementById("findTaskInput"),
@@ -84,6 +123,12 @@
       });
    }
 
+   /**
+    * Returns the priority icon.
+    *
+    * @param {string} priority - The priority.
+    * @returns {string} The priority icon.
+    */
    function getPriorityIcon(priority) {
       const icons = {
          urgent: boardCardsAssetPath("icons/desktop/Priority orange.svg"),
@@ -93,6 +138,12 @@
       return icons[priority] || icons.medium;
    }
 
+   /**
+    * Returns the priority label.
+    *
+    * @param {string} priority - The priority.
+    * @returns {string} The priority label.
+    */
    function getPriorityLabel(priority) {
       const labels = {
          urgent: "Urgent",
@@ -102,6 +153,12 @@
       return labels[String(priority || "")] || "Medium";
    }
 
+   /**
+    * Returns the category label.
+    *
+    * @param {string} category - The category.
+    * @returns {string} The category label.
+    */
    function getCategoryLabel(category) {
       const categoryStr = String(category || "");
       const labels = {
@@ -111,6 +168,12 @@
       return labels[categoryStr] || categoryStr;
    }
 
+   /**
+    * Returns the avatar display count.
+    *
+    * @param {Array<object>} totalAssignees - The total assignees list.
+    * @returns {number} The avatar display count value.
+    */
    function getAvatarDisplayCount(totalAssignees) {
       const avatarWidth = 32;
       const overlap = 8;
@@ -120,6 +183,13 @@
       return totalAssignees > maxAvatars ? maxAvatars - 1 : totalAssignees;
    }
 
+   /**
+    * Renders the single avatar.
+    *
+    * @param {*} assignee - The assignee.
+    * @param {number} index - The index.
+    * @returns {*} The single avatar result.
+    */
    function renderSingleAvatar(assignee, index) {
       const colors = ["orange", "teal", "purple"];
       const color = colors[index % colors.length];
@@ -128,12 +198,24 @@
          : `<span class="avatar avatar--${color}">${assignee.initials}</span>`;
    }
 
+   /**
+    * Renders the avatar overflow.
+    *
+    * @param {number} remaining - The remaining.
+    * @returns {*} The avatar overflow result.
+    */
    function renderAvatarOverflow(remaining) {
       return typeof taskCardAvatarOverflowHTML === "function"
          ? taskCardAvatarOverflowHTML(remaining)
          : `<span class="avatar avatar--overflow">+${remaining}</span>`;
    }
 
+   /**
+    * Builds the avatars HTML.
+    *
+    * @param {object} taskData - The task data object.
+    * @returns {string} The avatars HTML.
+    */
    function buildAvatarsHTML(taskData) {
       const assignees = taskData.assigned || [];
       if (assignees.length === 0) return "";
@@ -148,6 +230,12 @@
          : avatarHTML;
    }
 
+   /**
+    * Returns the subtask stats.
+    *
+    * @param {Array<object>} subtasks - The subtasks list.
+    * @returns {object} The subtask stats object.
+    */
    function getSubtaskStats(subtasks) {
       const total = subtasks?.length || 0;
       const completed = (subtasks || []).filter((item) => item.completed).length;
@@ -155,12 +243,24 @@
       return { total, completed, progress };
    }
 
+   /**
+    * Builds the subtasks HTML.
+    *
+    * @param {Array<object>} subtasks - The subtasks list.
+    * @returns {string} The subtasks HTML.
+    */
    function buildSubtasksHTML(subtasks) {
       const { total, completed, progress } = getSubtaskStats(subtasks);
       if (typeof taskCardSubtasksHTML !== "function" || total === 0) return "";
       return taskCardSubtasksHTML(completed, total, progress);
    }
 
+   /**
+    * Returns the task card render data.
+    *
+    * @param {object} taskData - The task data object.
+    * @returns {object} The task card render data object.
+    */
    function getTaskCardRenderData(taskData) {
       return {
          categoryClass:
@@ -172,6 +272,13 @@
       };
    }
 
+   /**
+    * Builds the task card HTML.
+    *
+    * @param {object} taskData - The task data object.
+    * @param {object} viewData - The view data object.
+    * @returns {string} The task card HTML.
+    */
    function buildTaskCardHTML(taskData, viewData) {
       if (typeof taskCardHTML === "function") {
          return taskCardHTML(
@@ -198,6 +305,12 @@
       return "";
    }
 
+   /**
+    * Creates the task card.
+    *
+    * @param {object} taskData - The task data object.
+    * @returns {HTMLElement} The task card element.
+    */
    function createTaskCard(taskData) {
       const card = document.createElement("article");
       card.className = "task-card";
@@ -210,6 +323,10 @@
       return card;
    }
 
+   /**
+    * Returns the board columns.
+    * @returns {object} The board columns object.
+    */
    function getBoardColumns() {
       return {
          todo: document.getElementById("TodoTask"),
@@ -219,6 +336,13 @@
       };
    }
 
+   /**
+    * Adds the task to column.
+    *
+    * @param {object} taskData - The task data object.
+    * @param {NodeListOf<Element>|Array<Element>} columns - The columns collection.
+    * @returns {void} Nothing.
+    */
    function addTaskToColumn(taskData, columns) {
       if (taskData.category && typeof taskData.category !== "string") {
          taskData.category = String(taskData.category);
@@ -231,6 +355,10 @@
       taskDirectory.appendChild(card);
    }
 
+   /**
+    * Clears the board task cards.
+    * @returns {void} Nothing.
+    */
    function clearBoardTaskCards() {
       const taskDirectories = document.querySelectorAll(".board-task-directory");
       taskDirectories.forEach((directory) => {
@@ -238,6 +366,12 @@
       });
    }
 
+   /**
+    * Renders the board from tasks.
+    *
+    * @param {Array<object>} tasks - The tasks list.
+    * @returns {void} Nothing.
+    */
    function renderBoardFromTasks(tasks) {
       clearBoardTaskCards();
       const columns = getBoardColumns();
@@ -250,6 +384,12 @@
       updatePlaceholders();
    }
 
+   /**
+    * Sets up the column add buttons.
+    *
+    * @param {*} onAddClick - The on add click.
+    * @returns {void} Nothing.
+    */
    function setupColumnAddButtons(onAddClick) {
       const addButtons = document.querySelectorAll(".board-column__add");
       addButtons.forEach((button) => {
@@ -260,6 +400,12 @@
       });
    }
 
+   /**
+    * Sets up the task card clicks.
+    *
+    * @param {HTMLElement|null} onCardClick - The on card click.
+    * @returns {void} Nothing.
+    */
    function setupTaskCardClicks(onCardClick) {
       const grid = document.querySelector(".board-task-grid");
       if (!grid || grid.dataset.cardClickInitialized === "true") return;

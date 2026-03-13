@@ -3,21 +3,42 @@
       ? "../assets/"
       : "./assets/";
 
+   /**
+    * Returns the board detail asset path.
+    *
+    * @param {string} relativePath - The relative path.
+    * @returns {string} The board detail asset path.
+    */
    function boardDetailAssetPath(relativePath) {
       return `${BOARD_DETAIL_ASSET_BASE_PATH}${relativePath}`;
    }
 
+   /**
+    * Returns the task detail dialog.
+    * @returns {HTMLDialogElement|null} The task detail dialog element, or null when it is not available.
+    */
    function getTaskDetailDialog() {
       return document.getElementById("taskDetailDialog");
    }
 
+   /**
+    * Closes the task detail dialog.
+    * @returns {void} Nothing.
+    */
    function closeTaskDetailDialog() {
       const dialog = getTaskDetailDialog();
       if (!dialog) return;
       dialog.close();
       delete dialog.dataset.taskId;
+      window.updateBoardDialogScrollLock?.();
    }
 
+   /**
+    * Sets the task detail label.
+    *
+    * @param {string} category - The category.
+    * @returns {void} Nothing.
+    */
    function setTaskDetailLabel(category) {
       const label = document.getElementById("taskDetailCategory");
       if (!label) return;
@@ -26,11 +47,25 @@
       label.textContent = window.BoardCards?.getCategoryLabel(category) || "No category";
    }
 
+   /**
+    * Sets the task detail text.
+    *
+    * @param {string} id - The element ID.
+    * @param {string} value - The value.
+    * @param {string} fallback - The fallback.
+    * @returns {void} Nothing.
+    */
    function setTaskDetailText(id, value, fallback) {
       const element = document.getElementById(id);
       if (element) element.textContent = value || fallback;
    }
 
+   /**
+    * Sets the task detail priority.
+    *
+    * @param {string} priority - The priority.
+    * @returns {void} Nothing.
+    */
    function setTaskDetailPriority(priority) {
       const text = document.getElementById("taskDetailPriorityText");
       const icon = document.getElementById("taskDetailPriorityIcon");
@@ -42,6 +77,12 @@
       }
    }
 
+   /**
+    * Creates the task detail empty item.
+    *
+    * @param {string} text - The text.
+    * @returns {HTMLLIElement} The task detail empty item element.
+    */
    function createTaskDetailEmptyItem(text) {
       const item = document.createElement("li");
       item.className = "task-detail__empty";
@@ -49,6 +90,12 @@
       return item;
    }
 
+   /**
+    * Renders the task detail assigned.
+    *
+    * @param {Array<object>} assignees - The assignees list.
+    * @returns {void} Nothing.
+    */
    function renderTaskDetailAssigned(assignees) {
       const list = document.getElementById("taskDetailAssignedList");
       if (!list) return;
@@ -66,6 +113,12 @@
       });
    }
 
+   /**
+    * Renders the task detail subtasks.
+    *
+    * @param {Array<object>} subtasks - The subtasks list.
+    * @returns {void} Nothing.
+    */
    function renderTaskDetailSubtasks(subtasks) {
       const list = document.getElementById("taskDetailSubtasksList");
       if (!list) return;
@@ -83,6 +136,12 @@
       });
    }
 
+   /**
+    * Renders the task detail.
+    *
+    * @param {object} taskData - The task data object.
+    * @returns {void} Nothing.
+    */
    function renderTaskDetail(taskData) {
       setTaskDetailLabel(taskData.category);
       setTaskDetailText("taskDetailTitle", taskData.title, "Untitled task");
@@ -93,6 +152,12 @@
       renderTaskDetailSubtasks(taskData.subtasks || []);
    }
 
+   /**
+    * Opens the task detail.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @returns {void} Nothing.
+    */
    function openTaskDetail(taskId) {
       const dialog = getTaskDetailDialog();
       if (!dialog) return;
@@ -101,8 +166,15 @@
       dialog.dataset.taskId = String(taskId);
       renderTaskDetail(taskData);
       dialog.showModal();
+      window.updateBoardDialogScrollLock?.();
    }
 
+   /**
+    * Returns the task detail subtask toggle payload.
+    *
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {object|null} The task detail subtask toggle payload object, or null when it is not available.
+    */
    function getTaskDetailSubtaskTogglePayload(event) {
       const checkbox = event.target.closest(".task-detail__subtask-checkbox");
       const taskId = getTaskDetailDialog()?.dataset.taskId;
@@ -114,6 +186,14 @@
       return { checkbox, taskId, subtaskIndex, currentTask };
    }
 
+   /**
+    * Returns the task with toggled subtask.
+    *
+    * @param {object} task - The task object.
+    * @param {number} subtaskIndex - The subtask index.
+    * @param {boolean} isCompleted - Whether it is completed.
+    * @returns {object} The task with toggled subtask object.
+    */
    function getTaskWithToggledSubtask(task, subtaskIndex, isCompleted) {
       const subtasks = (task.subtasks || []).map((subtask, index) =>
          index === subtaskIndex ? { ...subtask, completed: isCompleted } : subtask,
@@ -121,6 +201,12 @@
       return { ...task, subtasks };
    }
 
+   /**
+    * Reloads the board and keep detail open.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function reloadBoardAndKeepDetailOpen(taskId) {
       const tasks = await window.BoardData.loadTasks();
       window.BoardCards?.renderBoardFromTasks(tasks);
@@ -128,11 +214,24 @@
       openTaskDetail(taskId);
    }
 
+   /**
+    * Persists the task detail subtask toggle.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @param {object} updatedTask - The updated task object.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function persistTaskDetailSubtaskToggle(taskId, updatedTask) {
       await window.BoardData.putTask(taskId, updatedTask);
       await reloadBoardAndKeepDetailOpen(taskId);
    }
 
+   /**
+    * Handles the task detail subtask toggle.
+    *
+    * @param {Event} event - The event object that triggered the handler.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function handleTaskDetailSubtaskToggle(event) {
       const payload = getTaskDetailSubtaskTogglePayload(event);
       if (!payload) return;
@@ -150,6 +249,12 @@
       }
    }
 
+   /**
+    * Sets the priority in form.
+    *
+    * @param {string} priority - The priority.
+    * @returns {void} Nothing.
+    */
    function setPriorityInForm(priority) {
       const priorityField = document.getElementById("addTaskPriority");
       if (!priorityField) return;
@@ -163,6 +268,12 @@
       if (target) target.classList.add("add-task__priority-option--active");
    }
 
+   /**
+    * Sets the category in form.
+    *
+    * @param {string} category - The category.
+    * @returns {void} Nothing.
+    */
    function setCategoryInForm(category) {
       const input = document.getElementById("addTaskCategoryInput");
       const select = document.getElementById("addTaskCategory");
@@ -180,6 +291,12 @@
       input.dispatchEvent(new Event("input", { bubbles: true }));
    }
 
+   /**
+    * Returns the assigned lookup maps.
+    *
+    * @param {Array<object>} assigned - The assigned list.
+    * @returns {object} The assigned lookup maps object.
+    */
    function getAssignedLookupMaps(assigned) {
       return {
          values: new Set(assigned.map((person) => person.value)),
@@ -187,6 +304,12 @@
       };
    }
 
+   /**
+    * Synchronizes the assigned options.
+    *
+    * @param {object} maps - The maps object.
+    * @returns {void} Nothing.
+    */
    function syncAssignedOptions(maps) {
       const options = document.querySelectorAll(
          "#addTaskAssignedMenu .add-task__select-option--assigned",
@@ -205,6 +328,12 @@
       });
    }
 
+   /**
+    * Synchronizes the assigned input state.
+    *
+    * @param {number} assignedCount - The assigned count.
+    * @returns {void} Nothing.
+    */
    function syncAssignedInputState(assignedCount) {
       const input = document.getElementById("addTaskAssignedInput");
       if (!input) return;
@@ -212,6 +341,10 @@
       input.dispatchEvent(new Event("input", { bubbles: true }));
    }
 
+   /**
+    * Refreshes the assigned initials.
+    * @returns {void} Nothing.
+    */
    function refreshAssignedInitials() {
       if (
          typeof getAssignedElements !== "function" ||
@@ -223,6 +356,12 @@
       if (elements) updateContactInitials(elements);
    }
 
+   /**
+    * Sets the assigned in form.
+    *
+    * @param {Array<object>} assigned - The assigned list.
+    * @returns {void} Nothing.
+    */
    function setAssignedInForm(assigned) {
       const assignedList = assigned || [];
       const maps = getAssignedLookupMaps(assignedList);
@@ -231,6 +370,12 @@
       refreshAssignedInitials();
    }
 
+   /**
+    * Sets the subtasks in form.
+    *
+    * @param {Array<object>} subtasks - The subtasks list.
+    * @returns {void} Nothing.
+    */
    function setSubtasksInForm(subtasks) {
       const list = document.querySelector(".add-task__subtask-list");
       if (!list) return;
@@ -247,6 +392,13 @@
       });
    }
 
+   /**
+    * Sets the form field value and trigger.
+    *
+    * @param {string} id - The element ID.
+    * @param {string} value - The value.
+    * @returns {void} Nothing.
+    */
    function setFormFieldValueAndTrigger(id, value) {
       const field = document.getElementById(id);
       if (!field) return;
@@ -254,6 +406,12 @@
       field.dispatchEvent(new Event("input", { bubbles: true }));
    }
 
+   /**
+    * Fills the add task form for edit.
+    *
+    * @param {object} taskData - The task data object.
+    * @returns {void} Nothing.
+    */
    function fillAddTaskFormForEdit(taskData) {
       setFormFieldValueAndTrigger("addTaskTitle", taskData.title);
       setFormFieldValueAndTrigger("addTaskDescription", taskData.description);
@@ -264,6 +422,12 @@
       setSubtasksInForm(taskData.subtasks || []);
    }
 
+   /**
+    * Clears the add task dialog form.
+    *
+    * @param {HTMLDialogElement|null} dialog - The dialog.
+    * @returns {void} Nothing.
+    */
    function clearAddTaskDialogForm(dialog) {
       if (typeof handleClearClick !== "function") return;
       const clearButton = dialog.querySelector(".add-task__button--cancel");
@@ -271,12 +435,27 @@
       handleClearClick({ preventDefault: () => {} }, clearButton);
    }
 
+   /**
+    * Prepares the edit task dialog data.
+    *
+    * @param {HTMLDialogElement|null} dialog - The dialog.
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @param {object} taskData - The task data object.
+    * @param {string} [taskKey=""] - The task key. Defaults to "".
+    * @returns {void} Nothing.
+    */
    function prepareEditTaskDialogData(dialog, taskId, taskData, taskKey = "") {
       dialog.dataset.taskStatus = taskData.status || "todo";
       dialog.dataset.editTaskId = String(taskId);
       if (taskKey) dialog.dataset.editTaskKey = taskKey;
    }
 
+   /**
+    * Opens the edit task dialog.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function openEditTaskDialog(taskId) {
       const dialog = window.getAddTaskDialog?.();
       const taskData = window.BoardData?.getTask(taskId);
@@ -290,6 +469,12 @@
       dialog.showModal();
    }
 
+   /**
+    * Handles deleting the task.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function handleDeleteTask(taskId) {
       const shouldDelete = window.confirm("Delete this task?");
       if (!shouldDelete) return;
@@ -303,23 +488,47 @@
       }
    }
 
+   /**
+    * Handles the task detail delete click.
+    *
+    * @param {HTMLDialogElement|null} dialog - The dialog.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function handleTaskDetailDeleteClick(dialog) {
       const taskId = dialog?.dataset.taskId;
       if (!taskId) return;
       await handleDeleteTask(taskId);
    }
 
+   /**
+    * Handles the task detail edit click.
+    *
+    * @param {HTMLDialogElement|null} dialog - The dialog.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function handleTaskDetailEditClick(dialog) {
       const taskId = dialog?.dataset.taskId;
       if (!taskId) return;
       await openEditTaskDialog(taskId);
    }
 
+   /**
+    * Binds the task detail button.
+    *
+    * @param {string} id - The element ID.
+    * @param {string} eventName - The event object that triggered the handler.
+    * @param {*} handler - The handler.
+    * @returns {void} Nothing.
+    */
    function bindTaskDetailButton(id, eventName, handler) {
       const element = document.getElementById(id);
       if (element) element.addEventListener(eventName, handler);
    }
 
+   /**
+    * Sets up the task detail interactions.
+    * @returns {void} Nothing.
+    */
    function setupTaskDetailInteractions() {
       const dialog = getTaskDetailDialog();
       if (!dialog || dialog.dataset.initialized === "true") return;

@@ -12,15 +12,31 @@
       DoneTask: "done",
    };
 
+   /**
+    * Clears the task caches.
+    * @returns {void} Nothing.
+    */
    function clearTaskCaches() {
       Object.keys(taskKeyById).forEach((taskId) => delete taskKeyById[taskId]);
       Object.keys(tasksById).forEach((taskId) => delete tasksById[taskId]);
    }
 
+   /**
+    * Returns the status by directory ID.
+    *
+    * @param {string|number} directoryId - The directory ID used for this operation.
+    * @returns {string|null} The status by directory ID, or null when it is not available.
+    */
    function getStatusByDirectoryId(directoryId) {
       return STATUS_BY_DIRECTORY_ID[directoryId] || null;
    }
 
+   /**
+    * Finds the task key by ID.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @returns {Promise<string|null>} A promise that resolves to the task key by ID, or null when it is not available.
+    */
    async function findTaskKeyById(taskId) {
       const response = await fetch(`${BOARD_BASE_URL}tasks.json`);
       if (!response.ok) return null;
@@ -35,6 +51,12 @@
       return match ? match[0] : null;
    }
 
+   /**
+    * Returns the task key.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @returns {Promise<string>} A promise that resolves to the task key.
+    */
    async function getTaskKey(taskId) {
       const taskIdString = String(taskId);
       let taskKey = taskKeyById[taskIdString];
@@ -45,6 +67,13 @@
       return taskKey;
    }
 
+   /**
+    * Stores the task.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @param {object} taskData - The task data object.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function putTask(taskId, taskData) {
       const taskKey = await getTaskKey(taskId);
       if (!taskKey) throw new Error(`Task key not found for id ${taskId}`);
@@ -60,6 +89,12 @@
       tasksById[String(taskId)] = { ...taskData, id: taskData.id ?? taskId };
    }
 
+   /**
+    * Deletes the task.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function deleteTask(taskId) {
       const taskKey = await getTaskKey(taskId);
       if (!taskKey) throw new Error(`Task key not found for id ${taskId}`);
@@ -73,6 +108,13 @@
       delete tasksById[String(taskId)];
    }
 
+   /**
+    * Updates the task status.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @param {object} newStatus - The new status object.
+    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    */
    async function updateTaskStatus(taskId, newStatus) {
       if (!taskId || !newStatus) return;
       const currentTask = tasksById[String(taskId)];
@@ -86,6 +128,12 @@
       tasksById[String(taskId)] = updatedTask;
    }
 
+   /**
+    * Normalizes the Firebase tasks.
+    *
+    * @param {object} data - The data object.
+    * @returns {Array<object>} The Firebase tasks list.
+    */
    function normalizeFirebaseTasks(data) {
       if (!data) return [];
       const entries = Array.isArray(data)
@@ -103,6 +151,10 @@
          });
    }
 
+   /**
+    * Loads the tasks.
+    * @returns {Promise<Array<*>>} A promise that resolves to the tasks list.
+    */
    async function loadTasks() {
       clearTaskCaches();
       try {
@@ -116,10 +168,20 @@
       }
    }
 
+   /**
+    * Returns the task.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @returns {string|null} The task, or null when it is not available.
+    */
    function getTask(taskId) {
       return tasksById[String(taskId)] || null;
    }
 
+   /**
+    * Returns the all tasks.
+    * @returns {Array<object>} The all tasks list.
+    */
    function getAllTasks() {
       return Object.values(tasksById);
    }

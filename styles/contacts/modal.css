@@ -1,0 +1,218 @@
+.contact-success-message {
+   font-size: 20px;
+   font-weight: 400;
+   text-align: center;
+   color: #fff;
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   z-index: 10000;
+   padding: 25px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border-radius: 20px;
+   box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+   background: #2a3647;
+   opacity: 0;
+   transform: translate(-50%, -50%) translateY(100vh);
+   transition: all 800ms ease-in-out;
+   pointer-events: none;
+}
+
+.contact-success-message--visible {
+   opacity: 1;
+   transform: translate(-50%, -50%);
+}
+
+.contact-success-message--error {
+   background: #c0392b;
+}
+
+.overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: 30;
+   background: rgba(0, 0, 0, 0.5);
+}
+
+.overlay-content {
+   position: relative;
+   width: min(1212px, calc(100vw - 48px));
+   min-height: 592px;
+   display: flex;
+   border-radius: 30px;
+   background: white;
+   overflow: hidden;
+}
+
+.contact-modal__brand {
+   width: 467px;
+   padding: 66px 48px;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   background: #2a3647;
+}
+
+.contact-modal__logo {
+   width: 55px;
+   height: 67px;
+   margin-bottom: 12px;
+}
+
+.contact-modal__brand h2 {
+   margin: 0;
+   font-size: 61px;
+   font-weight: 700;
+   line-height: 1.2;
+   color: #ffffff;
+}
+
+.contact-modal__brand p {
+   margin: 8px 0 0;
+   font-size: 27px;
+   font-weight: 400;
+   color: #ffffff;
+}
+
+.contact-modal__divider {
+   width: 90px;
+   height: 3px;
+   margin-top: 8px;
+   border-radius: 2px;
+   background: #29abe2;
+}
+
+.contact-modal__body {
+   flex: 1;
+   padding: 48px 48px 48px 64px;
+   display: flex;
+   align-items: center;
+}
+
+.contact-modal__form {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   gap: 72px;
+}
+
+.contact-modal__avatar {
+   width: 120px;
+   height: 120px;
+   margin-bottom: 80px;
+   flex: 0 0 120px;
+   border-radius: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: 3px solid #ffffff;
+   background: #d1d1d1;
+   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.contact-modal__avatar img {
+   width: 64px;
+   height: 64px;
+}
+
+.contact-modal__avatar-initials {
+   display: none;
+   font-size: 47px;
+   font-weight: 500;
+   line-height: 1;
+   color: #ffffff;
+}
+
+.contact-modal__avatar--initials img {
+   display: none;
+}
+
+.contact-modal__avatar--initials .contact-modal__avatar-initials {
+   display: block;
+}
+
+.contact-modal__fields {
+   width: 422px;
+   display: flex;
+   flex-direction: column;
+   gap: 32px;
+}
+
+.contact-modal__field {
+   width: 100%;
+   height: 50px;
+   padding: 12px 18px;
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   border: 1px solid #d1d1d1;
+   border-radius: 10px;
+   box-sizing: border-box;
+}
+
+.contact-modal__field input {
+   width: 100%;
+   border: none;
+   outline: none;
+   font-size: 20px;
+   font-weight: 400;
+   color: #000000;
+}
+
+.contact-modal__field input::placeholder {
+   color: #d1d1d1;
+}
+
+.contact-modal__field img {
+   width: 24px;
+   height: 24px;
+   opacity: 0.6;
+}
+
+.contact-modal__field-symbol {
+   font-size: 22px;
+   line-height: 1;
+   color: #a8a8a8;
+}
+
+.contact-modal__input-field {
+   display: flex;
+   flex-direction: column;
+}
+
+.contact-modal__input-field--required {
+   gap: 4px;
+}
+
+.login__input--required {
+   display: block;
+   min-height: 15px;
+   line-height: 15px;
+   font-size: 12px;
+   font-weight: 400;
+   font-family: "Poppins";
+   margin-top: 0;
+   white-space: nowrap;
+   color: rgba(230, 0, 38, 1);
+   transition: opacity 100ms ease-in-out;
+}
+
+.contact-modal__field--error {
+   border: 1px solid rgba(230, 0, 38, 1);
+}
+
+.form-actions {
+   width: 100%;
+   display: flex;
+   flex-wrap: wrap;
+   align-items: stretch;
+   gap: 24px;
+}

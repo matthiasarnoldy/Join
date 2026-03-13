@@ -9,14 +9,32 @@ const SAVE_TASK_PAGE_BASE_PATH = SAVE_TASK_IS_IN_TEMPLATES
    ? "./"
    : "./templates/";
 
+/**
+ * Saves the task asset path.
+ *
+ * @param {string} relativePath - The relative path.
+ * @returns {string} The task asset path.
+ */
 function saveTaskAssetPath(relativePath) {
    return `${SAVE_TASK_ASSET_BASE_PATH}${relativePath}`;
 }
 
+
+/**
+ * Saves the task page path.
+ *
+ * @param {string} pageFile - The page file.
+ * @returns {string} The task page path.
+ */
 function saveTaskPagePath(pageFile) {
    return `${SAVE_TASK_PAGE_BASE_PATH}${pageFile}`;
 }
 
+
+/**
+ * Returns the selected contacts.
+ * @returns {Array<object>} The selected contacts list.
+ */
 function getSelectedContacts() {
    const selectedOptions = document.querySelectorAll(`.${ASSIGNED_SELECTED_CLASS}`);
    const contacts = [];
@@ -34,6 +52,11 @@ function getSelectedContacts() {
    return contacts;
 }
 
+
+/**
+ * Returns the subtasks list.
+ * @returns {Array<object>} The subtasks list list.
+ */
 function getSubtasksList() {
    const subtaskItems = document.querySelectorAll(".add-task__subtask-item");
    const subtasks = [];
@@ -51,11 +74,21 @@ function getSubtasksList() {
    return subtasks;
 }
 
+
+/**
+ * Returns the dialog status.
+ * @returns {string} The dialog status.
+ */
 function getDialogStatus() {
    const dialog = document.getElementById("addTaskDialog");
    return dialog?.dataset.taskStatus || "todo";
 }
 
+
+/**
+ * Returns the basic inputs.
+ * @returns {object} The basic inputs object.
+ */
 function getBasicInputs() {
    const title = document.querySelector("#addTaskTitle")?.value || "";
    const description = document.querySelector("#addTaskDescription")?.value || "";
@@ -75,6 +108,13 @@ function getBasicInputs() {
    return { title, description, date, priority, category };
 }
 
+
+/**
+ * Creates the task data.
+ *
+ * @param {string|number|null} [existingId=null] - The existing ID used for this operation. Defaults to null.
+ * @returns {object} The task data object.
+ */
 function createTaskData(existingId = null) {
    const status = getDialogStatus();
    const { title, description, date, priority, category } = getBasicInputs();
@@ -91,6 +131,13 @@ function createTaskData(existingId = null) {
    };
 }
 
+
+/**
+ * Adds the task to Firebase.
+ *
+ * @param {object} taskData - The task data object.
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ */
 async function addTaskToFirebase(taskData) {
    const response = await fetch(`${SAVE_TASK_BASE_URL}tasks.json`, {
       method: "POST",
@@ -102,6 +149,14 @@ async function addTaskToFirebase(taskData) {
    }
 }
 
+
+/**
+ * Updates the task in Firebase.
+ *
+ * @param {string} taskKey - The task key.
+ * @param {object} taskData - The task data object.
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ */
 async function updateTaskInFirebase(taskKey, taskData) {
    const response = await fetch(`${SAVE_TASK_BASE_URL}tasks/${taskKey}.json`, {
       method: "PUT",
@@ -113,6 +168,11 @@ async function updateTaskInFirebase(taskKey, taskData) {
    }
 }
 
+
+/**
+ * Returns the dialog edit context.
+ * @returns {object} The dialog edit context object.
+ */
 function getDialogEditContext() {
    const dialog = document.getElementById("addTaskDialog");
    if (!dialog) return { isEdit: false, taskId: null, taskKey: null };
@@ -125,6 +185,13 @@ function getDialogEditContext() {
    };
 }
 
+
+/**
+ * Finds the task key by ID for save.
+ *
+ * @param {string|number} taskId - The task ID used for this operation.
+ * @returns {Promise<string|null>} A promise that resolves to the task key by ID for save, or null when it is not available.
+ */
 async function findTaskKeyByIdForSave(taskId) {
    if (!taskId) return null;
    const response = await fetch(`${SAVE_TASK_BASE_URL}tasks.json`);
@@ -140,11 +207,23 @@ async function findTaskKeyByIdForSave(taskId) {
    return match ? match[0] : null;
 }
 
+
+/**
+ * Checks whether the dialog is in.
+ * @returns {boolean} Whether the dialog is in.
+ */
 function isInDialog() {
    const dialog = document.getElementById("addTaskDialog");
    return dialog && dialog.open;
 }
 
+
+/**
+ * Creates the success message.
+ *
+ * @param {boolean} [isEdit=false] - Whether edit mode is active. Defaults to false.
+ * @returns {HTMLDivElement} The success message element.
+ */
 function createSuccessMessage(isEdit = false) {
    const messageDiv = document.createElement("div");
    messageDiv.className = "task-success-message";
@@ -159,6 +238,13 @@ function createSuccessMessage(isEdit = false) {
    return messageDiv;
 }
 
+
+/**
+ * Shows the success message.
+ *
+ * @param {boolean} [isEdit=false] - Whether edit mode is active. Defaults to false.
+ * @returns {void} Nothing.
+ */
 function showSuccessMessage(isEdit = false) {
    const message = createSuccessMessage(isEdit);
    document.body.appendChild(message);
@@ -170,6 +256,11 @@ function showSuccessMessage(isEdit = false) {
    }, 1000);
 }
 
+
+/**
+ * Redirects the after save.
+ * @returns {void} Nothing.
+ */
 function redirectAfterSave() {
    if (isInDialog()) {
       window.location.reload();
@@ -178,6 +269,11 @@ function redirectAfterSave() {
    }
 }
 
+
+/**
+ * Saves the task to board.
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ */
 async function saveTaskToBoard() {
    const { isEdit, taskId, taskKey } = getDialogEditContext();
    const taskData = createTaskData(taskId);

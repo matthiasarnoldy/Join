@@ -6,6 +6,8 @@ const DEFAULT_BASE_URL =
    "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
 const GLOBAL_AUTH_USER_QUERY_KEY = "uid";
 
+document.documentElement.classList.add("app-loading");
+
 window.JOIN_CONFIG = window.JOIN_CONFIG || {};
 window.JOIN_CONFIG.BASE_URL = window.JOIN_CONFIG.BASE_URL || DEFAULT_BASE_URL;
 
@@ -41,6 +43,12 @@ const PROTECTED_PAGE_FILES = new Set([
 ]);
 const IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
 const PAGE_BASE_PATH = IS_IN_TEMPLATES ? "./" : "./templates/";
+/**
+ * Returns the page path.
+ *
+ * @param {string} pageFile - The page file.
+ * @returns {string} The page path.
+ */
 function getPagePath(pageFile) {
    return `${PAGE_BASE_PATH}${pageFile}`;
 }
@@ -58,9 +66,8 @@ const NAV_LINKS = [
 ];
 
 /**
- * Returns a singleton container used for toast notifications.
- *
- * @returns {HTMLElement}
+ * Returns the toast container.
+ * @returns {HTMLDivElement} The toast container element.
  */
 function getToastContainer() {
    let container = document.getElementById("app-toast-container");
@@ -75,11 +82,11 @@ function getToastContainer() {
 }
 
 /**
- * Shows a temporary toast notification.
+ * Shows the app toast.
  *
- * @param {string} message - Text content shown in the toast.
- * @param {{duration?: number, type?: "success" | "error"}} [options] - Toast options.
- * @returns {HTMLElement}
+ * @param {string} message - The message.
+ * @param {object} [options={}] - The options object. Defaults to {}.
+ * @returns {HTMLDivElement} The app toast element.
  */
 function showAppToast(message, options = {}) {
    const container = getToastContainer();
@@ -103,20 +110,18 @@ function showAppToast(message, options = {}) {
 window.showAppToast = showAppToast;
 
 /**
- * Returns all navigation elements that can carry the active class.
- *
- * @returns {NodeListOf<Element>}
+ * Returns the nav items.
+ * @returns {NodeListOf<Element>} The nav items collection.
  */
 function getNavItems() {
    return document.querySelectorAll(NAV_ITEM_SELECTOR);
 }
 
 /**
- * Removes the active navigation class from all quick links and applies it to
- * the given navigation element.
+ * Sets the active nav.
  *
- * @param {Element|null} clickedItem - The navigation element that should be marked as active.
- * @returns {void}
+ * @param {HTMLElement|null} clickedItem - The clicked item.
+ * @returns {void} Nothing.
  */
 function setActiveNav(clickedItem) {
    clearActiveNav();
@@ -124,18 +129,16 @@ function setActiveNav(clickedItem) {
 }
 
 /**
- * Clears the active navigation state from all quick links and legal links.
- *
- * @returns {void}
+ * Clears the active nav.
+ * @returns {void} Nothing.
  */
 function clearActiveNav() {
    getNavItems().forEach((item) => item.classList.remove(ACTIVE_CLASS));
 }
 
 /**
- * Reads all configured UI elements from the DOM and returns them by key.
- *
- * @returns {Record<string, HTMLElement|null>}
+ * Returns the UI elements.
+ * @returns {object} The UI elements object.
  */
 function getUiElements() {
    return Object.fromEntries(
@@ -144,11 +147,11 @@ function getUiElements() {
 }
 
 /**
- * Adds a click listener only when the given element exists.
+ * Binds the click.
  *
- * @param {HTMLElement|null} element - Target element for the click listener.
- * @param {(event: MouseEvent) => void} handler - Click callback function.
- * @returns {void}
+ * @param {HTMLElement|null} element - The element.
+ * @param {*} handler - The handler.
+ * @returns {void} Nothing.
  */
 function bindClick(element, handler) {
    if (!element) return;
@@ -156,12 +159,12 @@ function bindClick(element, handler) {
 }
 
 /**
- * Applies active-state behavior and redirects to a page for one link element.
+ * Binds the nav link.
  *
- * @param {HTMLElement|null} element - Link element to bind.
- * @param {string} targetPath - Relative page path to navigate to.
- * @param {Element|null} activeItem - Element to mark as active, or null to clear active state.
- * @returns {void}
+ * @param {HTMLElement|null} element - The element.
+ * @param {string} targetPath - The target path.
+ * @param {HTMLElement|null} activeItem - The active item.
+ * @returns {void} Nothing.
  */
 function bindNavLink(element, targetPath, activeItem) {
    bindClick(element, () => {
@@ -172,10 +175,10 @@ function bindNavLink(element, targetPath, activeItem) {
 }
 
 /**
- * Binds all configured navigation links from the mapping table.
+ * Binds the navigation.
  *
- * @param {Record<string, HTMLElement|null>} ui - Lookup object containing page elements.
- * @returns {void}
+ * @param {object} ui - The UI object.
+ * @returns {void} Nothing.
  */
 function bindNavigation(ui) {
    NAV_LINKS.forEach(([elementKey, path, activeKey]) =>
@@ -184,10 +187,10 @@ function bindNavigation(ui) {
 }
 
 /**
- * Toggles the user dropdown state when initials in the header are clicked.
+ * Binds the login toggle.
  *
- * @param {HTMLElement|null} loginInitials - Header element with user initials.
- * @returns {void}
+ * @param {*} loginInitials - The login initials.
+ * @returns {void} Nothing.
  */
 function bindLoginToggle(loginInitials) {
    bindClick(loginInitials, () => {
@@ -199,11 +202,11 @@ function bindLoginToggle(loginInitials) {
 }
 
 /**
- * Closes the user dropdown when clicking outside of menu and initials.
+ * Closes the dropdown on outside click.
  *
- * @param {MouseEvent} event - Native click event from the window listener.
- * @param {HTMLElement|null} loginInitials - Header element with user initials.
- * @returns {void}
+ * @param {Event} event - The event object that triggered the handler.
+ * @param {*} loginInitials - The login initials.
+ * @returns {void} Nothing.
  */
 function closeDropdownOnOutsideClick(event, loginInitials) {
    const dropdownMenu = document.getElementById("dropdownMenu");
@@ -215,10 +218,10 @@ function closeDropdownOnOutsideClick(event, loginInitials) {
 }
 
 /**
- * Attaches window click logic that closes the dropdown for outside clicks.
+ * Binds the window dropdown close.
  *
- * @param {HTMLElement|null} loginInitials - Header element with user initials.
- * @returns {void}
+ * @param {*} loginInitials - The login initials.
+ * @returns {void} Nothing.
  */
 function bindWindowDropdownClose(loginInitials) {
    window.addEventListener("click", (event) =>
@@ -227,19 +230,18 @@ function bindWindowDropdownClose(loginInitials) {
 }
 
 /**
- * Binds back-navigation behavior to the help arrow.
+ * Binds the back arrow.
  *
- * @param {HTMLElement|null} arrowBack - Back-arrow element used on help pages.
- * @returns {void}
+ * @param {HTMLElement|null} arrowBack - The arrow back.
+ * @returns {void} Nothing.
  */
 function bindBackArrow(arrowBack) {
    bindClick(arrowBack, () => window.history.back());
 }
 
 /**
- * Redirects to the board when clicking any summary card in the document.
- *
- * @returns {void}
+ * Binds the summary card redirect.
+ * @returns {void} Nothing.
  */
 function bindSummaryCardRedirect() {
    document.addEventListener("click", (event) => {
@@ -249,19 +251,39 @@ function bindSummaryCardRedirect() {
    });
 }
 
+
+/**
+ * Returns the auth user ID from URL.
+ * @returns {string} The auth user ID from URL.
+ */
 function getAuthUserIdFromUrl() {
    const params = new URLSearchParams(window.location.search);
    return String(params.get(GLOBAL_AUTH_USER_QUERY_KEY) || "").trim();
 }
 
+
+/**
+ * Returns the current page file name.
+ * @returns {string} The current page file name.
+ */
 function getCurrentPageFileName() {
    return String(window.location.pathname.split("/").pop() || "").toLowerCase();
 }
 
+
+/**
+ * Checks whether the page is protected.
+ * @returns {boolean} Whether the page is protected.
+ */
 function isProtectedPage() {
    return PROTECTED_PAGE_FILES.has(getCurrentPageFileName());
 }
 
+
+/**
+ * Enforces the auth guard.
+ * @returns {boolean} Whether the auth guard.
+ */
 function enforceAuthGuard() {
    if (!isProtectedPage()) return false;
    if (getAuthUserIdFromUrl()) return false;
@@ -269,6 +291,13 @@ function enforceAuthGuard() {
    return true;
 }
 
+
+/**
+ * Builds the auth user query.
+ *
+ * @param {string} path - The path.
+ * @returns {string} The auth user query.
+ */
 function withAuthUserQuery(path) {
    const userId = getAuthUserIdFromUrl();
    if (!userId) return path;
@@ -276,14 +305,29 @@ function withAuthUserQuery(path) {
    return `${path}${separator}${GLOBAL_AUTH_USER_QUERY_KEY}=${encodeURIComponent(userId)}`;
 }
 
+
+/**
+ * Returns the login entry path.
+ * @returns {string} The login entry path.
+ */
 function getLoginEntryPath() {
    return IS_IN_TEMPLATES ? "../index.html" : "./index.html";
 }
 
+
+/**
+ * Returns the signup entry path.
+ * @returns {string} The signup entry path.
+ */
 function getSignupEntryPath() {
    return IS_IN_TEMPLATES ? "./signup.html" : "./templates/signup.html";
 }
 
+
+/**
+ * Binds the auth entry buttons.
+ * @returns {void} Nothing.
+ */
 function bindAuthEntryButtons() {
    bindClick(document.getElementById("signup-button"), () => {
       location.href = getSignupEntryPath();
@@ -293,12 +337,26 @@ function bindAuthEntryButtons() {
    });
 }
 
+
+/**
+ * Binds the logout button.
+ *
+ * @param {HTMLElement|null} logoutButton - The logout button.
+ * @returns {void} Nothing.
+ */
 function bindLogoutButton(logoutButton) {
    bindClick(logoutButton, () => {
       location.href = getLoginEntryPath();
    });
 }
 
+
+/**
+ * Fetches the auth user from database.
+ *
+ * @param {string|number} userId - The user ID used for this operation.
+ * @returns {Promise<object>} A promise that resolves to the auth user from database object.
+ */
 async function fetchAuthUserFromDatabase(userId) {
    const response = await fetch(
       `${window.JOIN_CONFIG.BASE_URL}users/${encodeURIComponent(userId)}.json`
@@ -307,6 +365,13 @@ async function fetchAuthUserFromDatabase(userId) {
    return await response.json();
 }
 
+
+/**
+ * Builds the initial from name.
+ *
+ * @param {string} name - The name.
+ * @returns {string} The initial from name.
+ */
 function buildInitialFromName(name) {
    const trimmedName = String(name || "").trim();
    if (!trimmedName) return "";
@@ -320,12 +385,24 @@ function buildInitialFromName(name) {
    return `${firstInitial}${lastInitial}`;
 }
 
+
+/**
+ * Resolves the header initial.
+ *
+ * @param {object} user - The user object.
+ * @returns {string} The header initial.
+ */
 function resolveHeaderInitial(user) {
    const storedInitial = String(user?.initial || "").trim().toUpperCase();
    if (storedInitial) return storedInitial;
    return buildInitialFromName(user?.name);
 }
 
+
+/**
+ * Applies the header initials.
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ */
 async function applyHeaderInitials() {
    const initialsElement = document.getElementById("login__initials");
    if (!initialsElement) return;
@@ -341,22 +418,24 @@ async function applyHeaderInitials() {
 }
 
 /**
- * Initializes global UI behavior such as navigation clicks, dropdown handling,
- * back navigation, and summary-card redirect logic.
- *
- * @returns {void}
+ * Initializes the global UI.
+ * @returns {void} Nothing.
  */
 function initGlobalUi() {
-   if (enforceAuthGuard()) return;
-   const ui = getUiElements();
-   applyHeaderInitials();
-   bindNavigation(ui);
-   bindLoginToggle(ui.loginInitials);
-   bindWindowDropdownClose(ui.loginInitials);
-   bindBackArrow(ui.arrowBack);
-   bindSummaryCardRedirect();
-   bindAuthEntryButtons();
-   bindLogoutButton(ui.dropdownLog);
+   try {
+      if (enforceAuthGuard()) return;
+      const ui = getUiElements();
+      applyHeaderInitials();
+      bindNavigation(ui);
+      bindLoginToggle(ui.loginInitials);
+      bindWindowDropdownClose(ui.loginInitials);
+      bindBackArrow(ui.arrowBack);
+      bindSummaryCardRedirect();
+      bindAuthEntryButtons();
+      bindLogoutButton(ui.dropdownLog);
+   } finally {
+      document.documentElement.classList.remove("app-loading");
+   }
 }
 
 if (document.readyState === "loading") {
