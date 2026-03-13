@@ -1,7 +1,7 @@
 .navBar {
    color: #fff;
    position: fixed;
-   z-index: 5;
+   z-index: 7;
    height: 100vh;
    padding-bottom: 64px;
    display: flex;

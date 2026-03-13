@@ -214,7 +214,6 @@
    border: none;
    background-size: 24px 24px;
    cursor: pointer;
-   z-index: 2;
 }
 
 .date-picker__panel {

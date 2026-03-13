@@ -30,7 +30,7 @@
    .headline_tasks {
       position: fixed;
       top: 0;
-      z-index: 1;
+      z-index: 5;
       width: 100%;
       padding: 144px 32px 32px 32px;
       background-color: #f6f7f8;
