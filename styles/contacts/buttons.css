@@ -1,0 +1,236 @@
+.add-task-btn {
+   font-size: 21px;
+   font-weight: 700;
+   color: #ffffff;
+   width: 100%;
+   padding: 12px 16px;
+   margin-top: 22px;
+   display: inline-flex;
+   justify-content: center;
+   align-items: center;
+   gap: 16px;
+   border: none;
+   border-radius: 10px;
+   background-color: #2a3647;
+   cursor: pointer;
+   white-space: nowrap;
+   flex-shrink: 0;
+}
+
+.add-task-btn:hover {
+   background-color: #29abe2;
+   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   transition: all 100ms ease-in-out;
+}
+
+.add-task-btn:active {
+   background-color: #091931;
+   transition: all 100ms ease-in-out;
+}
+
+.add-task-btn__icon,
+.btn-add-contact__icon {
+   width: 32px;
+   height: 32px;
+   display: block;
+}
+
+#btn-contact-detail-menu {
+   font-family: "Inter";
+   color: white;
+   background: var(--primary);
+   border: 1px solid var(--primary);
+   cursor: pointer;
+}
+
+#btn-contact-detail-menu[hidden] {
+   display: none !important;
+}
+
+.contact-detail-menu {
+   position: fixed;
+   right: 24px;
+   bottom: 164px;
+   z-index: 9;
+   width: 116px;
+   padding: 10px;
+   display: none;
+   flex-direction: column;
+   gap: 8px;
+   border-radius: 20px 20px 0 20px;
+   background: #ffffff;
+   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.contact-detail-menu__item {
+   font-size: 16px;
+   font-weight: 400;
+   font-family: "Inter";
+   color: #2a3647;
+   width: 100%;
+   padding: 8px;
+   display: inline-flex;
+   align-items: center;
+   gap: 8px;
+   border: none;
+   background: transparent;
+   cursor: pointer;
+}
+
+.contact-detail-menu__icon {
+   width: 18px;
+   height: 18px;
+   display: block;
+}
+
+.detail-actions {
+   margin-top: 4px;
+   display: inline-flex;
+   align-items: center;
+   gap: 24px;
+}
+
+.detail-action {
+   font-size: 16px;
+   font-weight: 400;
+   font-family: "Inter";
+   line-height: 1.2;
+   color: #2a3647;
+   padding: 0;
+   display: inline-flex;
+   align-items: center;
+   gap: 8px;
+   border: none;
+   background: transparent;
+   cursor: pointer;
+}
+
+.detail-action:hover {
+   color: #29abe2;
+}
+
+.detail-action__icon {
+   width: 18px;
+   height: 18px;
+   display: block;
+}
+
+.detail-action__icon--hover {
+   display: none;
+}
+
+.detail-action:hover .detail-action__icon--default {
+   display: none;
+}
+
+.detail-action:hover .detail-action__icon--hover {
+   display: block;
+}
+
+.delete-link {
+   color: var(--highlight);
+   padding: 0;
+   border: none;
+   background: none;
+   cursor: pointer;
+}
+
+.contact-modal__close {
+   position: absolute;
+   top: 48px;
+   right: 48px;
+   width: 32px;
+   height: 32px;
+   z-index: 2;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   border: none;
+   border-radius: 50%;
+   background: transparent;
+   cursor: pointer;
+   transition: background 100ms ease-in-out;
+}
+
+.contact-modal__close:hover {
+   background: rgba(255, 255, 255, 0.12);
+}
+
+.contact-modal__close img {
+   width: 24px;
+   height: 24px;
+   filter: brightness(0) invert(1);
+}
+
+#contact-form-cancel,
+#contact-form-submit {
+   height: 56px;
+   min-width: 0;
+   padding: 16px 24px;
+   display: inline-flex;
+   flex: 1 1 180px;
+   align-items: center;
+   justify-content: center;
+   gap: 4px;
+   border-radius: 10px;
+   font-family: "Inter";
+   font-size: 21px;
+   font-weight: 700;
+   white-space: nowrap;
+   cursor: pointer;
+   transition: all 100ms ease-in-out;
+}
+
+#contact-form-cancel {
+   color: #2a3647;
+   border: 1px solid #2a3647;
+   background: #ffffff;
+}
+
+#contact-form-cancel::after {
+   content: "✕";
+   font-size: 20px;
+   line-height: 1;
+}
+
+#contact-form-cancel[data-mode="delete"]::after {
+   content: none;
+}
+
+#contact-form-cancel:hover {
+   color: #29abe2;
+   border-color: #29abe2;
+   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   transition: all 100ms ease-in-out;
+}
+
+#contact-form-cancel:active {
+   color: #091931;
+   border-color: #091931;
+   transition: all 100ms ease-in-out;
+}
+
+#contact-form-submit {
+   color: #ffffff;
+   border: 1px solid #2a3647;
+   background: #2a3647;
+}
+
+#contact-form-submit::after {
+   content: "✓";
+   font-size: 22px;
+   line-height: 1;
+}
+
+#contact-form-submit:hover {
+   background-color: #29abe2;
+   border-color: #29abe2;
+   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+   transition: all 100ms ease-in-out;
+}
+
+#contact-form-submit:active {
+   background-color: #091931;
+   border-color: #091931;
+   transition: all 100ms ease-in-out;
+}

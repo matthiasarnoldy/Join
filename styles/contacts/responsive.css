@@ -1,0 +1,205 @@
+@media (max-width: 1280px) {
+   .contacts-detail__empty-headline {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
+   }
+
+   .horizontal-Line-contacts {
+      display: block;
+   }
+
+   .vertical-line-contacts {
+      display: none;
+   }
+}
+
+@media (max-width: 1080px) {
+   #contacts-list-content {
+      padding: 16px 16px 100px;
+   }
+
+   .contacts-detail__empty-headline {
+      padding: 32px 0 24px 0;
+      justify-content: center;
+   }
+}
+
+@media (max-width: 1050px) {
+   .overlay-content {
+      min-height: auto;
+      flex-direction: column;
+   }
+
+   .contact-modal__brand {
+      width: 100%;
+      padding: 40px 32px;
+   }
+
+   .contact-modal__body {
+      padding: 32px;
+   }
+
+   .contact-modal__form {
+      flex-direction: column;
+      gap: 24px;
+   }
+
+   .contact-modal__fields {
+      width: 100%;
+      max-width: 422px;
+   }
+}
+
+@media (max-width: 820px) {
+   .form-actions {
+      width: fit-content;
+      max-width: 100%;
+      margin: 8px auto 0;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 8px;
+   }
+
+   #contact-form-cancel,
+   #contact-form-submit {
+      height: 51px;
+      padding: 13px 20px;
+      flex: 0 0 auto;
+   }
+
+   #contact-form-submit::after {
+      content: none;
+   }
+
+   #btn-add-contact,
+   #btn-contact-detail-menu {
+      position: fixed;
+      right: 24px;
+      bottom: 96px;
+      z-index: 8;
+      width: 56px;
+      height: 56px;
+      margin: 0;
+      padding: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid var(--primary);
+      border-radius: 46px;
+      background: var(--primary);
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+   }
+
+   #btn-add-contact:hover {
+      background-color: #29abe2;
+      border-color: #29abe2;
+      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+      transition: all 100ms ease-in-out;
+   }
+
+   #btn-add-contact:active {
+      background-color: #091931;
+      border-color: #091931;
+      transition: all 100ms ease-in-out;
+   }
+
+   #btn-add-contact span {
+      display: none;
+   }
+
+   .btn-add-contact__icon {
+      width: 32px;
+      height: 32px;
+   }
+
+   .contact-detail-menu {
+      display: flex;
+   }
+
+   .contact-detail-menu.d-none {
+      display: none;
+   }
+
+   .contacts-list__header {
+      padding: 0;
+   }
+
+   .contacts-detail__empty-headline {
+      padding-top: 48px;
+   }
+
+   .contacts-detail {
+      padding: 0 16px;
+      display: none;
+   }
+
+   .detail-view {
+      max-width: none;
+      padding-top: 20px;
+   }
+
+   .detail-actions {
+      display: none;
+   }
+
+   .contacts-list {
+      width: 100%;
+      flex: 1;
+   }
+
+   #contacts-list-content {
+      width: 100%;
+      flex: 1 1 auto;
+   }
+}
+
+@media (max-width: 360px) {
+   .detail-header {
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 28px;
+   }
+
+   .initials-big {
+      width: 88px;
+      height: 88px;
+      font-size: 34px;
+   }
+
+   #detail-name {
+      font-size: 28px;
+      line-height: 1.05;
+   }
+
+   .detail-actions {
+      flex-wrap: wrap;
+      gap: 14px;
+   }
+
+   .detail-action {
+      font-size: 14px;
+   }
+}
+
+@media (max-width: 320px) {
+   .detail-header {
+      gap: 12px;
+   }
+
+   .initials-big {
+      width: 76px;
+      height: 76px;
+      font-size: 30px;
+   }
+
+   #detail-name {
+      font-size: 22px;
+      line-height: 1.05;
+   }
+
+   .detail-actions {
+      gap: 10px;
+   }
+}

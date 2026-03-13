@@ -370,9 +370,19 @@ function showDetail(contact) {
 function setContactFormMode(isEditMode) {
    const title = document.getElementById("contact-form-title");
    const submitButton = document.getElementById("contact-form-submit");
+   const secondaryButton = document.getElementById("contact-form-cancel");
+   const isMobile = window.matchMedia("(max-width: 820px)").matches;
    if (title) title.innerText = isEditMode ? "Edit Contact" : "Add Contact";
    if (submitButton) {
-      submitButton.innerText = isEditMode ? "Save contact" : "Create contact";
+      submitButton.innerText = isEditMode
+         ? isMobile
+            ? "Save"
+            : "Save contact"
+         : "Create contact";
+   }
+   if (secondaryButton) {
+      secondaryButton.innerText = isEditMode ? "Delete" : "Cancel";
+      secondaryButton.dataset.mode = isEditMode ? "delete" : "cancel";
    }
 }
 
@@ -414,6 +424,18 @@ function toggleContactDetailMenu() {
    const menu = document.getElementById("contact-detail-menu");
    if (!menu) return;
    menu.classList.toggle("d-none");
+}
+
+
+async function handleContactFormSecondaryAction() {
+   if (editingContactId !== null) {
+      await deleteContact();
+      return;
+   }
+
+   if (typeof window.closeOverlay === "function") {
+      window.closeOverlay();
+   }
 }
 
 
@@ -479,11 +501,16 @@ async function handleCreateContact(e) {
 async function deleteContact() {
    if (!selectedContactId) return;
    try {
+      const overlay = document.getElementById("overlay");
+      const isOverlayOpen = overlay && !overlay.classList.contains("d-none");
       closeContactDetailMenu();
       await deleteContactFromFirebase(selectedContactId);
       await loadContactsFromFirebase();
       selectedContactId = null;
       document.getElementById("detail-view").classList.add("d-none");
+      if (isOverlayOpen && typeof window.closeOverlay === "function") {
+         window.closeOverlay();
+      }
       renderContacts();
       switchView();
       showContactToast("Contact deleted");
@@ -498,6 +525,7 @@ function bindEvents() {
    const addContactButton = document.getElementById("btn-add-contact");
    const editButton = document.getElementById("btn-edit");
    const deleteButton = document.getElementById("btn-delete");
+   const contactFormSecondaryButton = document.getElementById("contact-form-cancel");
    const detailMenuButton = document.getElementById("btn-contact-detail-menu");
    const detailMenuEdit = document.getElementById("btn-contact-detail-edit");
    const detailMenuDelete = document.getElementById("btn-contact-detail-delete");
@@ -521,6 +549,7 @@ function bindEvents() {
    document
       .getElementById("contact-form")
       .addEventListener("submit", handleCreateContact);
+   contactFormSecondaryButton?.addEventListener("click", handleContactFormSecondaryAction);
    editButton?.addEventListener("click", handleEditContact);
    deleteButton?.addEventListener("click", deleteContact);
 

@@ -20,7 +20,10 @@
       <script src="../script.js"></script>
 
       <link rel="stylesheet" href="../styles/standard.css" />
-      <link rel="stylesheet" href="../styles/contacts.css" />
+      <link rel="stylesheet" href="../styles/contacts/layout.css" />
+      <link rel="stylesheet" href="../styles/contacts/buttons.css" />
+      <link rel="stylesheet" href="../styles/contacts/modal.css" />
+      <link rel="stylesheet" href="../styles/contacts/responsive.css" />
       <link rel="stylesheet" href="../style.css" />
    </head>
    <body>
@@ -258,6 +261,14 @@
                   <div
                      class="overlay-content"
                      onclick="event.stopPropagation()">
+                     <button
+                        type="button"
+                        class="contact-modal__close"
+                        onclick="closeOverlay()"
+                        aria-label="Close contact dialog">
+                        <img src="../assets/icons/desktop/close.svg" alt="" />
+                     </button>
+
                      <div class="contact-modal__brand">
                         <img
                            src="../assets/icons/desktop/logo.svg"
@@ -267,16 +278,7 @@
                         <p>Tasks are better with a team!</p>
                         <span class="contact-modal__divider"></span>
                      </div>
-
                      <div class="contact-modal__body">
-                        <button
-                           type="button"
-                           class="contact-modal__close"
-                           onclick="closeOverlay()"
-                           aria-label="Close add contact dialog">
-                           <img src="../assets/icons/desktop/close.svg" alt="" />
-                        </button>
-
                         <form id="contact-form" class="contact-modal__form">
                            <div class="contact-modal__avatar" aria-hidden="true">
                               <img
@@ -321,8 +323,7 @@
                               <div class="form-actions">
                                  <button
                                     type="button"
-                                    id="contact-form-cancel"
-                                    onclick="closeOverlay()">
+                                    id="contact-form-cancel">
                                     Cancel
                                  </button>
                                  <button
