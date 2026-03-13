@@ -1,0 +1,156 @@
+@media (max-width: 1040px) {
+    .main-content--signup-logo {
+        top: 48px;
+        left: 54px;
+    }
+
+    .login__signup {
+        padding: 80px 54px;
+    }
+
+    @keyframes splash__logo--animation {
+        0% {
+            top: 50%;
+            left: 50%;
+            width: 274px;
+            transform: translate(-50%, -50%);
+        }
+
+        100% {
+            top: 48px;
+            left: 54px;
+            width: 100px;
+            transform: translate(0, 0);
+        }
+    }
+
+    .login__window {
+        padding: 48px 64px;
+    }
+
+    .signup__arrowBack {
+        left: -104px;
+    }
+}
+
+@media (max-height: 760px) {
+    .main-content,
+    .main-content--signup {
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-content main {
+        height: auto;
+        min-height: 0;
+        flex: 1;
+        align-items: flex-start;
+        padding: 124px 0 120px;
+    }
+
+    .main-content--signup main {
+        height: auto;
+        min-height: 0;
+        flex: 1;
+        align-items: flex-start;
+        padding-top: 124px;
+        padding-bottom: 24px;
+    }
+
+    .login__signup {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        padding: 0 16px;
+        justify-content: center;
+    }
+
+    .login__legalInformation--area {
+        position: static;
+        padding: 0 16px 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .login__signup {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        padding: 80px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 35px;
+    }
+
+    .login__header {
+        font-size: 40px;
+    }
+
+    .main-content--signup-logo {
+        top: 28px;
+        left: 16px;
+        width: 64px;
+    }
+
+    @keyframes splash__logo--animation {
+        0% {
+            top: 50%;
+            left: 50%;
+            width: 274px;
+            transform: translate(-50%, -50%);
+        }
+
+        100% {
+            top: 28px;
+            left: 16px;
+            width: 64px;
+            transform: translate(0, 0);
+        }
+    }
+
+    .login__window {
+        width: calc(100% - 32px);
+        padding: 48px 16px;
+        gap: 28px;
+    }
+
+    .login__formular {
+        width: 100%;
+        gap: 28px;
+    }
+
+    .login__input-field,
+    .login__input {
+        width: 100%;
+    }
+
+    .login__buttonArea {
+        width: 70%;
+        flex-direction: column;
+    }
+
+    .signup__arrowBack {
+        left: -80px;
+    }
+
+    .login__legalInformation--area {
+        bottom: 32px;
+    }
+
+    .login__input--required {
+        font-size: 10px;
+    }
+
+    .signup-success-message {
+        font-size: 16px;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 380px) {
+    .signup__arrowBack {
+        left: -54px;
+    }
+}
