@@ -37,7 +37,9 @@
       <link rel="stylesheet" href="../styles/components/header.css" />
       <link rel="stylesheet" href="../styles/components/dropdown.css" />
       <link rel="stylesheet" href="../styles/components/app-shell.css" />
-      <link rel="stylesheet" href="../styles/components/app-shell-responsive.css" />
+      <link
+         rel="stylesheet"
+         href="../styles/components/app-shell-responsive.css" />
       <link rel="stylesheet" href="../styles/components/buttons.css" />
       <link rel="stylesheet" href="../styles/add-task/layout.css" />
       <link rel="stylesheet" href="../styles/add-task/controls.css" />
@@ -210,7 +212,9 @@
                      </div>
                      <div class="board-task-directory-scroll">
                         <div class="board-task-directory" id="TodoTask">
-                           <div class="board-task-placeholder">No tasks To do</div>
+                           <div class="board-task-placeholder">
+                              No tasks To do
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -229,7 +233,9 @@
                      </div>
                      <div class="board-task-directory-scroll">
                         <div class="board-task-directory" id="InProgressTask">
-                           <div class="board-task-placeholder">No tasks In progress</div>
+                           <div class="board-task-placeholder">
+                              No tasks In progress
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -248,7 +254,9 @@
                      </div>
                      <div class="board-task-directory-scroll">
                         <div class="board-task-directory" id="AwaitTask">
-                           <div class="board-task-placeholder">No tasks Await feedback</div>
+                           <div class="board-task-placeholder">
+                              No tasks Await feedback
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -261,7 +269,9 @@
                      </div>
                      <div class="board-task-directory-scroll">
                         <div class="board-task-directory" id="DoneTask">
-                           <div class="board-task-placeholder">No tasks Done</div>
+                           <div class="board-task-placeholder">
+                              No tasks Done
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -273,7 +283,7 @@
                <section class="headline--board">
                   <div class="headline__board">
                      <h1 id="addTaskDialogTitle" class="headline__name">
-                        Add Tasks
+                        Add Task
                      </h1>
                      <button
                         class="add-task__close-button"
@@ -549,8 +559,7 @@
                               <ul
                                  class="add-task__select-menu add-task__select-menu--assigned"
                                  id="addTaskAssignedMenu"
-                                 role="listbox">
-                              </ul>
+                                 role="listbox"></ul>
                            </div>
                         </section>
                         <section class="add-task__selection-group">
@@ -705,7 +714,9 @@
                         </button>
                         <button
                            class="add-task__button add-task__button--create">
-                           <span class="add-task__button-text">Create Task</span>
+                           <span class="add-task__button-text"
+                              >Create Task</span
+                           >
                            <svg
                               width="24"
                               height="24"
@@ -750,11 +761,15 @@
 
                <section class="task-detail__content">
                   <h2 id="taskDetailTitle" class="task-detail__title"></h2>
-                  <p id="taskDetailDescription" class="task-detail__description"></p>
+                  <p
+                     id="taskDetailDescription"
+                     class="task-detail__description"></p>
 
                   <div class="task-detail__field">
                      <span class="task-detail__field-label">Due date:</span>
-                     <span id="taskDetailDate" class="task-detail__field-value"></span>
+                     <span
+                        id="taskDetailDate"
+                        class="task-detail__field-value"></span>
                   </div>
 
                   <div class="task-detail__field">
@@ -767,12 +782,16 @@
 
                   <div class="task-detail__group">
                      <h3 class="task-detail__group-title">Assigned To:</h3>
-                     <ul id="taskDetailAssignedList" class="task-detail__assigned-list"></ul>
+                     <ul
+                        id="taskDetailAssignedList"
+                        class="task-detail__assigned-list"></ul>
                   </div>
 
                   <div class="task-detail__group">
                      <h3 class="task-detail__group-title">Subtasks</h3>
-                     <ul id="taskDetailSubtasksList" class="task-detail__subtasks-list"></ul>
+                     <ul
+                        id="taskDetailSubtasksList"
+                        class="task-detail__subtasks-list"></ul>
                   </div>
                </section>
 
@@ -790,5 +809,3 @@
       </section>
    </body>
 </html>
-
-
