@@ -1,0 +1,62 @@
+html.board-dialog-open,
+body.board-dialog-open {
+   overflow: hidden;
+}
+
+.board-actions {
+   width: 100%;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   flex-direction: row;
+}
+
+.headline_board {
+   width: 100%;
+   padding: 206px 64px 48px 108px;
+   display: flex;
+   align-items: center;
+   flex-direction: column;
+   gap: 16px;
+}
+
+.board-task-grid {
+   width: 100%;
+   max-width: calc(1440px - 232px);
+   padding: 16px 64px 16px 108px;
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-start;
+   gap: 26px;
+}
+
+.board-task-column {
+   width: auto;
+   display: flex;
+   flex: 1 1 0;
+   flex-direction: column;
+   gap: 16px;
+}
+
+.board-task-directory {
+   display: flex;
+   align-items: center;
+   flex-direction: column;
+   gap: 16px;
+}
+
+.board-task-placeholder {
+   font-size: 16px;
+   color: #2a3647;
+   width: 100%;
+   height: 48px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex: 0 1 1;
+   gap: 10px;
+   border: 1px dashed #a8a8a8;
+   border-radius: 10px;
+   box-shadow: 0 0 4px 0 #00000029;
+   background: #e7e7e7;
+}

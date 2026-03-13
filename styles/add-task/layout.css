@@ -1,0 +1,147 @@
+.add-task__form-information {
+   padding: 0 136px 0 108px;
+   display: flex;
+   flex-direction: column;
+   min-height: calc(100vh - 320px);
+   gap: 0;
+}
+
+.mainArea,
+.main {
+   overflow: hidden;
+}
+
+.add-task__overview {
+   display: flex;
+   justify-content: space-between;
+   flex: 1;
+   min-height: 0;
+}
+
+.headline_tasks {
+   padding: 206px 64px 48px 108px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   gap: 16px;
+}
+
+.add-task__information-group {
+   width: 43.5%;
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.add-task__information-group--selection {
+   gap: 24px;
+}
+
+.add-task__selection-group {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.add-task__input-group {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.add-task__label {
+   font-size: 20px;
+   font-weight: 400;
+   color: #2b3647;
+   display: flex;
+}
+
+.add-task__label--required {
+   color: #ff8190;
+}
+
+.add-task__dividing-line {
+   height: 424px;
+}
+
+.add-task__input-group--required:last-child {
+   gap: 4px;
+}
+
+.add-task__footer {
+   position: static;
+   padding-bottom: 16px;
+   margin-top: auto;
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-end;
+   background-color: transparent;
+   pointer-events: none;
+}
+
+.add-task__footer::before {
+   position: absolute;
+   inset: 0;
+   backdrop-filter: opacity(0.1);
+   background: transparent;
+   content: "";
+   pointer-events: none;
+}
+
+.add-task__footer > * {
+   position: relative;
+   z-index: 1;
+   pointer-events: auto;
+}
+
+.add-task__required-hint-mobile {
+   display: none;
+}
+
+.add-task__required-symbol {
+   font-size: 20px;
+   color: #ff8190;
+}
+
+.add-task__required-text {
+   font-size: 16px;
+}
+
+.add-task__form-buttons {
+   display: flex;
+   gap: 16px;
+}
+
+.task-success-message {
+   font-size: 20px;
+   font-weight: 400;
+   text-align: center;
+   color: #fff;
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   z-index: 10000;
+   padding: 25px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   gap: 16px;
+   border-radius: 20px;
+   box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+   background: #2a3647;
+   opacity: 0;
+   transform: translate(-50%, -50%) translateY(100vh);
+   transition: all 800ms ease-in-out;
+}
+
+.task-success-message--visible {
+   opacity: 1;
+   transform: translate(-50%, -50%);
+}
+
+.task-success-message__icon {
+   width: 24px;
+   height: 24px;
+   flex-shrink: 0;
+   filter: brightness(0) invert(1);
+}
