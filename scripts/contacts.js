@@ -1,5 +1,6 @@
 let selectedContactId = null;
 let editingContactId = null;
+let editingContactKey = null;
 let contactsState = [];
 
 const CONTACTS_BASE_URL =
@@ -168,8 +169,8 @@ async function deleteContactFromFirebase(contactId) {
 }
 
 
-async function updateContactInFirebase(contactId, contactData) {
-   const contactKey = await findContactKeyById(contactId);
+async function updateContactInFirebase(contactId, contactData, contactKeyOverride = null) {
+   const contactKey = contactKeyOverride || (await findContactKeyById(contactId));
    if (!contactKey) throw new Error(`Contact key not found for id ${contactId}`);
    const response = await fetch(
       `${CONTACTS_BASE_URL}contacts/${contactKey}.json`,
@@ -409,6 +410,7 @@ function setContactFormAvatar(contact = null) {
 
 function resetContactFormMode() {
    editingContactId = null;
+   editingContactKey = null;
    setContactFormMode(false);
    setContactFormAvatar(null);
 }
@@ -422,6 +424,7 @@ function handleEditContact() {
    if (!contact) return;
 
    editingContactId = contact.id;
+   editingContactKey = contact._firebaseKey || null;
    setContactFormMode(true);
 
    document.getElementById("add-name").value = contact.name || "";
@@ -469,7 +472,7 @@ async function handleCreateContact(e) {
 
    const invalidIds = [];
    if (!name) invalidIds.push("add-name");
-   if (!email || !email.includes("@") || !email.includes(".")) invalidIds.push("add-email");
+   if (!email) invalidIds.push("add-email");
    if (invalidIds.length > 0) {
       showContactFormError("These fields are required", invalidIds);
       return;
@@ -480,6 +483,26 @@ async function handleCreateContact(e) {
          const selectedContact = contactsState.find(
             (c) => String(c.id) === String(editingContactId),
          );
+
+         const originalName = (selectedContact?.name || "").trim();
+         const originalEmail = (selectedContact?.email || "").trim();
+         const originalPhone = (selectedContact?.phone || "").trim();
+         const hasChanges =
+            name !== originalName ||
+            email !== originalEmail ||
+            phone !== originalPhone;
+
+         if (!hasChanges) {
+            selectedContactId = editingContactId;
+            resetContactFormMode();
+            closeOverlay();
+            renderContacts();
+            if (selectedContact) showDetail(selectedContact);
+            switchView();
+            showContactToast("Contact updated");
+            return;
+         }
+
          await updateContactInFirebase(editingContactId, {
             name,
             email,
@@ -487,7 +510,7 @@ async function handleCreateContact(e) {
             color:
                selectedContact?.color ||
                "#" + Math.floor(Math.random() * 16777215).toString(16),
-         });
+         }, editingContactKey);
       } else {
          const newContact = {
             id: Date.now(),
@@ -514,8 +537,6 @@ async function handleCreateContact(e) {
       switchView();
       showContactToast(wasEdit ? "Contact updated" : "Contact successfully created");
    } catch (error) {
-      showContactFormError("Contact could not be saved. Please try again.");
-      showContactToast("Contact could not be saved", "error");
    }
 }
 
@@ -538,7 +559,6 @@ async function deleteContact() {
       showContactToast("Contact deleted");
    } catch (error) {
       console.error("Contact deletion failed:", error);
-      showContactToast("Contact could not be deleted", "error");
    }
 }
 
