@@ -114,7 +114,7 @@
    justify-content: center;
    border: 3px solid #ffffff;
    background: #d1d1d1;
-   box-shadow: 0 0 0 1px #a8a8a8;
+   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
 
 .contact-modal__avatar img {
@@ -167,9 +167,13 @@
 }
 
 .login__input--required {
+   display: block;
+   min-height: 15px;
+   line-height: 15px;
    font-size: 12px;
    font-weight: 400;
    margin-top: -8px;
+   white-space: nowrap;
    color: rgba(230, 0, 38, 1);
    transition: opacity 100ms ease-in-out;
 }

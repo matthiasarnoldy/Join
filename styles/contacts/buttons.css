@@ -104,7 +104,6 @@
 }
 
 .delete-link {
-   color: var(--highlight);
    padding: 0;
    border: none;
    background: none;
