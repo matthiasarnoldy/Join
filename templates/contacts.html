@@ -290,6 +290,7 @@
                               <img
                                  src="../assets/icons/desktop/person_white.svg"
                                  alt="" />
+                              <span class="contact-modal__avatar-initials"></span>
                            </div>
 
                            <div class="contact-modal__fields">
@@ -313,20 +314,22 @@
                                     alt="" />
                               </label>
 
-                              <label class="contact-modal__field" for="add-phone">
-                                 <input
-                                    type="text"
-                                    id="add-phone"
-                                    placeholder="Phone" />
-                                 <img
-                                    src="../assets/icons/desktop/call.svg"
-                                    alt="" />
-                              </label>
+                              <div class="contact-modal__input-field contact-modal__input-field--required">
+                                 <label class="contact-modal__field" for="add-phone">
+                                    <input
+                                       type="text"
+                                       id="add-phone"
+                                       placeholder="Phone" />
+                                    <img
+                                       src="../assets/icons/desktop/call.svg"
+                                       alt="" />
+                                 </label>
 
-                              <span
-                                 id="contactFormError"
-                                 class="login__input--required"
-                                 style="display: block; opacity: 0">These fields are required</span>
+                                 <span
+                                    id="contactFormError"
+                                    class="login__input--required"
+                                    style="display: block; opacity: 0">These fields are required</span>
+                              </div>
 
                               <div class="form-actions">
                                  <button

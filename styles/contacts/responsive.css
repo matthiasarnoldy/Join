@@ -23,31 +23,54 @@
       padding: 32px 0 24px 0;
       justify-content: center;
    }
-}
 
-@media (max-width: 1050px) {
    .overlay-content {
-      min-height: auto;
+      width: min(680px, calc(100vw - 32px));
+      height: min(90vh, 760px);
+      min-height: 620px;
       flex-direction: column;
+   }
+
+   .contact-modal__logo {
+      display: none;
    }
 
    .contact-modal__brand {
       width: 100%;
-      padding: 40px 32px;
+      flex: 0 0 45%;
+      padding: 32px;
    }
 
    .contact-modal__body {
-      padding: 32px;
+      position: relative;
+      flex: 0 0 55%;
+      padding: 84px 32px 32px;
+      justify-content: center;
    }
 
    .contact-modal__form {
       flex-direction: column;
       gap: 24px;
+      justify-content: center;
+   }
+
+   .contact-modal__avatar {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      margin-bottom: 0;
+      transform: translate(-50%, -50%);
+      z-index: 2;
    }
 
    .contact-modal__fields {
       width: 100%;
       max-width: 422px;
+      gap: 15px;
+   }
+
+   .form-actions {
+      justify-content: center;
    }
 }
 
@@ -61,10 +84,23 @@
       gap: 8px;
    }
 
+   .contact-modal__close {
+      top: 24px;
+      right: 16px;
+   }
+
+   .contact-modal__brand h2 {
+      font-size: 47px;
+   }
+
+   .contact-modal__brand p {
+      font-size: 20px;
+   }
+
    #contact-form-cancel,
    #contact-form-submit {
       height: 51px;
-      padding: 13px 20px;
+      padding: 18px 10px;
       flex: 0 0 auto;
    }
 
@@ -155,11 +191,39 @@
    }
 }
 
+@media (max-width: 520px) {
+   .contact-modal__brand {
+      width: 100%;
+      flex: 0 0 40%;
+      padding: 32px;
+   }
+
+   .contact-modal__body {
+      position: relative;
+      flex: 0 0 60%;
+      padding: 84px 32px 32px;
+      justify-content: center;
+   }
+
+   #contact-form-cancel:not([data-mode]),
+   #contact-form-cancel[data-mode="cancel"] {
+      display: none;
+   }
+
+   /* .form-actions {
+      flex-direction: column;
+   } */
+}
+
 @media (max-width: 360px) {
    .detail-header {
       align-items: flex-start;
       gap: 16px;
       margin-bottom: 28px;
+   }
+
+   .contact-modal__brand p {
+      display: none;
    }
 
    .initials-big {

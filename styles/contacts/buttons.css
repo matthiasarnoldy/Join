@@ -139,11 +139,9 @@
 
 #contact-form-cancel,
 #contact-form-submit {
-   height: 56px;
    min-width: 0;
    padding: 16px 24px;
    display: inline-flex;
-   flex: 1 1 180px;
    align-items: center;
    justify-content: center;
    gap: 4px;

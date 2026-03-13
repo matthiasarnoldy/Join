@@ -377,7 +377,7 @@ function setContactFormMode(isEditMode) {
       submitButton.innerText = isEditMode
          ? isMobile
             ? "Save"
-            : "Save contact"
+            : "Save"
          : "Create contact";
    }
    if (secondaryButton) {
@@ -387,9 +387,30 @@ function setContactFormMode(isEditMode) {
 }
 
 
+function setContactFormAvatar(contact = null) {
+   const avatar = document.querySelector(".contact-modal__avatar");
+   if (!avatar) return;
+
+   const initialsElement = avatar.querySelector(".contact-modal__avatar-initials");
+   if (!initialsElement) return;
+
+   if (contact && contact.name) {
+      initialsElement.innerText = getInitials(contact.name);
+      avatar.style.backgroundColor = contact.color || "#d1d1d1";
+      avatar.classList.add("contact-modal__avatar--initials");
+      return;
+   }
+
+   initialsElement.innerText = "";
+   avatar.style.backgroundColor = "";
+   avatar.classList.remove("contact-modal__avatar--initials");
+}
+
+
 function resetContactFormMode() {
    editingContactId = null;
    setContactFormMode(false);
+   setContactFormAvatar(null);
 }
 
 
@@ -406,6 +427,7 @@ function handleEditContact() {
    document.getElementById("add-name").value = contact.name || "";
    document.getElementById("add-email").value = contact.email || "";
    document.getElementById("add-phone").value = contact.phone || "";
+   setContactFormAvatar(contact);
    hideContactFormError();
 
    if (typeof window.openOverlay === "function") {
