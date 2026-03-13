@@ -2,7 +2,6 @@ function getAddTaskDialog() {
    return document.getElementById("addTaskDialog");
 }
 
-
 function getTaskDetailDialog() {
    return document.getElementById("taskDetailDialog");
 }
@@ -11,18 +10,20 @@ function updateBoardDialogScrollLock() {
    const addDialogOpen = Boolean(getAddTaskDialog()?.open);
    const detailDialogOpen = Boolean(getTaskDetailDialog()?.open);
    const shouldLockScroll = addDialogOpen || detailDialogOpen;
-   document.documentElement.classList.toggle("board-dialog-open", shouldLockScroll);
+   document.documentElement.classList.toggle(
+      "board-dialog-open",
+      shouldLockScroll,
+   );
    document.body.classList.toggle("board-dialog-open", shouldLockScroll);
 }
-
 
 function setAddTaskDialogMode(isEditMode) {
    const title = document.getElementById("addTaskDialogTitle");
    const buttonText = document.querySelector(".add-task__button-text");
-   if (title) title.textContent = isEditMode ? "Edit Task" : "Add Tasks";
-   if (buttonText) buttonText.textContent = isEditMode ? "Save changes" : "Create Task";
+   if (title) title.textContent = isEditMode ? "Edit Task" : "Add Task";
+   if (buttonText)
+      buttonText.textContent = isEditMode ? "Save changes" : "Create Task";
 }
-
 
 function resetAddTaskDialogMode() {
    const dialog = getAddTaskDialog();
@@ -31,7 +32,6 @@ function resetAddTaskDialogMode() {
    delete dialog.dataset.editTaskKey;
    setAddTaskDialogMode(false);
 }
-
 
 function openDialog(status = "todo") {
    const dialog = getAddTaskDialog();
@@ -42,7 +42,6 @@ function openDialog(status = "todo") {
    updateBoardDialogScrollLock();
 }
 
-
 function closeDialog() {
    const dialog = getAddTaskDialog();
    if (!dialog) return;
@@ -51,7 +50,6 @@ function closeDialog() {
    resetAddTaskDialogMode();
    updateBoardDialogScrollLock();
 }
-
 
 async function initializeBoard() {
    const tasks = await window.BoardData.loadTasks();
@@ -68,7 +66,8 @@ async function initializeBoard() {
 
    const shouldShowSuccess = localStorage.getItem("showTaskSuccess");
    if (shouldShowSuccess === "true") {
-      const successIsEdit = localStorage.getItem("showTaskSuccessEdit") === "true";
+      const successIsEdit =
+         localStorage.getItem("showTaskSuccessEdit") === "true";
       localStorage.removeItem("showTaskSuccess");
       localStorage.removeItem("showTaskSuccessEdit");
       if (typeof showSuccessMessage === "function") {
