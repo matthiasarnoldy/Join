@@ -9,6 +9,10 @@ a {
     text-decoration: none;
 }
 
+.list {
+    list-style-type: none;
+}
+
 :root {
     --feedback-outline: #29abe2;
     --feedback-shadow: 0 0 0 3px rgba(41, 171, 226, 0.25);

@@ -1,0 +1,72 @@
+.mainArea {
+   width: 100%;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+}
+
+.content_max-width {
+   display: flex;
+   justify-content: space-between;
+}
+
+.main {
+   margin-left: 222px;
+   flex-grow: 1;
+   background-color: #f6f7f8;
+}
+
+.main_flex-instructions {
+   width: 100%;
+   max-width: calc(1440px - 232px);
+   min-height: 100vh;
+}
+
+.headline {
+   width: 100%;
+   max-width: calc(1440px - 232px);
+   display: flex;
+   align-items: center;
+}
+
+.headline__description {
+   font-size: 27px;
+   font-weight: 400;
+}
+
+.page-back-btn {
+   position: fixed;
+   top: 128px;
+   right: 24px;
+   z-index: 6;
+   width: 32px;
+   height: 32px;
+   padding: 0;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   border: none;
+   border-radius: 50%;
+   background: transparent;
+   cursor: pointer;
+   transition: all 100ms;
+}
+
+.page-back-btn:hover {
+   background-color: #d1d1d1;
+   scale: 1.1;
+}
+
+.page-back-btn__icon {
+   width: 32px;
+   height: 32px;
+   display: block;
+}
+
+.page-back-btn.d-none {
+   display: none;
+}
+
+.page-back-btn--mobile-only {
+   display: none;
+}
