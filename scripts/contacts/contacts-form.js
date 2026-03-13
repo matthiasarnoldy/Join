@@ -3,6 +3,7 @@
    ContactsFeature.state = ContactsFeature.state || {
       selectedContactId: null,
       editingContactId: null,
+      editingContactKey: null,
       contacts: [],
    };
 
@@ -117,6 +118,7 @@
 
    function resetMode() {
       state.editingContactId = null;
+      state.editingContactKey = null;
       setMode(false);
       setAvatar(null);
    }
@@ -139,6 +141,7 @@
       if (!contact) return;
 
       state.editingContactId = contact.id;
+      state.editingContactKey = contact._firebaseKey || null;
       setMode(true);
 
       const nameInput = document.getElementById("add-name");
@@ -215,12 +218,36 @@
 
          if (editedContactId !== null) {
             const selectedContact = getContactById(editedContactId);
-            await data.updateContact(editedContactId, {
+            const originalName = String(selectedContact?.name || "").trim();
+            const originalEmail = String(selectedContact?.email || "").trim();
+            const originalPhone = String(selectedContact?.phone || "").trim();
+            const hasChanges =
+               name !== originalName ||
+               email !== originalEmail ||
+               phone !== originalPhone;
+
+            if (!hasChanges) {
+               state.selectedContactId = editedContactId;
+               closeOverlay();
+               view.renderContacts();
+               if (selectedContact) {
+                  view.showDetail(selectedContact);
+               }
+               view.switchView();
+               view.showToast("Contact updated");
+               return;
+            }
+
+            await data.updateContact(
+               editedContactId,
+               {
                name,
                email,
                phone,
                color: selectedContact?.color || buildRandomColor(),
-            });
+               },
+               state.editingContactKey
+            );
          } else {
             await data.addContact({
                id: Date.now(),

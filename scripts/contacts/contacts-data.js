@@ -6,6 +6,7 @@
    ContactsFeature.state = ContactsFeature.state || {
       selectedContactId: null,
       editingContactId: null,
+      editingContactKey: null,
       contacts: [],
    };
 
@@ -70,8 +71,8 @@
       return match?._firebaseKey || null;
    }
 
-   async function updateContact(contactId, contactData) {
-      const contactKey = await findContactKeyById(contactId);
+   async function updateContact(contactId, contactData, contactKeyOverride = null) {
+      const contactKey = contactKeyOverride || (await findContactKeyById(contactId));
       if (!contactKey) {
          throw new Error(`Contact key not found for id ${contactId}`);
       }

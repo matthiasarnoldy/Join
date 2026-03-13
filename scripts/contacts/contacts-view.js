@@ -3,6 +3,7 @@
    ContactsFeature.state = ContactsFeature.state || {
       selectedContactId: null,
       editingContactId: null,
+      editingContactKey: null,
       contacts: [],
    };
 
