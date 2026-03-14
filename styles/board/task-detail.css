@@ -139,9 +139,20 @@
 }
 
 .task-detail__subtask-checkbox {
-   width: 18px;
-   height: 18px;
+   width: 24px;
+   height: 24px;
+   flex-shrink: 0;
+   -webkit-appearance: none;
+   appearance: none;
+   background-image: url("../../assets/icons/desktop/checkBox.svg");
+   background-position: center;
+   background-repeat: no-repeat;
+   background-size: contain;
    cursor: pointer;
+}
+
+.task-detail__subtask-checkbox:checked {
+   background-image: url("../../assets/icons/desktop/checkBox--checked-dark.svg");
 }
 
 .task-detail__subtask-text {
