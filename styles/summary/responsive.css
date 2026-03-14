@@ -21,7 +21,6 @@
 
    .overview__greetings {
       display: none;
-      flex-direction: row;
       gap: 16px;
    }
 }
@@ -140,6 +139,15 @@
 
    .urgent__icon {
       height: 40px;
+   }
+
+   .greetings__timeannouncement {
+      font-size: 36px;
+      font-weight: 400;
+   }
+
+   .greetings__name {
+      font-size: 47px;
    }
 }
 
