@@ -29,14 +29,17 @@ body {
     position: relative;
     width: 100%;
     max-width: 1440px;
+    margin: 0 auto;
     opacity: 0;
     pointer-events: none;
     transition: opacity 1000ms;
 }
 
 .main-content--signup {
+    position: relative;
     width: 100%;
     max-width: 1440px;
+    margin: 0 auto;
     opacity: 1;
 }
 
@@ -54,6 +57,8 @@ body {
 
 .login__signup {
     position: absolute;
+    top: 0;
+    right: 0;
     padding: 80px 77px;
     display: flex;
     align-items: center;
@@ -130,5 +135,27 @@ body {
         left: 77px;
         width: 100px;
         transform: translate(0, 0);
+    }
+}
+
+@media (min-width: 1441px) {
+    .main-content--signup-logo {
+        left: calc((100vw - 1440px) / 2 + 77px);
+    }
+
+    @keyframes splash__logo--animation {
+        0% {
+            top: 50%;
+            left: 50%;
+            width: 274px;
+            transform: translate(-50%, -50%);
+        }
+
+        100% {
+            top: 80px;
+            left: calc((100vw - 1440px) / 2 + 77px);
+            width: 100px;
+            transform: translate(0, 0);
+        }
     }
 }
