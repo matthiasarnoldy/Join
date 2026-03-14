@@ -476,8 +476,6 @@
     * @returns {Promise<void>} A promise that resolves when the operation is complete.
     */
    async function handleDeleteTask(taskId) {
-      const shouldDelete = window.confirm("Delete this task?");
-      if (!shouldDelete) return;
       try {
          await window.BoardData.deleteTask(taskId);
          closeTaskDetailDialog();
