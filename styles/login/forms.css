@@ -27,10 +27,18 @@
     gap: 20px;
 }
 
+.main-content--signup .login__formular {
+    gap: 0;
+}
+
 .login__inputFieldError {
     display: flex;
     flex-direction: column;
     gap: 4px;
+}
+
+.main-content--signup .login__inputFieldError {
+    gap: 2px;
 }
 
 .login__input {
@@ -55,6 +63,9 @@
     font-weight: 400;
     font-family: "Poppins";
     color: rgba(230, 0, 38, 1);
+    min-height: 18px;
+    opacity: 0;
+    transition: opacity 100ms ease-in-out;
 }
 
 .login__input--error,
@@ -63,11 +74,22 @@
     outline: none;
 }
 
+.signup__privacy-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
 .signup__privacy-checkbox {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
+}
+
+.signup__privacy-error {
+    text-align: center;
 }
 
 .signup__checkbox {

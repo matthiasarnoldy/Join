@@ -47,32 +47,52 @@
                     <img src="../assets/icons/desktop/login__dividingLine.svg" alt="Dividing Line" class="login__headline--line">
                 </div>
                 <form action="#" class="login__formular">
-                    <div class="login__input-field">
-                        <input type="text" class="login__input login__input--email" autocomplete="off" placeholder="Name">
-                        <img src="../assets/icons/desktop/person.svg" alt="" class="login__email-icon" />
+                    <div class="login__inputFieldError">
+                        <div class="login__input-field">
+                            <input type="text" class="login__input login__input--email" autocomplete="off" placeholder="Name">
+                            <img src="../assets/icons/desktop/person.svg" alt="" class="login__email-icon" />
+                        </div>
+                        <span class="login__input--required" data-error-for="name" data-default-message="This field is required">
+                            This field is required
+                        </span>
                     </div>
-                    <div class="login__input-field">
-                        <input type="email" class="login__input login__input--email" autocomplete="off" placeholder="Email">
-                        <img src="../assets/icons/desktop/mail.svg" alt="" class="login__email-icon" />
+                    <div class="login__inputFieldError">
+                        <div class="login__input-field">
+                            <input type="email" class="login__input login__input--email" autocomplete="off" placeholder="Email">
+                            <img src="../assets/icons/desktop/mail.svg" alt="" class="login__email-icon" />
+                        </div>
+                        <span class="login__input--required" data-error-for="email" data-default-message="Please enter a valid email address.">
+                            Please enter a valid email address.
+                        </span>
                     </div>
-                    <div class="login__input-field">
-                        <input type="password" class="login__input login__input--password" id="password-input" autocomplete="off" placeholder="Password">
-                        <img id="password-icon" src="../assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
+                    <div class="login__inputFieldError">
+                        <div class="login__input-field">
+                            <input type="password" class="login__input login__input--password" id="password-input" autocomplete="off" placeholder="Password">
+                            <img id="password-icon" src="../assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
+                        </div>
+                        <span class="login__input--required" data-error-for="password" data-default-message="This field is required">
+                            This field is required
+                        </span>
                     </div>
                     <div class="login__inputFieldError">
                         <div class="login__input-field">
                             <input type="password" class="login__input login__input--password" id="confirm-password-input" autocomplete="off" placeholder="Confirm Password">
                             <img id="confirm-password-icon" src="../assets/icons/desktop/lock.svg" alt="" class="login__lock-icon" />
                         </div>
-                        <span class="login__input--required">
+                        <span class="login__input--required" data-error-for="confirmPassword" data-default-message="Your passwords don't match. Please try again.">
                             Your passwords don't match. Please try again.
                         </span>
                     </div>
-                    <div class="signup__privacy-checkbox">
-                        <input type="checkbox" id="privacy-policy" class="signup__checkbox">
-                        <label for="privacy-policy" class="signup__checkbox-label">
-                            I accept the <a href="./privacy-Policy.html" class="signup__privacy-link">Privacy Policy</a>
-                        </label>
+                    <div class="signup__privacy-field">
+                        <div class="signup__privacy-checkbox">
+                            <input type="checkbox" id="privacy-policy" class="signup__checkbox">
+                            <label for="privacy-policy" class="signup__checkbox-label">
+                                I accept the <a href="./privacy-Policy.html" class="signup__privacy-link">Privacy Policy</a>
+                            </label>
+                        </div>
+                        <span class="login__input--required signup__privacy-error" data-error-for="privacy" data-default-message="Please accept the Privacy Policy.">
+                            Please accept the Privacy Policy.
+                        </span>
                     </div>
                 </form>
                 <div class="login__buttonArea">

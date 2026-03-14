@@ -265,8 +265,34 @@ function redirectAfterSave() {
    if (isInDialog()) {
       window.location.reload();
    } else {
-      window.location.href = saveTaskPagePath("board.html");
+      window.location.href = withSaveTaskAuthUserQuery(
+         saveTaskPagePath("board.html"),
+      );
    }
+}
+
+
+/**
+ * Returns the save task auth user ID from URL.
+ * @returns {string} The save task auth user ID from URL.
+ */
+function getSaveTaskAuthUserIdFromUrl() {
+   const params = new URLSearchParams(window.location.search);
+   return String(params.get("uid") || "").trim();
+}
+
+
+/**
+ * Builds the save task auth user query.
+ *
+ * @param {string} path - The path.
+ * @returns {string} The save task auth user query.
+ */
+function withSaveTaskAuthUserQuery(path) {
+   const userId = getSaveTaskAuthUserIdFromUrl();
+   if (!userId) return path;
+   const separator = path.includes("?") ? "&" : "?";
+   return `${path}${separator}uid=${encodeURIComponent(userId)}`;
 }
 
 

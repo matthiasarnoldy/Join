@@ -2,7 +2,6 @@
    const BOARD_CARDS_ASSET_BASE_PATH = window.location.pathname.includes("/templates/")
       ? "../assets/"
       : "./assets/";
-
    /**
     * Returns the board cards asset path.
     *
@@ -11,95 +10,6 @@
     */
    function boardCardsAssetPath(relativePath) {
       return `${BOARD_CARDS_ASSET_BASE_PATH}${relativePath}`;
-   }
-
-   /**
-    * Sets the card visibility.
-    *
-    * @param {HTMLElement|null} card - The card.
-    * @param {boolean} shouldShow - Whether it should show.
-    * @returns {void} Nothing.
-    */
-   function setCardVisibility(card, shouldShow) {
-      card.style.display = shouldShow ? "" : "none";
-   }
-
-   /**
-    * Filters the tasks.
-    *
-    * @param {*} searchTerm - The search term.
-    * @returns {void} Nothing.
-    */
-   function filterTasks(searchTerm) {
-      const allCards = document.querySelectorAll(".task-card");
-      const lowerSearchTerm = String(searchTerm || "")
-         .toLowerCase()
-         .trim();
-      if (lowerSearchTerm === "") {
-         allCards.forEach((card) => setCardVisibility(card, true));
-         updatePlaceholders();
-         return;
-      }
-
-      allCards.forEach((card) => {
-         const title =
-            card.querySelector(".task-card__title")?.textContent.toLowerCase() ||
-            "";
-         setCardVisibility(card, title.includes(lowerSearchTerm));
-      });
-      updatePlaceholders();
-   }
-
-   /**
-    * Ensures the placeholder exists.
-    *
-    * @param {HTMLElement|null} column - The column.
-    * @returns {HTMLDivElement|null} The placeholder exists element, or null when it is not available.
-    */
-   function ensurePlaceholderExists(column) {
-      const taskDirectory = column.querySelector(".board-task-directory");
-      if (!taskDirectory) return null;
-      let placeholder = taskDirectory.querySelector(".board-task-placeholder");
-      if (!placeholder) {
-         placeholder = document.createElement("div");
-         placeholder.className = "board-task-placeholder";
-         placeholder.textContent = "No tasks found";
-         taskDirectory.insertBefore(placeholder, taskDirectory.firstChild);
-      }
-      return placeholder;
-   }
-
-   /**
-    * Processes the column placeholder.
-    *
-    * @param {HTMLElement|null} column - The column.
-    * @returns {void} Nothing.
-    */
-   function processColumnPlaceholder(column) {
-      const taskDirectory = column.querySelector(".board-task-directory");
-      if (!taskDirectory) return;
-      const visibleCards = Array.from(
-         taskDirectory.querySelectorAll(".task-card"),
-      ).filter((card) => card.style.display !== "none");
-
-      if (visibleCards.length === 0) {
-         const placeholder = ensurePlaceholderExists(column);
-         if (placeholder) placeholder.style.display = "";
-      } else {
-         const placeholder = taskDirectory.querySelector(
-            ".board-task-placeholder",
-         );
-         if (placeholder) placeholder.style.display = "none";
-      }
-   }
-
-   /**
-    * Updates the placeholders.
-    * @returns {void} Nothing.
-    */
-   function updatePlaceholders() {
-      const columns = document.querySelectorAll(".board-task-column");
-      columns.forEach(processColumnPlaceholder);
    }
 
    /**
@@ -118,7 +28,7 @@
             searchInputs.forEach((input) => {
                if (input !== event.target) input.value = value;
             });
-            filterTasks(value);
+            window.BoardCards.filterTasks(value);
          });
       });
    }
@@ -306,24 +216,6 @@
    }
 
    /**
-    * Creates the task card.
-    *
-    * @param {object} taskData - The task data object.
-    * @returns {HTMLElement} The task card element.
-    */
-   function createTaskCard(taskData) {
-      const card = document.createElement("article");
-      card.className = "task-card";
-      card.dataset.taskId = taskData.id;
-      const viewData = getTaskCardRenderData(taskData);
-      card.innerHTML = buildTaskCardHTML(taskData, viewData);
-      if (window.BoardDnd?.makeCardDraggable) {
-         window.BoardDnd.makeCardDraggable(card);
-      }
-      return card;
-   }
-
-   /**
     * Returns the board columns.
     * @returns {object} The board columns object.
     */
@@ -334,54 +226,6 @@
          "await-feedback": document.getElementById("AwaitTask"),
          done: document.getElementById("DoneTask"),
       };
-   }
-
-   /**
-    * Adds the task to column.
-    *
-    * @param {object} taskData - The task data object.
-    * @param {NodeListOf<Element>|Array<Element>} columns - The columns collection.
-    * @returns {void} Nothing.
-    */
-   function addTaskToColumn(taskData, columns) {
-      if (taskData.category && typeof taskData.category !== "string") {
-         taskData.category = String(taskData.category);
-      }
-      const taskDirectory = columns[taskData.status];
-      if (!taskDirectory) return;
-      const placeholder = taskDirectory.querySelector(".board-task-placeholder");
-      if (placeholder) placeholder.remove();
-      const card = createTaskCard(taskData);
-      taskDirectory.appendChild(card);
-   }
-
-   /**
-    * Clears the board task cards.
-    * @returns {void} Nothing.
-    */
-   function clearBoardTaskCards() {
-      const taskDirectories = document.querySelectorAll(".board-task-directory");
-      taskDirectories.forEach((directory) => {
-         directory.querySelectorAll(".task-card").forEach((card) => card.remove());
-      });
-   }
-
-   /**
-    * Renders the board from tasks.
-    *
-    * @param {Array<object>} tasks - The tasks list.
-    * @returns {void} Nothing.
-    */
-   function renderBoardFromTasks(tasks) {
-      clearBoardTaskCards();
-      const columns = getBoardColumns();
-      tasks.forEach((taskData) => {
-         addTaskToColumn(
-            { ...taskData, status: taskData.status || "todo" },
-            columns,
-         );
-      });
-      updatePlaceholders();
    }
 
    /**
@@ -411,6 +255,7 @@
       if (!grid || grid.dataset.cardClickInitialized === "true") return;
       grid.dataset.cardClickInitialized = "true";
       grid.addEventListener("click", (event) => {
+         if (event.target.closest(".task-card__move-button")) return;
          const card = event.target.closest(".task-card");
          if (!card || window.BoardDnd?.isDragging?.()) return;
          onCardClick(card.dataset.taskId);
@@ -418,14 +263,15 @@
    }
 
    window.BoardCards = {
-      clearBoardTaskCards,
+      boardCardsAssetPath,
+      getBoardColumns,
+      getTaskCardRenderData,
+      buildTaskCardHTML,
       getCategoryLabel,
       getPriorityIcon,
       getPriorityLabel,
-      renderBoardFromTasks,
       setupColumnAddButtons,
       setupTaskCardClicks,
       setupTaskSearch,
-      updatePlaceholders,
    };
 })();

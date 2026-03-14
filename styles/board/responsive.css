@@ -1,4 +1,4 @@
-@media (max-width: 1230px) {
+@media (max-width: 1300px) {
    .headline_board {
       padding: 206px 32px 48px 32px;
    }
@@ -105,5 +105,9 @@
 
    .find-task--mobile {
       padding: 8px 16px;
+   }
+
+   .task-card__move-button {
+      display: inline-flex;
    }
 }

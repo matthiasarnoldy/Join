@@ -417,8 +417,8 @@
    top: calc(100% - 10px);
    padding: 10px 0 0;
    z-index: 1;
-   max-height: 294px;
-   min-height: 294px;
+   max-height: 236px;
+   min-height: 236px;
    overflow-y: scroll;
    scrollbar-color: #2b3647 #fff;
    scrollbar-gutter: stable;

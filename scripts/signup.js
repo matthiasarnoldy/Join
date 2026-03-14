@@ -18,7 +18,8 @@ function emptySignupFields() {
         emailInput: null,
         passwordInput: null,
         confirmPasswordInput: null,
-        errorElement: null,
+        errorElements: {},
+        privacyError: null,
     };
 }
 
@@ -36,8 +37,57 @@ function mapSignupFields(signupForm) {
         emailInput: signupForm.querySelector("input[type='email']"),
         passwordInput: signupForm.querySelector("#password-input"),
         confirmPasswordInput: signupForm.querySelector("#confirm-password-input"),
-        errorElement: signupForm.querySelector(".login__input--required"),
+        errorElements: {
+            name: signupForm.querySelector("[data-error-for='name']"),
+            email: signupForm.querySelector("[data-error-for='email']"),
+            password: signupForm.querySelector("[data-error-for='password']"),
+            confirmPassword: signupForm.querySelector("[data-error-for='confirmPassword']"),
+        },
+        privacyError: signupForm.querySelector("[data-error-for='privacy']"),
     };
+}
+
+
+/**
+ * Resets the signup error element.
+ *
+ * @param {HTMLElement|null} element - The element.
+ * @returns {void} Nothing.
+ */
+function resetSignupErrorElement(element) {
+    if (!element) return;
+    element.textContent = element.dataset.defaultMessage || "";
+    element.style.display = "block";
+    element.style.opacity = "0";
+}
+
+
+/**
+ * Resets the signup error elements.
+ *
+ * @param {object} fields - The fields object.
+ * @returns {void} Nothing.
+ */
+function resetSignupErrorElements(fields) {
+    Object.values(fields.errorElements || {}).forEach(resetSignupErrorElement);
+    resetSignupErrorElement(fields.privacyError);
+}
+
+
+/**
+ * Shows the signup field error.
+ *
+ * @param {HTMLElement|null} input - The input.
+ * @param {HTMLElement|null} errorElement - The error element.
+ * @param {string} message - The message.
+ * @returns {void} Nothing.
+ */
+function showSignupFieldError(input, errorElement, message) {
+    input?.classList.add("login__input--error");
+    if (!errorElement) return;
+    errorElement.textContent = message;
+    errorElement.style.display = "block";
+    errorElement.style.opacity = "1";
 }
 
 
@@ -63,6 +113,7 @@ function clearSignupInputErrors(fields) {
     fields.emailInput?.classList.remove("login__input--error");
     fields.passwordInput?.classList.remove("login__input--error");
     fields.confirmPasswordInput?.classList.remove("login__input--error");
+    resetSignupErrorElements(fields);
 }
 
 
@@ -74,10 +125,10 @@ function clearSignupInputErrors(fields) {
  * @returns {void} Nothing.
  */
 function markRequiredSignupInputs(fields, values) {
-    if (!values?.name) fields.nameInput?.classList.add("login__input--error");
-    if (!values?.email) fields.emailInput?.classList.add("login__input--error");
-    if (!values?.password) fields.passwordInput?.classList.add("login__input--error");
-    if (!values?.confirmPassword) fields.confirmPasswordInput?.classList.add("login__input--error");
+    if (!values?.name) showSignupFieldError(fields.nameInput, fields.errorElements?.name, "This field is required");
+    if (!values?.email) showSignupFieldError(fields.emailInput, fields.errorElements?.email, "This field is required");
+    if (!values?.password) showSignupFieldError(fields.passwordInput, fields.errorElements?.password, "This field is required");
+    if (!values?.confirmPassword) showSignupFieldError(fields.confirmPasswordInput, fields.errorElements?.confirmPassword, "This field is required");
 }
 
 
@@ -92,9 +143,10 @@ function markRequiredSignupInputs(fields, values) {
 function applySignupInputErrorStyles(fields, message, values) {
     clearSignupInputErrors(fields);
     if (message === "These fields are required") return markRequiredSignupInputs(fields, values);
-    if (message === "Please enter a valid email address.") return fields.emailInput?.classList.add("login__input--error");
-    if (message === "This email is already registered.") return fields.emailInput?.classList.add("login__input--error");
-    if (message === "Your passwords don't match. Please try again.") return fields.confirmPasswordInput?.classList.add("login__input--error");
+    if (message === "Please enter a valid email address.") return showSignupFieldError(fields.emailInput, fields.errorElements?.email, message);
+    if (message === "This email is already registered.") return showSignupFieldError(fields.emailInput, fields.errorElements?.email, message);
+    if (message === "Your passwords don't match. Please try again.") return showSignupFieldError(fields.confirmPasswordInput, fields.errorElements?.confirmPassword, message);
+    if (message === "Please accept the Privacy Policy.") return showSignupFieldError(null, fields.privacyError, message);
 }
 
 
@@ -107,11 +159,6 @@ function applySignupInputErrorStyles(fields, message, values) {
  */
 function showSignupError(message, values) {
     const fields = getSignupFields();
-    const { errorElement } = fields;
-    if (!errorElement) return;
-    errorElement.textContent = message;
-    errorElement.style.display = "block";
-    errorElement.style.opacity = "1";
     applySignupInputErrorStyles(fields, message, values);
 }
 
@@ -122,10 +169,6 @@ function showSignupError(message, values) {
  */
 function hideSignupError() {
     const fields = getSignupFields();
-    const { errorElement } = fields;
-    if (!errorElement) return;
-    errorElement.style.display = "block";
-    errorElement.style.opacity = "0";
     clearSignupInputErrors(fields);
 }
 
@@ -304,8 +347,14 @@ function areSignupValidationElementsReady(elements) {
 function bindSignupValidation(inputs, privacyCheckbox, signupSubmitButton) {
     const updateButtonState = () => checkFormValidity(inputs, privacyCheckbox, signupSubmitButton);
     setSignupButtonState(signupSubmitButton, false);
-    inputs.forEach((input) => input.addEventListener("input", updateButtonState));
-    privacyCheckbox.addEventListener("change", updateButtonState);
+    inputs.forEach((input) => input.addEventListener("input", () => {
+        hideSignupError();
+        updateButtonState();
+    }));
+    privacyCheckbox.addEventListener("change", () => {
+        hideSignupError();
+        updateButtonState();
+    });
 }
 
 

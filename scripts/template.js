@@ -147,7 +147,7 @@ function taskCardAvatarHTML(colorClass, initialsText) {
  * @returns {string} The task card avatar overflow HTML.
  */
 function taskCardAvatarOverflowHTML(remainingCount) {
-   return `<span class="avatar avatar--overflow">+${remainingCount}</span>`;
+    return `<span class="avatar avatar--overflow">+${remainingCount}</span>`;
 }
 
 

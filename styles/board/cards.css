@@ -1,4 +1,6 @@
 .task-card {
+   --task-card-background: #ffffff;
+   position: relative;
    width: 100%;
    padding: 10px;
    display: flex;
@@ -7,7 +9,7 @@
    gap: 16px;
    border-radius: 24px;
    box-shadow: 0 0 10px 3px #00000014;
-   background: #ffffff;
+   background: var(--task-card-background);
    transform-origin: center center;
    will-change: transform;
    transition: transform 200ms ease, box-shadow 200ms ease, opacity 200ms ease;
@@ -73,6 +75,7 @@
    line-height: 1.2;
    color: #a8a8a8;
    height: 38px;
+   margin-bottom: 16px;
 }
 
 .task-card__progress {
@@ -156,11 +159,82 @@
    font-weight: 700;
    color: #2a3647;
    border: 2px solid #2a3647;
-   background: transparent;
+   background: var(--task-card-background);
 }
 
 .task-card__priority {
    width: 24px;
    height: 24px;
    display: block;
+}
+
+.task-card__move-button {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   z-index: 1;
+   padding: 4px;
+   display: none;
+   justify-content: center;
+   align-items: center;
+   border: none;
+   border-radius: 999px;
+   background: transparent;
+}
+
+.task-card__move-button:hover {
+   background: rgba(41, 171, 226, 0.12);
+   cursor: pointer;
+}
+
+.task-card__move-icon {
+   width: 24px;
+   height: 24px;
+   display: block;
+}
+
+.board-mobile-move-menu {
+   color: #cdcdcd;
+   position: fixed;
+   z-index: 30;
+   min-width: 140px;
+   display: none;
+   border-radius: 20px 0 20px 20px;
+   filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+   background-color: #2a3647;
+}
+
+.board-mobile-move-menu--opened {
+   display: block;
+}
+
+.board-mobile-move-menu__title {
+   font-size: 16px;
+   font-weight: 700;
+   color: #ffffff;
+   padding: 16px 24px 8px;
+}
+
+.board-mobile-move-menu__list {
+   padding: 0 8px 8px;
+   margin: 0;
+   display: flex;
+   flex-direction: column;
+   list-style: none;
+}
+
+.board-mobile-move-menu__button {
+   font: inherit;
+   color: inherit;
+   width: 100%;
+   padding: 13px 16px;
+   border: none;
+   text-align: left;
+   border-radius: 12px;
+   background: transparent;
+}
+
+.board-mobile-move-menu__button:hover {
+   background-color: #2a3d59;
+   cursor: pointer;
 }
