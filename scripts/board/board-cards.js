@@ -87,7 +87,7 @@
    function getAvatarDisplayCount(totalAssignees) {
       const avatarWidth = 32;
       const overlap = 8;
-      const available = 220;
+      const available = 172;
       const maxAvatars =
          Math.floor((available - avatarWidth) / (avatarWidth - overlap)) + 1;
       return totalAssignees > maxAvatars ? maxAvatars - 1 : totalAssignees;
