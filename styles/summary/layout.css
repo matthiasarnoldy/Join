@@ -1,7 +1,7 @@
 .overview {
    position: relative;
    width: 100%;
-   padding-left: 108px;
+   padding: 0 0 32px 108px;
    display: flex;
    align-items: center;
    gap: 64px;
