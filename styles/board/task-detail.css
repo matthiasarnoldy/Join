@@ -189,6 +189,10 @@
    cursor: pointer;
 }
 
+.task-detail__action-btn:last-child {
+   width: 40px;
+}
+
 .task-detail__action-btn:hover {
    color: #29abe2;
    font-weight: 700;

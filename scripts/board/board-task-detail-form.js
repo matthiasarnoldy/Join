@@ -231,6 +231,8 @@
       fillAddTaskFormForEdit(taskData);
       window.BoardTaskDetail?.closeTaskDetailDialog();
       dialog.showModal();
+      window.updateBoardDialogScrollLock?.();
+      requestAnimationFrame(() => refreshAssignedInitials());
    }
 
    window.BoardTaskDetailForm = {

@@ -75,6 +75,7 @@ function closeAssignedMenu(elements) {
    if (elements.group) elements.group.classList.remove("add-task__selection-group--assigned-open");
    clearSearchAndReset(elements);
    resetAssignedPlaceholderIfEmpty(elements);
+   updateContactInitials(elements);
 }
 
 
