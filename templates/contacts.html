@@ -294,25 +294,39 @@
                            </div>
 
                            <div class="contact-modal__fields">
-                              <label class="contact-modal__field" for="add-name">
-                                 <input
-                                    type="text"
-                                    id="add-name"
-                                    placeholder="Name" />
-                                 <img
-                                    src="../assets/icons/desktop/person.svg"
-                                    alt="" />
-                              </label>
+                              <div class="contact-modal__input-field contact-modal__input-field--required">
+                                 <label class="contact-modal__field" for="add-name">
+                                    <input
+                                       type="text"
+                                       id="add-name"
+                                       placeholder="Name" />
+                                    <img
+                                       src="../assets/icons/desktop/person.svg"
+                                       alt="" />
+                                 </label>
+                                 <span
+                                    class="login__input--required"
+                                    data-error-for="add-name"
+                                    data-default-message="This field is required"
+                                    style="display: block; opacity: 0">This field is required</span>
+                              </div>
 
-                              <label class="contact-modal__field" for="add-email">
-                                 <input
-                                    type="text"
-                                    id="add-email"
-                                    placeholder="Email" />
-                                 <img
-                                    src="../assets/icons/desktop/mail.svg"
-                                    alt="" />
-                              </label>
+                              <div class="contact-modal__input-field contact-modal__input-field--required">
+                                 <label class="contact-modal__field" for="add-email">
+                                    <input
+                                       type="text"
+                                       id="add-email"
+                                       placeholder="Email" />
+                                    <img
+                                       src="../assets/icons/desktop/mail.svg"
+                                       alt="" />
+                                 </label>
+                                 <span
+                                    class="login__input--required"
+                                    data-error-for="add-email"
+                                    data-default-message="This field is required"
+                                    style="display: block; opacity: 0">This field is required</span>
+                              </div>
 
                               <div class="contact-modal__input-field contact-modal__input-field--required">
                                  <label class="contact-modal__field" for="add-phone">
@@ -324,11 +338,11 @@
                                        src="../assets/icons/desktop/call.svg"
                                        alt="" />
                                  </label>
-
                                  <span
-                                    id="contactFormError"
                                     class="login__input--required"
-                                    style="display: block; opacity: 0">These fields are required</span>
+                                    data-error-for="add-phone"
+                                    data-default-message="Please enter a valid phone number."
+                                    style="display: block; opacity: 0"></span>
                               </div>
 
                               <div class="form-actions">

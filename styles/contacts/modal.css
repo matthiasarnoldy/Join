@@ -143,7 +143,7 @@
    width: 422px;
    display: flex;
    flex-direction: column;
-   gap: 32px;
+   gap: 12px;
 }
 
 .contact-modal__field {
@@ -189,13 +189,13 @@
 }
 
 .contact-modal__input-field--required {
-   gap: 4px;
+   gap: 2px;
 }
 
 .login__input--required {
    display: block;
-   min-height: 15px;
-   line-height: 15px;
+   min-height: 18px;
+   line-height: 18px;
    font-size: 16px;
    font-weight: 400;
    font-family: "Poppins";

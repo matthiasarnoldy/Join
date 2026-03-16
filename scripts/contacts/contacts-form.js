@@ -32,6 +32,53 @@
    }
 
    /**
+    * Checks whether the contact name is valid.
+    *
+    * @param {string} name - The name.
+    * @returns {boolean} Whether the contact name is valid.
+    */
+   function isValidContactName(name) {
+      const trimmedName = String(name || "").trim();
+      const namePattern = /^[A-Za-zÄÖÜäöüß]+(?:\s+[A-Za-zÄÖÜäöüß]+)*$/;
+      return trimmedName.length >= 2 && namePattern.test(trimmedName);
+   }
+
+   /**
+    * Checks whether the contact email is valid.
+    *
+    * @param {string} email - The email.
+    * @returns {boolean} Whether the contact email is valid.
+    */
+   function isValidContactEmail(email) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+      return emailPattern.test(String(email || "").trim().toLowerCase());
+   }
+
+   /**
+    * Checks whether the contact phone number is valid.
+    * The phone field is optional – returns true when empty.
+    *
+    * @param {string} phone - The phone number.
+    * @returns {boolean} Whether the phone number is valid (or empty).
+    */
+   function isValidContactPhone(phone) {
+      const trimmed = String(phone || "").trim();
+      if (!trimmed) return true;
+      const phonePattern = /^\+?[\d\s\-().]{6,20}$/;
+      return phonePattern.test(trimmed);
+   }
+
+   /**
+    * Returns the field error element.
+    *
+    * @param {string} id - The element ID.
+    * @returns {HTMLElement|null} The field error element, or null when it is not available.
+    */
+   function getFieldErrorElement(id) {
+      return document.querySelector(`[data-error-for="${id}"]`);
+   }
+
+   /**
     * Shows the error.
     *
     * @param {string} message - The message.
@@ -39,13 +86,15 @@
     * @returns {void} Nothing.
     */
    function showError(message, invalidIds = ["add-name", "add-email"]) {
-      const errorEl = document.getElementById("contactFormError");
-      if (!errorEl) return;
-      errorEl.textContent = message;
-      errorEl.style.display = "block";
-      errorEl.style.opacity = "1";
+      hideError();
       invalidIds.forEach((id) => {
          const input = document.getElementById(id);
+         const errorEl = getFieldErrorElement(id);
+         if (errorEl) {
+            errorEl.textContent = message || errorEl.dataset.defaultMessage || "";
+            errorEl.style.display = "block";
+            errorEl.style.opacity = "1";
+         }
          input?.classList.add("login__input--error");
          input
             ?.closest(".contact-modal__field")
@@ -58,11 +107,13 @@
     * @returns {void} Nothing.
     */
    function hideError() {
-      const errorEl = document.getElementById("contactFormError");
-      if (!errorEl) return;
-      errorEl.style.opacity = "0";
       ["add-name", "add-email", "add-phone"].forEach((id) => {
          const input = document.getElementById(id);
+         const errorEl = getFieldErrorElement(id);
+         if (errorEl) {
+            errorEl.textContent = errorEl.dataset.defaultMessage || "";
+            errorEl.style.opacity = "0";
+         }
          input?.classList.remove("login__input--error");
          input
             ?.closest(".contact-modal__field")
@@ -78,17 +129,15 @@
     */
    function clearFieldError(id) {
       const input = document.getElementById(id);
+      const errorEl = getFieldErrorElement(id);
       input?.classList.remove("login__input--error");
       input
          ?.closest(".contact-modal__field")
          ?.classList.remove("contact-modal__field--error");
-      const anyStillInvalid = ["add-name", "add-email", "add-phone"].some(
-         (fieldId) =>
-            document
-               .getElementById(fieldId)
-               ?.classList.contains("login__input--error")
-      );
-      if (!anyStillInvalid) hideError();
+      if (errorEl) {
+         errorEl.textContent = errorEl.dataset.defaultMessage || "";
+         errorEl.style.opacity = "0";
+      }
    }
 
    /**
@@ -276,11 +325,33 @@
       const email = document.getElementById("add-email")?.value.trim() || "";
       const phone = document.getElementById("add-phone")?.value.trim() || "";
 
-      const invalidIds = [];
-      if (!name) invalidIds.push("add-name");
-      if (!email) invalidIds.push("add-email");
-      if (invalidIds.length > 0) {
-         showError("These fields are required", invalidIds);
+      const fieldErrors = {};
+      if (!name) {
+         fieldErrors["add-name"] = "";
+      } else if (!isValidContactName(name)) {
+         fieldErrors["add-name"] = "Please enter a valid name.";
+      }
+      if (!email) {
+         fieldErrors["add-email"] = "";
+      } else if (!isValidContactEmail(email)) {
+         fieldErrors["add-email"] = "Please enter a valid email address.";
+      }
+      if (phone && !isValidContactPhone(phone)) {
+         fieldErrors["add-phone"] = "Please enter a valid phone number.";
+      }
+      if (Object.keys(fieldErrors).length > 0) {
+         hideError();
+         Object.entries(fieldErrors).forEach(([id, message]) => {
+            const input = document.getElementById(id);
+            const errorEl = getFieldErrorElement(id);
+            if (errorEl) {
+               errorEl.textContent = message || errorEl.dataset.defaultMessage || "";
+               errorEl.style.display = "block";
+               errorEl.style.opacity = "1";
+            }
+            input?.classList.add("login__input--error");
+            input?.closest(".contact-modal__field")?.classList.add("contact-modal__field--error");
+         });
          return;
       }
 
