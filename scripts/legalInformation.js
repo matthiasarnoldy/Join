@@ -64,9 +64,11 @@
      */
     function hideHeaderElements() {
         const navQuicklinks = document.querySelectorAll(".navBar__quicklink");
+        const helpIcon = document.getElementById("help");
         const userInitials = document.getElementById("login__initials");
 
         navQuicklinks.forEach((item) => item.classList.add("d-none"));
+        helpIcon?.classList.add("d-none");
         userInitials?.classList.add("d-none");
     }
 
