@@ -119,11 +119,6 @@
       height: 80px;
    }
 
-   .summary__number {
-      font-size: 47px;
-      font-weight: 600;
-   }
-
    .summary__text {
       font-size: 16px;
       text-align: center;
@@ -131,10 +126,6 @@
 
    .date__number {
       font-size: 16px;
-   }
-
-   .todo__icon {
-      height: 40px;
    }
 
    .urgent__icon {
@@ -153,7 +144,21 @@
 
 @media (max-width: 380px) {
    .todo__card {
-      gap: 0;
+      gap: 0px;
+   }
+
+   .summary__number {
+      font-size: 47px;
+      font-weight: 600;
+   }
+
+   .todo__icon {
+      height: 40px;
+   }
+
+   .summary__card {
+      display: flex;
+      border-radius: 20px;
    }
 
    .summary__number {
@@ -161,7 +166,7 @@
    }
 
    .summary__urgent {
-      gap: 16px;
+      gap: 8px;
    }
 
    .urgent__dividingLine {
