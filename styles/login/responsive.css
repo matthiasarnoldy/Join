@@ -118,7 +118,7 @@
 
     .login__formular {
         width: 100%;
-        gap: 28px;
+        gap: 32px;
     }
 
     .login__input-field,
@@ -137,10 +137,6 @@
 
     .login__legalInformation--area {
         bottom: 32px;
-    }
-
-    .login__input--required {
-        font-size: 10px;
     }
 
     .signup-success-message {

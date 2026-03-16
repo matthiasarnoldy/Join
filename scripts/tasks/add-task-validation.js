@@ -70,6 +70,36 @@ function disableButton(button) {
 
 
 /**
+ * Locks the create button during save.
+ *
+ * @param {HTMLButtonElement|null} button - The button.
+ * @returns {void} Nothing.
+ */
+function lockCreateButton(button) {
+   if (!button) return;
+   button.disabled = true;
+   button.dataset.submitting = "true";
+   button.classList.add("is-disabled");
+   button.setAttribute("aria-disabled", "true");
+}
+
+
+/**
+ * Unlocks the create button after failed save.
+ *
+ * @param {HTMLButtonElement|null} button - The button.
+ * @param {boolean} isValid - Whether the form is valid.
+ * @returns {void} Nothing.
+ */
+function unlockCreateButton(button, isValid) {
+   if (!button) return;
+   button.disabled = false;
+   delete button.dataset.submitting;
+   updateButtonState(button, isValid);
+}
+
+
+/**
  * Updates the button state.
  *
  * @param {HTMLElement|null} button - The button.
@@ -143,6 +173,7 @@ function checkAllFieldsFilled(fields) {
  */
 function handleFieldInput(field, allFields, button) {
    hideFieldError(field);
+   if (button?.dataset.submitting === "true") return;
    const allValid = checkAllFieldsFilled(allFields);
    updateButtonState(button, allValid);
 }
@@ -186,7 +217,12 @@ function setupLiveValidation(fields, button) {
  * @param {object} fields - The fields object.
  * @returns {void} Nothing.
  */
-function handleCreateButtonClick(event, fields) {
+async function handleCreateButtonClick(event, fields) {
+   const button = event.currentTarget;
+   if (button?.dataset.submitting === "true") {
+      event.preventDefault();
+      return;
+   }
    const allFilled = checkAllFieldsFilled(fields);
    if (!allFilled) {
       event.preventDefault();
@@ -194,7 +230,11 @@ function handleCreateButtonClick(event, fields) {
       return;
    }
    event.preventDefault();
-   saveTaskToBoard();
+   lockCreateButton(button);
+   const saveSucceeded = await saveTaskToBoard();
+   if (!saveSucceeded) {
+      unlockCreateButton(button, allFilled);
+   }
 }
 
 
@@ -211,8 +251,8 @@ function setupCreateButton(button) {
    const allValid = checkAllFieldsFilled(requiredFields);
    updateButtonState(button, allValid);
    setupLiveValidation(requiredFields, button);
-   button.addEventListener("click", (event) => {
-      handleCreateButtonClick(event, requiredFields);
+   button.addEventListener("click", async (event) => {
+      await handleCreateButtonClick(event, requiredFields);
    });
 }
 

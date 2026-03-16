@@ -28,7 +28,7 @@
 }
 
 .main-content--signup .login__formular {
-    gap: 0;
+    gap: 4px;
 }
 
 .login__inputFieldError {
@@ -59,7 +59,7 @@
 }
 
 .login__input--required {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 400;
     font-family: "Poppins";
     color: rgba(230, 0, 38, 1);

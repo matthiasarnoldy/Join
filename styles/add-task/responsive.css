@@ -14,6 +14,11 @@
    .add-task__form-information {
       padding: 0 96px 0 64px;
    }
+
+   .add-task__footer {
+      left: calc(222px + 64px);
+      width: calc(100vw - 222px - 64px - 96px);
+   }
 }
 
 @media (max-width: 1230px) {
@@ -23,6 +28,11 @@
 
    .add-task__form-information {
       padding: 0 32px 0 32px;
+   }
+
+   .add-task__footer {
+      left: calc(222px + 32px);
+      width: calc(100vw - 222px - 32px - 32px);
    }
 }
 
@@ -80,6 +90,7 @@
       bottom: 80px;
       left: 0;
       width: 100%;
+      max-width: none;
       padding: 12px 32px;
       background-color: #f6f7f8;
    }

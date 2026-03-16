@@ -8,6 +8,7 @@ const SAVE_TASK_ASSET_BASE_PATH = window.location.pathname.includes("/templates/
 const SAVE_TASK_PAGE_BASE_PATH = SAVE_TASK_IS_IN_TEMPLATES
    ? "./"
    : "./templates/";
+let isTaskSaveInProgress = false;
 
 /**
  * Saves the task asset path.
@@ -301,6 +302,8 @@ function withSaveTaskAuthUserQuery(path) {
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
 async function saveTaskToBoard() {
+   if (isTaskSaveInProgress) return false;
+   isTaskSaveInProgress = true;
    const { isEdit, taskId, taskKey } = getDialogEditContext();
    const taskData = createTaskData(taskId);
    try {
@@ -317,13 +320,16 @@ async function saveTaskToBoard() {
          localStorage.setItem("showTaskSuccess", "true");
          localStorage.setItem("showTaskSuccessEdit", isEdit ? "true" : "false");
          redirectAfterSave();
-         return;
+         return true;
       }
       showSuccessMessage(isEdit);
       setTimeout(() => {
          redirectAfterSave();
       }, 1000);
+      return true;
    } catch (error) {
+      isTaskSaveInProgress = false;
       console.error(error);
+      return false;
    }
 }

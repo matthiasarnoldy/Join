@@ -337,24 +337,6 @@ function updateWrapperPadding(wrapper, hasContacts, menuOpen) {
 
 
 /**
- * Updates the footer position.
- *
- * @param {HTMLElement|null} footer - The footer.
- * @param {boolean} hasContacts - Whether there are contacts.
- * @param {HTMLElement|null} menuOpen - The menu open.
- * @returns {void} Nothing.
- */
-function updateFooterPosition(footer, hasContacts, menuOpen) {
-   if (!footer) return;
-   if (hasContacts && !menuOpen) {
-      footer.style.transform = "translateY(-34px)";
-   } else {
-      footer.style.transform = "translateY(0)";
-   }
-}
-
-
-/**
  * Renders the initials.
  *
  * @param {object} elements - The elements object.
@@ -388,5 +370,4 @@ function updateContactInitials(elements) {
    const footer = getFooter();
    const hasContacts = hasSelectedContacts(params.selectedOptions);
    updateWrapperPadding(wrapper, hasContacts, params.menuOpen);
-   updateFooterPosition(footer, hasContacts, params.menuOpen);
 }
