@@ -84,6 +84,10 @@ textarea:disabled {
     transform: translateY(0);
 }
 
+.d-none {
+    display: none !important;
+}
+
 @media (max-width: 820px) {
     .app-toast-container {
         top: 92px;

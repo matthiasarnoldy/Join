@@ -261,6 +261,15 @@ function getAuthUserIdFromUrl() {
    return String(params.get(GLOBAL_AUTH_USER_QUERY_KEY) || "").trim();
 }
 
+/**
+ * Returns the auth source from URL.
+ * @returns {string} The auth source from URL.
+ */
+function getAuthSourceFromUrl() {
+   const params = new URLSearchParams(window.location.search);
+   return String(params.get("from") || "").trim();
+}
+
 
 /**
  * Returns the current page file name.
@@ -300,9 +309,19 @@ function enforceAuthGuard() {
  */
 function withAuthUserQuery(path) {
    const userId = getAuthUserIdFromUrl();
-   if (!userId) return path;
-   const separator = path.includes("?") ? "&" : "?";
-   return `${path}${separator}${GLOBAL_AUTH_USER_QUERY_KEY}=${encodeURIComponent(userId)}`;
+   const authSource = getAuthSourceFromUrl();
+   if (!userId && !authSource) return path;
+
+   const url = new URL(path, window.location.href);
+   if (userId) {
+      url.searchParams.set(
+         GLOBAL_AUTH_USER_QUERY_KEY,
+         encodeURIComponent(userId)
+      );
+   }
+   if (authSource) url.searchParams.set("from", authSource);
+
+   return `${url.pathname}${url.search}`;
 }
 
 

@@ -21,6 +21,7 @@
     <script src="./scripts/index.js"></script>
     <script src="./scripts/signup.js"></script>
     <script src="./scripts/signup-ui-write.js"></script>
+    <script src="./scripts/legalInformation.js"></script>
     <script src="./script.js"></script>
     
     <link rel="stylesheet" href="./styles/standard.css">
@@ -72,10 +73,10 @@
             </div>
         </main>
         <footer class="login__legalInformation--area">
-            <a href="./templates/privacy-Policy.html?from=login" class="login__legalInformation" id="index-privacy-policy">
+            <a href="./templates/privacy-Policy.html?from=login" class="login__legalInformation" id="index-privacy-policy" onclick="return prepareLoginLegalNavigation()">
                 Privacy Policy
             </a>
-            <a href="./templates/legalnotice.html?from=login" class="login__legalInformation" id="index-legal-notice">Legal Notice</a>
+            <a href="./templates/legalnotice.html?from=login" class="login__legalInformation" id="index-legal-notice" onclick="return prepareLoginLegalNavigation()">Legal Notice</a>
         </footer>
     </div>
 </body>
