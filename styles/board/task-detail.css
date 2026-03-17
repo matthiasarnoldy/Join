@@ -210,12 +210,15 @@ dialog::backdrop {
 
 @media (max-width: 620px) {
    .task-detail-dialog {
-      width: calc(100% - 32px);
-      max-height: calc(100vh - 32px);
+      width: 100vw;
+      max-width: none;
+      height: 100vh;
+      max-height: 100vh;
+      border-radius: 0;
    }
 
    .task-detail {
-      max-height: calc(100vh - 32px);
+      max-height: 100vh;
    }
 
    .task-detail__title {

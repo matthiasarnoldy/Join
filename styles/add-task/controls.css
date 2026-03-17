@@ -65,7 +65,8 @@
    flex-direction: column;
    background-color: #f6f7f8;
    list-style: disc inside;
-   overflow-y: auto;
+   overflow-y: scroll;
+   scrollbar-gutter: stable;
    scrollbar-color: #2b3647 #f6f7f8;
 }
 
@@ -106,6 +107,7 @@
 
 .add-task__subtask-text {
    flex: 1;
+   min-width: 0;
 }
 
 .add-task__subtask-item-actions {
@@ -145,6 +147,7 @@
    color: #2b3647;
    padding: 0;
    flex: 1;
+   min-width: 0;
    border: none;
    outline: none;
    border-radius: 0;

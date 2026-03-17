@@ -241,7 +241,11 @@
       allCards.forEach((card) => {
          const title =
             card.querySelector(".task-card__title")?.textContent.toLowerCase() || "";
-         setCardVisibility(card, title.includes(lowerSearchTerm));
+         const description =
+            card.querySelector(".task-card__description")?.textContent.toLowerCase() || "";
+         const matchesSearch =
+            title.includes(lowerSearchTerm) || description.includes(lowerSearchTerm);
+         setCardVisibility(card, matchesSearch);
       });
       updatePlaceholders();
    }

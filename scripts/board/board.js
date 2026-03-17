@@ -56,6 +56,37 @@ function resetAddTaskDialogMode() {
 }
 
 /**
+ * Clears the add task dialog form state.
+ * @returns {void} Nothing.
+ */
+function clearAddTaskDialogForm() {
+   const dialog = getAddTaskDialog();
+   if (!dialog) return;
+
+   const container = dialog.querySelector(".dialog_flex-instructions") || dialog;
+
+   if (typeof clearAllInputs === "function") {
+      clearAllInputs(container);
+   } else {
+      const inputs = container.querySelectorAll("input, textarea, select");
+      inputs.forEach((input) => {
+         if (input.type === "checkbox" || input.type === "radio") {
+            input.checked = false;
+         } else {
+            input.value = "";
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+         }
+      });
+   }
+
+   if (typeof resetPriority === "function") resetPriority(container);
+   if (typeof resetAssigned === "function") resetAssigned(container);
+   if (typeof resetCategory === "function") resetCategory(container);
+   if (typeof clearSubtasks === "function") clearSubtasks(container);
+   if (typeof resetValidation === "function") resetValidation(container);
+}
+
+/**
  * Opens the dialog.
  *
  * @param {string} [status="todo"] - The status. Defaults to "todo".
@@ -64,6 +95,7 @@ function resetAddTaskDialogMode() {
 function openDialog(status = "todo") {
    const dialog = getAddTaskDialog();
    if (!dialog) return;
+   clearAddTaskDialogForm();
    dialog.dataset.taskStatus = status;
    resetAddTaskDialogMode();
    dialog.showModal();
@@ -137,5 +169,6 @@ window.getTaskDetailDialog = getTaskDetailDialog;
 window.updateBoardDialogScrollLock = updateBoardDialogScrollLock;
 window.setAddTaskDialogMode = setAddTaskDialogMode;
 window.resetAddTaskDialogMode = resetAddTaskDialogMode;
+window.clearAddTaskDialogForm = clearAddTaskDialogForm;
 window.openDialog = openDialog;
 window.closeDialog = closeDialog;

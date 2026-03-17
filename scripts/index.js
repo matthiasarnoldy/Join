@@ -60,7 +60,7 @@ function getAuthBaseUrl() {
  * @returns {boolean} Whether the valid email is address.
  */
 function isValidEmailAddress(email) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+    const emailPattern = /^[^\s@]+@[^\s@.]+\.[A-Za-z]{2,}$/;
     return emailPattern.test(email);
 }
 

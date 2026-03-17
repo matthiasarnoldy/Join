@@ -50,7 +50,7 @@
     * @returns {boolean} Whether the contact email is valid.
     */
    function isValidContactEmail(email) {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+      const emailPattern = /^[^\s@]+@[^\s@.]+\.[A-Za-z]{2,}$/;
       return emailPattern.test(String(email || "").trim().toLowerCase());
    }
 
