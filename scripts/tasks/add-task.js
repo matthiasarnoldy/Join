@@ -190,12 +190,8 @@ function resetAssignedMenuState(select) {
  */
 function resetAssignedSpacing(select) {
    const wrapper = getSelectWrapper(select);
-   const footer = getFooter();
    if (wrapper) {
       wrapper.style.paddingBottom = "0px";
-   }
-   if (footer) {
-      footer.style.transform = "translateY(0)";
    }
 }
 

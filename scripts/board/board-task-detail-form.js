@@ -275,15 +275,11 @@
    }
 
    /**
-    * Clears the add task dialog form.
-    *
-    * @param {HTMLDialogElement|null} dialog - The dialog.
+    * Clears the edit dialog form through the shared board helper.
     * @returns {void} Nothing.
     */
-   function clearAddTaskDialogForm(dialog) {
-      if (!dialog || typeof handleClearClick !== "function") return;
-      const clearButton = dialog.querySelector(".add-task__button--cancel");
-      if (clearButton) handleClearClick({ preventDefault: () => {} }, clearButton);
+   function clearAddTaskDialogForm() {
+      window.clearAddTaskDialogForm?.();
    }
 
    /**
@@ -312,7 +308,7 @@
       const taskData = window.BoardData?.getTask(taskId);
       if (!dialog || !taskData) return;
       const taskKey = await window.BoardData.getTaskKey(taskId);
-      clearAddTaskDialogForm(dialog);
+      clearAddTaskDialogForm();
       prepareEditTaskDialogData(dialog, taskId, taskData, taskKey || "");
       window.setAddTaskDialogMode?.(true);
       fillAddTaskFormForEdit(taskData);

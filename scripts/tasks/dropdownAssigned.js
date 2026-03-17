@@ -266,15 +266,6 @@ function getSelectWrapper(select) {
 
 
 /**
- * Returns the footer.
- * @returns {HTMLElement|null} The footer element, or null when it is not available.
- */
-function getFooter() {
-   return document.querySelector(".add-task__footer");
-}
-
-
-/**
  * Returns the initials parameters.
  *
  * @param {object} elements - The elements object.

@@ -137,7 +137,8 @@ function hideSignupError() {
  * @returns {void} Nothing.
  */
 function setSignupButtonState(button, isEnabled) {
-    button.disabled = false;
+    if (!button) return;
+    button.disabled = !isEnabled;
     button.setAttribute("aria-disabled", String(!isEnabled));
     button.classList.toggle("is-disabled", !isEnabled);
 }

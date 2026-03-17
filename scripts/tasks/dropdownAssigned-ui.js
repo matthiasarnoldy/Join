@@ -284,25 +284,6 @@ function filterContactOptions(searchInput, menu) {
 
 
 /**
- * Resets the assigned placeholder.
- *
- * @param {object} elements - The elements object.
- * @returns {void} Nothing.
- */
-function resetAssignedPlaceholder(elements) {
-   const searchInput = getSearchInput(elements.select);
-   if (!searchInput) return;
-   showSearchInput(searchInput, elements.label);
-   setupSearchListeners(searchInput, elements.menu);
-   const placeholder = elements.label.dataset.placeholder || elements.label.textContent;
-   elements.label.textContent = placeholder;
-   elements.label.dataset.placeholder = placeholder;
-   elements.input.value = "";
-   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
-}
-
-
-/**
  * Shows the all contacts.
  *
  * @param {HTMLElement|null} menu - The menu.
@@ -313,26 +294,6 @@ function showAllContacts(menu) {
    options.forEach((option) => {
       option.style.display = "flex";
    });
-}
-
-
-/**
- * Restores the assigned selection.
- *
- * @param {object} elements - The elements object.
- * @returns {void} Nothing.
- */
-function restoreAssignedSelection(elements) {
-   const searchInput = getSearchInput(elements.select);
-   if (searchInput) {
-      hideSearchInput(searchInput, elements.label);
-   }
-   showAllContacts(elements.menu);
-   const defaultText = ASSIGNED_PLACEHOLDER_TEXT;
-   elements.label.textContent = defaultText;
-   elements.input.value = "";
-   elements.label.style.display = "block";
-   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
 
@@ -521,7 +482,6 @@ function updateContactInitials(elements) {
    if (!params) return;
    renderInitials(elements, params.selectedOptions, params.maxDisplay);
    const wrapper = getSelectWrapper(elements.select);
-   const footer = getFooter();
    const hasContacts = hasSelectedContacts(params.selectedOptions);
    updateWrapperPadding(wrapper, hasContacts, params.menuOpen);
 }
