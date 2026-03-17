@@ -202,17 +202,28 @@
          );
       }
       if (typeof taskCardFallbackHTML === "function") {
-         return taskCardFallbackHTML(
-            viewData.categoryClass,
-            viewData.categoryLabel,
-            taskData.title,
-            taskData.description,
-            viewData.subtasksHTML,
-            viewData.avatarsHTML,
-            viewData.priorityIconSrc,
-         );
+         return buildTaskCardFallbackHTML(taskData, viewData);
       }
       return "";
+   }
+
+   /**
+    * Builds the task card fallback HTML.
+    *
+    * @param {object} taskData - The task data object.
+    * @param {object} viewData - The view data object.
+    * @returns {string} The task card fallback HTML.
+    */
+   function buildTaskCardFallbackHTML(taskData, viewData) {
+      return taskCardFallbackHTML(
+         viewData.categoryClass,
+         viewData.categoryLabel,
+         taskData.title,
+         taskData.description,
+         viewData.subtasksHTML,
+         viewData.avatarsHTML,
+         viewData.priorityIconSrc,
+      );
    }
 
    /**

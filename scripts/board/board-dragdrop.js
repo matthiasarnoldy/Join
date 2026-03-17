@@ -34,6 +34,23 @@
    }
 
    /**
+    * Updates the closest insert candidate.
+    *
+    * @param {HTMLElement|null} card - The card.
+    * @param {number} mouseY - The mouse y coordinate.
+    * @param {{offset: number, element: HTMLElement|null}} closest - The current closest candidate.
+    * @returns {{offset: number, element: HTMLElement|null}} The updated closest candidate.
+    */
+   function updateClosestInsertCandidate(card, mouseY, closest) {
+      const box = card.getBoundingClientRect();
+      const offset = mouseY - box.top - box.height / 2;
+      if (offset < 0 && offset > closest.offset) {
+         return { offset, element: card };
+      }
+      return closest;
+   }
+
+   /**
     * Returns the insert before element.
     *
     * @param {HTMLElement|null} container - The container.
@@ -50,11 +67,7 @@
       };
 
       cards.forEach((card) => {
-         const box = card.getBoundingClientRect();
-         const offset = mouseY - box.top - box.height / 2;
-         if (offset < 0 && offset > closest.offset) {
-            closest = { offset, element: card };
-         }
+         closest = updateClosestInsertCandidate(card, mouseY, closest);
       });
 
       return closest.element;
@@ -70,7 +83,6 @@
    function handleCardDragStart(card, event) {
       draggedCard = card;
       card.classList.add("task-card--dragging");
-
       dragGhostOffsetX = card.offsetWidth / 2;
       dragGhostOffsetY = card.offsetHeight / 2;
       dragGhostCard = card.cloneNode(true);
@@ -79,7 +91,6 @@
       dragGhostCard.style.width = `${card.offsetWidth}px`;
       document.body.appendChild(dragGhostCard);
       updateDragGhostPosition(event);
-
       if (!event.dataTransfer) return;
       event.dataTransfer.effectAllowed = "move";
       event.dataTransfer.setDragImage(transparentDragImage, 0, 0);

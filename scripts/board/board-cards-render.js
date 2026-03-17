@@ -126,6 +126,28 @@
    }
 
    /**
+    * Creates a mobile move menu list item.
+    *
+    * @param {string|number} taskId - The task ID used for this operation.
+    * @param {string} status - The target status.
+    * @returns {HTMLLIElement} The mobile move menu list item element.
+    */
+   function createMobileMoveMenuItem(taskId, status) {
+      const item = document.createElement("li");
+      item.className = "board-mobile-move-menu__item";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "board-mobile-move-menu__button";
+      button.textContent = getMoveStatusLabel(status);
+      button.addEventListener("click", (event) => {
+         event.stopPropagation();
+         handleMobileMoveAction(taskId, status);
+      });
+      item.appendChild(button);
+      return item;
+   }
+
+   /**
     * Creates the mobile move menu list.
     *
     * @param {string|number} taskId - The task ID used for this operation.
@@ -136,18 +158,7 @@
       const list = document.createElement("ul");
       list.className = "board-mobile-move-menu__list";
       targets.forEach((status) => {
-         const item = document.createElement("li");
-         item.className = "board-mobile-move-menu__item";
-         const button = document.createElement("button");
-         button.type = "button";
-         button.className = "board-mobile-move-menu__button";
-         button.textContent = getMoveStatusLabel(status);
-         button.addEventListener("click", (event) => {
-            event.stopPropagation();
-            handleMobileMoveAction(taskId, status);
-         });
-         item.appendChild(button);
-         list.appendChild(item);
+         list.appendChild(createMobileMoveMenuItem(taskId, status));
       });
       return list;
    }
@@ -223,6 +234,24 @@
    }
 
    /**
+    * Checks whether the card matches the search term.
+    *
+    * @param {HTMLElement|null} card - The card.
+    * @param {string} lowerSearchTerm - The normalized search term.
+    * @returns {boolean} Whether the card matches the search term.
+    */
+   function cardMatchesSearch(card, lowerSearchTerm) {
+      const fallbackTitle =
+         card.querySelector(".task-card__title")?.textContent.toLowerCase() || "";
+      const fallbackDescription =
+         card.querySelector(".task-card__description")?.textContent.toLowerCase() || "";
+      const searchText =
+         String(card.dataset.searchText || `${fallbackTitle} ${fallbackDescription}`)
+            .toLowerCase();
+      return searchText.includes(lowerSearchTerm);
+   }
+
+   /**
     * Filters the tasks.
     *
     * @param {*} searchTerm - The search term.
@@ -239,14 +268,7 @@
          return;
       }
       allCards.forEach((card) => {
-         const fallbackTitle =
-            card.querySelector(".task-card__title")?.textContent.toLowerCase() || "";
-         const fallbackDescription =
-            card.querySelector(".task-card__description")?.textContent.toLowerCase() || "";
-         const searchText =
-            String(card.dataset.searchText || `${fallbackTitle} ${fallbackDescription}`)
-               .toLowerCase();
-         const matchesSearch = searchText.includes(lowerSearchTerm);
+         const matchesSearch = cardMatchesSearch(card, lowerSearchTerm);
          setCardVisibility(card, matchesSearch);
       });
       updatePlaceholders();

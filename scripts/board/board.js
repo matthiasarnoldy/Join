@@ -56,29 +56,36 @@ function resetAddTaskDialogMode() {
 }
 
 /**
+ * Clears all fields in the given container.
+ *
+ * @param {HTMLElement|null} container - The container.
+ * @returns {void} Nothing.
+ */
+function clearContainerFields(container) {
+   const inputs = container.querySelectorAll("input, textarea, select");
+   inputs.forEach((input) => {
+      if (input.type === "checkbox" || input.type === "radio") {
+         input.checked = false;
+      } else {
+         input.value = "";
+         input.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+   });
+}
+
+/**
  * Clears the add task dialog form state.
  * @returns {void} Nothing.
  */
 function clearAddTaskDialogForm() {
    const dialog = getAddTaskDialog();
    if (!dialog) return;
-
    const container = dialog.querySelector(".dialog_flex-instructions") || dialog;
-
    if (typeof clearAllInputs === "function") {
       clearAllInputs(container);
    } else {
-      const inputs = container.querySelectorAll("input, textarea, select");
-      inputs.forEach((input) => {
-         if (input.type === "checkbox" || input.type === "radio") {
-            input.checked = false;
-         } else {
-            input.value = "";
-            input.dispatchEvent(new Event("input", { bubbles: true }));
-         }
-      });
+      clearContainerFields(container);
    }
-
    if (typeof resetPriority === "function") resetPriority(container);
    if (typeof resetAssigned === "function") resetAssigned(container);
    if (typeof resetCategory === "function") resetCategory(container);
@@ -116,6 +123,23 @@ function closeDialog() {
 }
 
 /**
+ * Handles the board success message display state.
+ * @returns {void} Nothing.
+ */
+function handleBoardSuccessMessage() {
+   const shouldShowSuccess = localStorage.getItem("showTaskSuccess");
+   if (shouldShowSuccess === "true") {
+      const successIsEdit =
+         localStorage.getItem("showTaskSuccessEdit") === "true";
+      localStorage.removeItem("showTaskSuccess");
+      localStorage.removeItem("showTaskSuccessEdit");
+      if (typeof showSuccessMessage === "function") {
+         showSuccessMessage(successIsEdit);
+      }
+   }
+}
+
+/**
  * Initializes the board.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
@@ -131,17 +155,7 @@ async function initializeBoard() {
       window.BoardTaskDetail.openTaskDetail(taskId),
    );
    window.BoardTaskDetail.setupTaskDetailInteractions();
-
-   const shouldShowSuccess = localStorage.getItem("showTaskSuccess");
-   if (shouldShowSuccess === "true") {
-      const successIsEdit =
-         localStorage.getItem("showTaskSuccessEdit") === "true";
-      localStorage.removeItem("showTaskSuccess");
-      localStorage.removeItem("showTaskSuccessEdit");
-      if (typeof showSuccessMessage === "function") {
-         showSuccessMessage(successIsEdit);
-      }
-   }
+   handleBoardSuccessMessage();
 }
 
 document.addEventListener("DOMContentLoaded", initializeBoard);

@@ -105,6 +105,24 @@
    }
 
    /**
+    * Sends the contact update request.
+    *
+    * @param {string} contactKey - The contact key.
+    * @param {object} payload - The payload object.
+    * @returns {Promise<Response>} A promise that resolves to the update response.
+    */
+   async function sendContactUpdateRequest(contactKey, payload) {
+      return fetch(
+         `${getContactsBaseUrl()}contacts/${contactKey}.json`,
+         {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+         }
+      );
+   }
+
+   /**
     * Updates the contact.
     *
     * @param {string|number} contactId - The contact ID used for this operation.
@@ -118,20 +136,11 @@
       if (!contactKey) {
          throw new Error(`Contact key not found for id ${contactId}`);
       }
-
       const payload = {
          ...contactData,
          id: contactData.id ?? contactId,
       };
-
-      const response = await fetch(
-         `${getContactsBaseUrl()}contacts/${contactKey}.json`,
-         {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-         }
-      );
+      const response = await sendContactUpdateRequest(contactKey, payload);
       if (!response.ok) {
          throw new Error(`Contact update failed: HTTP ${response.status}`);
       }

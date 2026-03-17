@@ -69,6 +69,26 @@
    }
 
    /**
+    * Syncs one assigned option with lookup maps.
+    *
+    * @param {HTMLElement|null} option - The option.
+    * @param {object} maps - The maps object.
+    * @returns {void} Nothing.
+    */
+   function syncAssignedOption(option, maps) {
+      const isSelected =
+         maps.values.has(option.dataset.value || "") ||
+         maps.names.has(option.dataset.name || option.textContent.trim());
+      const checkbox = option.querySelector(".add-task__option-checkbox");
+      option.classList.toggle(ASSIGNED_SELECTED_CLASS, isSelected);
+      if (checkbox) {
+         checkbox.src = isSelected
+            ? boardDetailFormAssetPath("icons/desktop/checkBox--checked.svg")
+            : boardDetailFormAssetPath("icons/desktop/checkBox.svg");
+      }
+   }
+
+   /**
     * Synchronizes the assigned options.
     *
     * @param {object} maps - The maps object.
@@ -79,16 +99,7 @@
          "#addTaskAssignedMenu .add-task__select-option--assigned",
       );
       options.forEach((option) => {
-         const isSelected =
-            maps.values.has(option.dataset.value || "") ||
-            maps.names.has(option.dataset.name || option.textContent.trim());
-         const checkbox = option.querySelector(".add-task__option-checkbox");
-         option.classList.toggle(ASSIGNED_SELECTED_CLASS, isSelected);
-         if (checkbox) {
-            checkbox.src = isSelected
-               ? boardDetailFormAssetPath("icons/desktop/checkBox--checked.svg")
-               : boardDetailFormAssetPath("icons/desktop/checkBox.svg");
-         }
+         syncAssignedOption(option, maps);
       });
    }
 
