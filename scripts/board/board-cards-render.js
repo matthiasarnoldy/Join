@@ -239,12 +239,14 @@
          return;
       }
       allCards.forEach((card) => {
-         const title =
+         const fallbackTitle =
             card.querySelector(".task-card__title")?.textContent.toLowerCase() || "";
-         const description =
+         const fallbackDescription =
             card.querySelector(".task-card__description")?.textContent.toLowerCase() || "";
-         const matchesSearch =
-            title.includes(lowerSearchTerm) || description.includes(lowerSearchTerm);
+         const searchText =
+            String(card.dataset.searchText || `${fallbackTitle} ${fallbackDescription}`)
+               .toLowerCase();
+         const matchesSearch = searchText.includes(lowerSearchTerm);
          setCardVisibility(card, matchesSearch);
       });
       updatePlaceholders();
@@ -309,6 +311,9 @@
       const card = document.createElement("article");
       card.className = "task-card";
       card.dataset.taskId = taskData.id;
+      card.dataset.searchText = `${String(taskData.title || "")} ${String(taskData.description || "")}`
+         .toLowerCase()
+         .trim();
       const viewData = window.BoardCards.getTaskCardRenderData(taskData);
       card.innerHTML = window.BoardCards.buildTaskCardHTML(taskData, viewData);
       card.appendChild(createTaskCardMoveButton(taskData));
