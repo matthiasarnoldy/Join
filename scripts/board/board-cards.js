@@ -1,7 +1,11 @@
-(function () {
+"use strict";
+
+{
+   const AVATAR_COLORS = ["orange", "teal", "purple"];
    const BOARD_CARDS_ASSET_BASE_PATH = window.location.pathname.includes("/templates/")
       ? "../assets/"
       : "./assets/";
+
    /**
     * Returns the board cards asset path.
     *
@@ -13,24 +17,58 @@
    }
 
    /**
+    * Returns both board search inputs.
+    * @returns {Array<HTMLInputElement>} The available search inputs.
+    */
+   function getTaskSearchInputs() {
+      return [document.getElementById("findTaskInput"), document.getElementById("findTaskInputMobile")].filter(Boolean);
+   }
+
+   /**
+    * Syncs all board search inputs.
+    *
+    * @param {Array<HTMLInputElement>} searchInputs - The search inputs.
+    * @param {HTMLInputElement} source - The changed input.
+    * @param {string} value - The new value.
+    * @returns {void} Nothing.
+    */
+   function syncSearchInputs(searchInputs, source, value) {
+      searchInputs.forEach((input) => {
+         if (input !== source) input.value = value;
+      });
+   }
+
+   /**
+    * Handles one board search input change.
+    *
+    * @param {Array<HTMLInputElement>} searchInputs - The search inputs.
+    * @param {Event} event - The input event.
+    * @returns {void} Nothing.
+    */
+   function handleSearchInput(searchInputs, event) {
+      const value = event.target.value;
+      syncSearchInputs(searchInputs, event.target, value);
+      window.BoardCards.filterTasks(value);
+   }
+
+   /**
+    * Binds one search input.
+    *
+    * @param {HTMLInputElement} searchInput - The search input.
+    * @param {Array<HTMLInputElement>} searchInputs - The search inputs.
+    * @returns {void} Nothing.
+    */
+   function bindSearchInput(searchInput, searchInputs) {
+      searchInput.addEventListener("input", (event) => handleSearchInput(searchInputs, event));
+   }
+
+   /**
     * Sets up the task search.
     * @returns {void} Nothing.
     */
    function setupTaskSearch() {
-      const searchInputs = [
-         document.getElementById("findTaskInput"),
-         document.getElementById("findTaskInputMobile"),
-      ].filter(Boolean);
-
-      searchInputs.forEach((searchInput) => {
-         searchInput.addEventListener("input", (event) => {
-            const value = event.target.value;
-            searchInputs.forEach((input) => {
-               if (input !== event.target) input.value = value;
-            });
-            window.BoardCards.filterTasks(value);
-         });
-      });
+      const searchInputs = getTaskSearchInputs();
+      searchInputs.forEach((searchInput) => bindSearchInput(searchInput, searchInputs));
    }
 
    /**
@@ -55,11 +93,7 @@
     * @returns {string} The priority label.
     */
    function getPriorityLabel(priority) {
-      const labels = {
-         urgent: "Urgent",
-         medium: "Medium",
-         low: "Low",
-      };
+      const labels = { urgent: "Urgent", medium: "Medium", low: "Low" };
       return labels[String(priority || "")] || "Medium";
    }
 
@@ -71,53 +105,52 @@
     */
    function getCategoryLabel(category) {
       const categoryStr = String(category || "");
-      const labels = {
-         technical: "Technical Task",
-         "user-story": "User Story",
-      };
+      const labels = { technical: "Technical Task", "user-story": "User Story" };
       return labels[categoryStr] || categoryStr;
    }
 
    /**
     * Returns the avatar display count.
     *
-    * @param {Array<object>} totalAssignees - The total assignees list.
-    * @returns {number} The avatar display count value.
+    * @param {number} totalAssignees - The total assignee count.
+    * @returns {number} The avatar display count.
     */
    function getAvatarDisplayCount(totalAssignees) {
-      const avatarWidth = 32;
-      const overlap = 8;
-      const available = 172;
-      const maxAvatars =
-         Math.floor((available - avatarWidth) / (avatarWidth - overlap)) + 1;
+      const maxAvatars = Math.floor((172 - 32) / (32 - 8)) + 1;
       return totalAssignees > maxAvatars ? maxAvatars - 1 : totalAssignees;
    }
 
    /**
-    * Renders the single avatar.
+    * Returns one avatar color class.
     *
-    * @param {*} assignee - The assignee.
-    * @param {number} index - The index.
-    * @returns {*} The single avatar result.
+    * @param {number} index - The assignee index.
+    * @returns {string} The avatar color class.
+    */
+   function getAvatarColor(index) {
+      return AVATAR_COLORS[index % AVATAR_COLORS.length];
+   }
+
+   /**
+    * Renders one task card avatar.
+    *
+    * @param {object} assignee - The assignee object.
+    * @param {number} index - The assignee index.
+    * @returns {string} The avatar HTML.
     */
    function renderSingleAvatar(assignee, index) {
-      const colors = ["orange", "teal", "purple"];
-      const color = colors[index % colors.length];
       return typeof taskCardAvatarHTML === "function"
-         ? taskCardAvatarHTML(color, assignee.initials)
-         : `<span class="avatar avatar--${color}">${assignee.initials}</span>`;
+         ? taskCardAvatarHTML(getAvatarColor(index), assignee.initials || "?")
+         : "";
    }
 
    /**
     * Renders the avatar overflow.
     *
-    * @param {number} remaining - The remaining.
-    * @returns {*} The avatar overflow result.
+    * @param {number} remaining - The hidden assignee count.
+    * @returns {string} The avatar overflow HTML.
     */
    function renderAvatarOverflow(remaining) {
-      return typeof taskCardAvatarOverflowHTML === "function"
-         ? taskCardAvatarOverflowHTML(remaining)
-         : `<span class="avatar avatar--overflow">+${remaining}</span>`;
+      return typeof taskCardAvatarOverflowHTML === "function" ? taskCardAvatarOverflowHTML(remaining) : "";
    }
 
    /**
@@ -128,16 +161,11 @@
     */
    function buildAvatarsHTML(taskData) {
       const assignees = taskData.assigned || [];
-      if (assignees.length === 0) return "";
       const displayCount = getAvatarDisplayCount(assignees.length);
-      const avatarHTML = assignees
-         .slice(0, displayCount)
-         .map((assignee, index) => renderSingleAvatar(assignee, index))
-         .join("");
+      const avatarsHTML = assignees.slice(0, displayCount).map(renderSingleAvatar).join("");
       const remaining = assignees.length - displayCount;
-      return remaining > 0
-         ? avatarHTML + renderAvatarOverflow(remaining)
-         : avatarHTML;
+      if (assignees.length === 0) return "";
+      return remaining > 0 ? avatarsHTML + renderAvatarOverflow(remaining) : avatarsHTML;
    }
 
    /**
@@ -173,13 +201,32 @@
     */
    function getTaskCardRenderData(taskData) {
       return {
-         categoryClass:
-            taskData.category === "technical" ? "task-card__label--teal" : "",
+         categoryClass: taskData.category === "technical" ? "task-card__label--teal" : "",
          categoryLabel: getCategoryLabel(taskData.category),
          priorityIconSrc: getPriorityIcon(taskData.priority),
          avatarsHTML: buildAvatarsHTML(taskData),
          subtasksHTML: buildSubtasksHTML(taskData.subtasks),
       };
+   }
+
+   /**
+    * Returns the task card template function.
+    * @returns {Function|null} The task card template function.
+    */
+   function getTaskCardTemplate() {
+      if (typeof taskCardHTML === "function") return taskCardHTML;
+      return typeof taskCardFallbackHTML === "function" ? taskCardFallbackHTML : null;
+   }
+
+   /**
+    * Returns the task card template arguments.
+    *
+    * @param {object} taskData - The task data object.
+    * @param {object} viewData - The prepared view data.
+    * @returns {Array<*>} The task card template arguments.
+    */
+   function getTaskCardTemplateArgs(taskData, viewData) {
+      return [viewData.categoryClass, viewData.categoryLabel, taskData.title, taskData.description, viewData.subtasksHTML, viewData.avatarsHTML, viewData.priorityIconSrc];
    }
 
    /**
@@ -190,40 +237,8 @@
     * @returns {string} The task card HTML.
     */
    function buildTaskCardHTML(taskData, viewData) {
-      if (typeof taskCardHTML === "function") {
-         return taskCardHTML(
-            viewData.categoryClass,
-            viewData.categoryLabel,
-            taskData.title,
-            taskData.description,
-            viewData.subtasksHTML,
-            viewData.avatarsHTML,
-            viewData.priorityIconSrc,
-         );
-      }
-      if (typeof taskCardFallbackHTML === "function") {
-         return buildTaskCardFallbackHTML(taskData, viewData);
-      }
-      return "";
-   }
-
-   /**
-    * Builds the task card fallback HTML.
-    *
-    * @param {object} taskData - The task data object.
-    * @param {object} viewData - The view data object.
-    * @returns {string} The task card fallback HTML.
-    */
-   function buildTaskCardFallbackHTML(taskData, viewData) {
-      return taskCardFallbackHTML(
-         viewData.categoryClass,
-         viewData.categoryLabel,
-         taskData.title,
-         taskData.description,
-         viewData.subtasksHTML,
-         viewData.avatarsHTML,
-         viewData.priorityIconSrc,
-      );
+      const template = getTaskCardTemplate();
+      return template ? template(...getTaskCardTemplateArgs(taskData, viewData)) : "";
    }
 
    /**
@@ -240,37 +255,53 @@
    }
 
    /**
+    * Handles one add button click.
+    *
+    * @param {*} onAddClick - The add click handler.
+    * @param {HTMLElement} button - The clicked button.
+    * @returns {void} Nothing.
+    */
+   function handleColumnAddClick(onAddClick, button) {
+      onAddClick(button.dataset.status || "todo");
+   }
+
+   /**
     * Sets up the column add buttons.
     *
-    * @param {*} onAddClick - The on add click.
+    * @param {*} onAddClick - The add click handler.
     * @returns {void} Nothing.
     */
    function setupColumnAddButtons(onAddClick) {
-      const addButtons = document.querySelectorAll(".board-column__add");
-      addButtons.forEach((button) => {
-         button.addEventListener("click", () => {
-            const status = button.dataset.status || "todo";
-            onAddClick(status);
-         });
+      document.querySelectorAll(".board-column__add").forEach((button) => {
+         button.addEventListener("click", () => handleColumnAddClick(onAddClick, button));
       });
+   }
+
+   /**
+    * Handles a board grid click.
+    *
+    * @param {*} onCardClick - The card click handler.
+    * @param {Event} event - The click event.
+    * @returns {void} Nothing.
+    */
+   function handleTaskGridClick(onCardClick, event) {
+      const card = event.target.closest(".task-card");
+      if (event.target.closest(".task-card__move-button")) return;
+      if (!card || window.BoardDnd?.isDragging?.()) return;
+      onCardClick(card.dataset.taskId);
    }
 
    /**
     * Sets up the task card clicks.
     *
-    * @param {HTMLElement|null} onCardClick - The on card click.
+    * @param {*} onCardClick - The card click handler.
     * @returns {void} Nothing.
     */
    function setupTaskCardClicks(onCardClick) {
       const grid = document.querySelector(".board-task-grid");
       if (!grid || grid.dataset.cardClickInitialized === "true") return;
       grid.dataset.cardClickInitialized = "true";
-      grid.addEventListener("click", (event) => {
-         if (event.target.closest(".task-card__move-button")) return;
-         const card = event.target.closest(".task-card");
-         if (!card || window.BoardDnd?.isDragging?.()) return;
-         onCardClick(card.dataset.taskId);
-      });
+      grid.addEventListener("click", (event) => handleTaskGridClick(onCardClick, event));
    }
 
    window.BoardCards = {
@@ -285,4 +316,4 @@
       setupTaskCardClicks,
       setupTaskSearch,
    };
-})();
+}

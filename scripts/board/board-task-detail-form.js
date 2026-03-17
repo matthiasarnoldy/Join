@@ -1,4 +1,6 @@
-(function () {
+"use strict";
+
+{
    const BOARD_DETAIL_FORM_ASSET_BASE_PATH = window.location.pathname.includes("/templates/")
       ? "../assets/"
       : "./assets/";
@@ -22,14 +24,63 @@
    function setPriorityInForm(priority) {
       const priorityField = document.getElementById("addTaskPriority");
       if (!priorityField) return;
-      const buttons = priorityField.querySelectorAll(".add-task__priority-option");
-      buttons.forEach((button) =>
-         button.classList.remove("add-task__priority-option--active"),
-      );
-      const target = priorityField.querySelector(
-         `.add-task__priority-option--${priority || "medium"}`,
-      );
-      if (target) target.classList.add("add-task__priority-option--active");
+      clearPriorityButtons(priorityField);
+      getPriorityButton(priorityField, priority)?.classList.add("add-task__priority-option--active");
+   }
+
+   /**
+    * Clears all priority buttons.
+    *
+    * @param {HTMLElement} priorityField - The priority field.
+    * @returns {void} Nothing.
+    */
+   function clearPriorityButtons(priorityField) {
+      priorityField.querySelectorAll(".add-task__priority-option").forEach((button) => button.classList.remove("add-task__priority-option--active"));
+   }
+
+   /**
+    * Returns the matching priority button.
+    *
+    * @param {HTMLElement} priorityField - The priority field.
+    * @param {string} priority - The priority.
+    * @returns {HTMLElement|null} The matching priority button.
+    */
+   function getPriorityButton(priorityField, priority) {
+      return priorityField.querySelector(`.add-task__priority-option--${priority || "medium"}`);
+   }
+
+   /**
+    * Returns the matching category option.
+    *
+    * @param {string} category - The category.
+    * @returns {HTMLElement|null} The matching category option.
+    */
+   function getCategoryOption(category) {
+      return document.querySelector(`#addTaskCategoryMenu .add-task__select-option[data-value="${category}"]`);
+   }
+
+   /**
+    * Updates the category label.
+    *
+    * @param {HTMLElement|null} label - The category label.
+    * @param {HTMLElement|null} option - The matching category option.
+    * @returns {void} Nothing.
+    */
+   function setCategoryLabel(label, option) {
+      if (!label) return;
+      label.textContent = option ? option.textContent.trim() : "Select task category";
+      label.dataset.lastLabel = label.textContent;
+   }
+
+   /**
+    * Stores the category input state.
+    *
+    * @param {HTMLInputElement} input - The hidden category input.
+    * @returns {void} Nothing.
+    */
+   function syncCategoryInputState(input) {
+      input.dataset.lastValue = input.value;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
    }
 
    /**
@@ -40,19 +91,11 @@
     */
    function setCategoryInForm(category) {
       const input = document.getElementById("addTaskCategoryInput");
-      const select = document.getElementById("addTaskCategory");
-      if (!input || !select) return;
-      const label = select.querySelector(".add-task__select-value");
-      const option = document.querySelector(
-         `#addTaskCategoryMenu .add-task__select-option[data-value="${category}"]`,
-      );
+      const label = document.querySelector("#addTaskCategory .add-task__select-value");
+      if (!input) return;
       input.value = category || "";
-      if (label) {
-         label.textContent = option ? option.textContent.trim() : "Select task category";
-         label.dataset.lastLabel = label.textContent;
-      }
-      input.dataset.lastValue = input.value;
-      input.dispatchEvent(new Event("input", { bubbles: true }));
+      setCategoryLabel(label, getCategoryOption(category));
+      syncCategoryInputState(input);
    }
 
    /**
@@ -69,38 +112,50 @@
    }
 
    /**
+    * Returns whether one assigned option is selected.
+    *
+    * @param {HTMLElement} option - The assigned option.
+    * @param {object} maps - The selected lookup maps.
+    * @returns {boolean} Whether the option is selected.
+    */
+   function isAssignedOptionSelected(option, maps) {
+      return maps.values.has(option.dataset.value || "") || maps.names.has(option.dataset.name || option.textContent.trim());
+   }
+
+   /**
+    * Returns the assigned checkbox icon path.
+    *
+    * @param {boolean} isSelected - Whether the option is selected.
+    * @returns {string} The assigned checkbox icon path.
+    */
+   function getAssignedCheckboxIcon(isSelected) {
+      return isSelected
+         ? boardDetailFormAssetPath("icons/desktop/checkBox--checked.svg")
+         : boardDetailFormAssetPath("icons/desktop/checkBox.svg");
+   }
+
+   /**
     * Syncs one assigned option with lookup maps.
     *
-    * @param {HTMLElement|null} option - The option.
-    * @param {object} maps - The maps object.
+    * @param {HTMLElement} option - The assigned option.
+    * @param {object} maps - The selected lookup maps.
     * @returns {void} Nothing.
     */
    function syncAssignedOption(option, maps) {
-      const isSelected =
-         maps.values.has(option.dataset.value || "") ||
-         maps.names.has(option.dataset.name || option.textContent.trim());
       const checkbox = option.querySelector(".add-task__option-checkbox");
+      const isSelected = isAssignedOptionSelected(option, maps);
       option.classList.toggle(ASSIGNED_SELECTED_CLASS, isSelected);
-      if (checkbox) {
-         checkbox.src = isSelected
-            ? boardDetailFormAssetPath("icons/desktop/checkBox--checked.svg")
-            : boardDetailFormAssetPath("icons/desktop/checkBox.svg");
-      }
+      if (checkbox) checkbox.src = getAssignedCheckboxIcon(isSelected);
    }
 
    /**
     * Synchronizes the assigned options.
     *
-    * @param {object} maps - The maps object.
+    * @param {object} maps - The selected lookup maps.
     * @returns {void} Nothing.
     */
    function syncAssignedOptions(maps) {
-      const options = document.querySelectorAll(
-         "#addTaskAssignedMenu .add-task__select-option--assigned",
-      );
-      options.forEach((option) => {
-         syncAssignedOption(option, maps);
-      });
+      document.querySelectorAll("#addTaskAssignedMenu .add-task__select-option--assigned").forEach((option) => syncAssignedOption(option, maps));
    }
 
    /**
@@ -121,12 +176,7 @@
     * @returns {void} Nothing.
     */
    function refreshAssignedInitials() {
-      if (
-         typeof getAssignedElements !== "function" ||
-         typeof updateContactInitials !== "function"
-      ) {
-         return;
-      }
+      if (typeof getAssignedElements !== "function" || typeof updateContactInitials !== "function") return;
       const elements = getAssignedElements();
       if (elements) updateContactInitials(elements);
    }
@@ -139,10 +189,46 @@
     */
    function setAssignedInForm(assigned) {
       const assignedList = assigned || [];
-      const maps = getAssignedLookupMaps(assignedList);
-      syncAssignedOptions(maps);
+      syncAssignedOptions(getAssignedLookupMaps(assignedList));
       syncAssignedInputState(assignedList.length);
       refreshAssignedInitials();
+   }
+
+   /**
+    * Clears the subtask list.
+    *
+    * @param {HTMLElement} list - The subtask list.
+    * @returns {void} Nothing.
+    */
+   function clearSubtaskList(list) {
+      list.innerHTML = "";
+   }
+
+   /**
+    * Creates one editable subtask item.
+    *
+    * @param {object} subtask - The subtask object.
+    * @returns {HTMLElement|null} The editable subtask item.
+    */
+   function createEditableSubtaskItem(subtask) {
+      if (typeof createSubtaskItem !== "function") return null;
+      const item = createSubtaskItem(subtask.text || "");
+      item.dataset.completed = subtask.completed ? "true" : "false";
+      return item;
+   }
+
+   /**
+    * Appends one editable subtask item.
+    *
+    * @param {HTMLElement} list - The subtask list.
+    * @param {object} subtask - The subtask object.
+    * @returns {void} Nothing.
+    */
+   function appendEditableSubtaskItem(list, subtask) {
+      const item = createEditableSubtaskItem(subtask);
+      if (!item) return;
+      list.prepend(item);
+      if (typeof setupSubtaskListeners === "function") setupSubtaskListeners(item);
    }
 
    /**
@@ -154,24 +240,15 @@
    function setSubtasksInForm(subtasks) {
       const list = document.querySelector(".add-task__subtask-list");
       if (!list) return;
-      list.innerHTML = "";
-      (subtasks || []).forEach((subtask) => {
-         if (typeof createSubtaskItem === "function") {
-            const item = createSubtaskItem(subtask.text || "");
-            item.dataset.completed = subtask.completed ? "true" : "false";
-            list.prepend(item);
-            if (typeof setupSubtaskListeners === "function") {
-               setupSubtaskListeners(item);
-            }
-         }
-      });
+      clearSubtaskList(list);
+      (subtasks || []).forEach((subtask) => appendEditableSubtaskItem(list, subtask));
    }
 
    /**
-    * Sets the form field value and trigger.
+    * Sets the form field value and triggers input.
     *
-    * @param {string} id - The element ID.
-    * @param {string} value - The value.
+    * @param {string} id - The field ID.
+    * @param {string} value - The field value.
     * @returns {void} Nothing.
     */
    function setFormFieldValueAndTrigger(id, value) {
@@ -204,19 +281,18 @@
     * @returns {void} Nothing.
     */
    function clearAddTaskDialogForm(dialog) {
-      if (typeof handleClearClick !== "function") return;
+      if (!dialog || typeof handleClearClick !== "function") return;
       const clearButton = dialog.querySelector(".add-task__button--cancel");
-      if (!clearButton) return;
-      handleClearClick({ preventDefault: () => {} }, clearButton);
+      if (clearButton) handleClearClick({ preventDefault: () => {} }, clearButton);
    }
 
    /**
     * Prepares the edit task dialog data.
     *
-    * @param {HTMLDialogElement|null} dialog - The dialog.
-    * @param {string|number} taskId - The task ID used for this operation.
+    * @param {HTMLDialogElement} dialog - The dialog.
+    * @param {string|number} taskId - The task ID.
     * @param {object} taskData - The task data object.
-    * @param {string} [taskKey=""] - The task key. Defaults to "".
+    * @param {string} [taskKey=""] - The task key.
     * @returns {void} Nothing.
     */
    function prepareEditTaskDialogData(dialog, taskId, taskData, taskKey = "") {
@@ -228,8 +304,8 @@
    /**
     * Opens the edit task dialog.
     *
-    * @param {string|number} taskId - The task ID used for this operation.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @param {string|number} taskId - The task ID.
+    * @returns {Promise<void>} A promise that resolves when the dialog is ready.
     */
    async function openEditTaskDialog(taskId) {
       const dialog = window.getAddTaskDialog?.();
@@ -241,9 +317,19 @@
       window.setAddTaskDialogMode?.(true);
       fillAddTaskFormForEdit(taskData);
       window.BoardTaskDetail?.closeTaskDetailDialog();
+      showPreparedEditDialog(dialog);
+   }
+
+   /**
+    * Shows the prepared edit dialog.
+    *
+    * @param {HTMLDialogElement} dialog - The dialog.
+    * @returns {void} Nothing.
+    */
+   function showPreparedEditDialog(dialog) {
       dialog.showModal();
       window.updateBoardDialogScrollLock?.();
-      requestAnimationFrame(() => refreshAssignedInitials());
+      requestAnimationFrame(refreshAssignedInitials);
    }
 
    window.BoardTaskDetailForm = {
@@ -251,4 +337,4 @@
       fillAddTaskFormForEdit,
       clearAddTaskDialogForm,
    };
-})();
+}

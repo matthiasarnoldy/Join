@@ -64,24 +64,16 @@ function setGoodNight() {
  * @returns {string} The subtask HTML.
  */
 function createSubtaskHTML(subtaskText) {
-   return `
-      <span class="add-task__subtask-text">${subtaskText}</span>
-      <div class="add-task__subtask-item-actions">
-         <button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--edit" data-action="edit">
-            <img src="${templateAssetPath("icons/desktop/subtask__pencil.svg")}" alt="" class="add-task__subtask-item-icon" />
-         </button>
-         <button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--delete-edit" data-action="delete-edit" style="display: none;">
-            <img src="${templateAssetPath("icons/desktop/subtask__trash.svg")}" alt="" class="add-task__subtask-item-icon" />
-         </button>
-         <span class="add-task__subtask-dividingline"></span>
-         <button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--delete" data-action="delete">
-            <img src="${templateAssetPath("icons/desktop/subtask__trash.svg")}" alt="" class="add-task__subtask-item-icon" />
-         </button>
-         <button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--check" data-action="check" style="display: none;">
-            <img src="${templateAssetPath("icons/desktop/check.svg")}" alt="" class="add-task__subtask-item-icon" />
-         </button>
-      </div>
-   `;
+   const pencilIcon = templateAssetPath("icons/desktop/subtask__pencil.svg");
+   const trashIcon = templateAssetPath("icons/desktop/subtask__trash.svg");
+   const checkIcon = templateAssetPath("icons/desktop/check.svg");
+   return [
+      `<span class="add-task__subtask-text">${subtaskText}</span>`,
+      `<div class="add-task__subtask-item-actions"><button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--edit" data-action="edit"><img src="${pencilIcon}" alt="" class="add-task__subtask-item-icon" /></button>`,
+      `<button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--delete-edit" data-action="delete-edit" style="display: none;"><img src="${trashIcon}" alt="" class="add-task__subtask-item-icon" /></button>`,
+      `<span class="add-task__subtask-dividingline"></span><button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--delete" data-action="delete"><img src="${trashIcon}" alt="" class="add-task__subtask-item-icon" /></button>`,
+      `<button type="button" class="add-task__subtask-item-button add-task__subtask-item-button--check" data-action="check" style="display: none;"><img src="${checkIcon}" alt="" class="add-task__subtask-item-icon" /></button></div>`,
+   ].join("");
 }
 
 
@@ -193,6 +185,90 @@ function taskCardHTML(categoryClass, categoryLabel, title, description, subtasks
  */
 function taskCardFallbackHTML(categoryClass, categoryLabel, title, description, subtasksHTML, avatarsHTML, priorityIconSrc) {
    return `<span class="task-card__label ${categoryClass}">${categoryLabel}</span><h3 class="task-card__title">${title}</h3><p class="task-card__description">${description}</p>${subtasksHTML}<div class="task-card__meta"><div class="task-card__avatars">${avatarsHTML}</div><img class="task-card__priority" src="${priorityIconSrc}" alt="Priority" /></div>`;
+}
+
+
+/**
+ * Returns the board placeholder HTML.
+ *
+ * @param {string} [text="No tasks found"] - The placeholder text. Defaults to "No tasks found".
+ * @returns {string} The board placeholder HTML.
+ */
+function boardPlaceholderHTML(text = "No tasks found") {
+   return `<div class="board-task-placeholder">${text}</div>`;
+}
+
+
+/**
+ * Returns the task card move button icon HTML.
+ *
+ * @param {string} iconSrc - The icon source.
+ * @returns {string} The task card move button icon HTML.
+ */
+function taskCardMoveButtonIconHTML(iconSrc) {
+   return `<img class="task-card__move-icon" src="${iconSrc}" alt="" />`;
+}
+
+
+/**
+ * Returns the mobile move menu HTML.
+ *
+ * @param {string} itemsHTML - The list items HTML.
+ * @returns {string} The mobile move menu HTML.
+ */
+function boardMobileMoveMenuHTML(itemsHTML) {
+   return `<div class="board-mobile-move-menu__title">Move to</div><ul class="board-mobile-move-menu__list">${itemsHTML}</ul>`;
+}
+
+
+/**
+ * Returns the mobile move menu item HTML.
+ *
+ * @param {string} status - The target status.
+ * @param {string} label - The target label.
+ * @returns {string} The mobile move menu item HTML.
+ */
+function boardMobileMoveMenuItemHTML(status, label) {
+   return `<li class="board-mobile-move-menu__item"><button type="button" class="board-mobile-move-menu__button" data-target-status="${status}">${label}</button></li>`;
+}
+
+
+/**
+ * Returns the task detail empty item HTML.
+ *
+ * @param {string} text - The empty text.
+ * @returns {string} The task detail empty item HTML.
+ */
+function taskDetailEmptyItemHTML(text) {
+   return `<span>${text}</span>`;
+}
+
+
+/**
+ * Returns the task detail assigned item HTML.
+ *
+ * @param {string} colorClass - The avatar color class.
+ * @param {string} initialsText - The initials text.
+ * @param {string} name - The display name.
+ * @returns {string} The task detail assigned item HTML.
+ */
+function taskDetailAssignedItemHTML(colorClass, initialsText, name) {
+   return `<span class="avatar avatar--${colorClass}">${initialsText}</span><span class="task-detail__assigned-name">${name}</span>`;
+}
+
+
+/**
+ * Returns the task detail subtask item HTML.
+ *
+ * @param {number} index - The subtask index.
+ * @param {boolean} checked - Whether the subtask is checked.
+ * @param {string} text - The subtask text.
+ * @returns {string} The task detail subtask item HTML.
+ */
+function taskDetailSubtaskItemHTML(index, checked, text) {
+   const checkedAttribute = checked ? " checked" : "";
+   const textClass = checked ? " task-detail__subtask-text--done" : "";
+   return `<input type="checkbox" class="task-detail__subtask-checkbox"${checkedAttribute} data-subtask-index="${index}"><span class="task-detail__subtask-text${textClass}">${text}</span>`;
 }
 
 

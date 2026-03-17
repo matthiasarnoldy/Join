@@ -1,21 +1,11 @@
-(function () {
-   const BOARD_DETAIL_ASSET_BASE_PATH = window.location.pathname.includes("/templates/")
-      ? "../assets/"
-      : "./assets/";
+"use strict";
 
-   /**
-    * Returns the board detail asset path.
-    *
-    * @param {string} relativePath - The relative path.
-    * @returns {string} The board detail asset path.
-    */
-   function boardDetailAssetPath(relativePath) {
-      return `${BOARD_DETAIL_ASSET_BASE_PATH}${relativePath}`;
-   }
+{
+   const TASK_DETAIL_AVATAR_COLORS = ["orange", "teal", "purple"];
 
    /**
     * Returns the task detail dialog.
-    * @returns {HTMLDialogElement|null} The task detail dialog element, or null when it is not available.
+    * @returns {HTMLDialogElement|null} The task detail dialog.
     */
    function getTaskDetailDialog() {
       return document.getElementById("taskDetailDialog");
@@ -36,7 +26,7 @@
    /**
     * Sets the task detail label.
     *
-    * @param {string} category - The category.
+    * @param {string} category - The task category.
     * @returns {void} Nothing.
     */
    function setTaskDetailLabel(category) {
@@ -48,11 +38,11 @@
    }
 
    /**
-    * Sets the task detail text.
+    * Sets text on one task detail element.
     *
     * @param {string} id - The element ID.
-    * @param {string} value - The value.
-    * @param {string} fallback - The fallback.
+    * @param {string} value - The text value.
+    * @param {string} fallback - The fallback text.
     * @returns {void} Nothing.
     */
    function setTaskDetailText(id, value, fallback) {
@@ -63,7 +53,7 @@
    /**
     * Sets the task detail priority.
     *
-    * @param {string} priority - The priority.
+    * @param {string} priority - The task priority.
     * @returns {void} Nothing.
     */
    function setTaskDetailPriority(priority) {
@@ -78,39 +68,104 @@
    }
 
    /**
-    * Creates the task detail empty item.
+    * Creates one task detail list item from HTML.
     *
-    * @param {string} text - The text.
-    * @returns {HTMLLIElement} The task detail empty item element.
+    * @param {string} className - The item class name.
+    * @param {string} html - The item HTML.
+    * @returns {HTMLLIElement} The task detail list item.
     */
-   function createTaskDetailEmptyItem(text) {
+   function createTaskDetailListItem(className, html) {
       const item = document.createElement("li");
-      item.className = "task-detail__empty";
-      item.textContent = text;
+      item.className = className;
+      item.innerHTML = html;
       return item;
    }
 
    /**
-    * Renders the task detail assigned.
+    * Creates the task detail empty item.
+    *
+    * @param {string} text - The empty text.
+    * @returns {HTMLLIElement} The task detail empty item.
+    */
+   function createTaskDetailEmptyItem(text) {
+      const html = typeof taskDetailEmptyItemHTML === "function" ? taskDetailEmptyItemHTML(text) : text;
+      return createTaskDetailListItem("task-detail__empty", html);
+   }
+
+   /**
+    * Returns one task detail avatar color class.
+    *
+    * @param {number} index - The assignee index.
+    * @returns {string} The avatar color class.
+    */
+   function getTaskDetailAvatarColor(index) {
+      return TASK_DETAIL_AVATAR_COLORS[index % TASK_DETAIL_AVATAR_COLORS.length];
+   }
+
+   /**
+    * Creates one assigned list item.
+    *
+    * @param {object} assignee - The assignee object.
+    * @param {number} index - The assignee index.
+    * @returns {HTMLLIElement} The assigned list item.
+    */
+   function createTaskDetailAssignedItem(assignee, index) {
+      const html = typeof taskDetailAssignedItemHTML === "function"
+         ? taskDetailAssignedItemHTML(getTaskDetailAvatarColor(index), assignee.initials || "?", assignee.name || "Unnamed")
+         : "";
+      return createTaskDetailListItem("task-detail__assigned-item", html);
+   }
+
+   /**
+    * Returns the task detail subtask text.
+    *
+    * @param {object} subtask - The subtask object.
+    * @param {number} index - The subtask index.
+    * @returns {string} The task detail subtask text.
+    */
+   function getTaskDetailSubtaskText(subtask, index) {
+      return subtask.text || `Subtask ${index + 1}`;
+   }
+
+   /**
+    * Creates one subtask list item.
+    *
+    * @param {object} subtask - The subtask object.
+    * @param {number} index - The subtask index.
+    * @returns {HTMLLIElement} The subtask list item.
+    */
+   function createTaskDetailSubtaskItem(subtask, index) {
+      const html = typeof taskDetailSubtaskItemHTML === "function"
+         ? taskDetailSubtaskItemHTML(index, Boolean(subtask.completed), getTaskDetailSubtaskText(subtask, index))
+         : "";
+      return createTaskDetailListItem("task-detail__subtask-item", html);
+   }
+
+   /**
+    * Renders one task detail list.
+    *
+    * @param {string} listId - The list element ID.
+    * @param {Array<object>} items - The list items.
+    * @param {string} emptyText - The empty text.
+    * @param {*} createItem - The item factory.
+    * @returns {void} Nothing.
+    */
+   function renderTaskDetailList(listId, items, emptyText, createItem) {
+      const list = document.getElementById(listId);
+      if (!list) return;
+      list.innerHTML = "";
+      if (items.length === 0) return list.appendChild(createTaskDetailEmptyItem(emptyText));
+      items.forEach((item, index) => list.appendChild(createItem(item, index)));
+   }
+
+   /**
+    * Renders the task detail assigned list.
     *
     * @param {Array<object>} assignees - The assignees list.
     * @returns {void} Nothing.
     */
    function renderTaskDetailAssigned(assignees) {
-      const list = document.getElementById("taskDetailAssignedList");
-      if (!list) return;
-      const colors = ["orange", "teal", "purple"];
-      list.innerHTML = "";
-      if (!assignees.length) {
-         list.appendChild(createTaskDetailEmptyItem("No assignees"));
-         return;
-      }
-      assignees.forEach((assignee, index) => {
-         const item = document.createElement("li");
-         item.className = "task-detail__assigned-item";
-         item.innerHTML = `<span class="avatar avatar--${colors[index % colors.length]}">${assignee.initials || "?"}</span><span class="task-detail__assigned-name">${assignee.name || "Unnamed"}</span>`;
-         list.appendChild(item);
-      });
+      renderTaskDetailList("taskDetailAssignedList", assignees, "No assignees", createTaskDetailAssignedItem);
    }
 
    /**
@@ -120,20 +175,7 @@
     * @returns {void} Nothing.
     */
    function renderTaskDetailSubtasks(subtasks) {
-      const list = document.getElementById("taskDetailSubtasksList");
-      if (!list) return;
-      list.innerHTML = "";
-      if (!subtasks.length) {
-         list.appendChild(createTaskDetailEmptyItem("No subtasks"));
-         return;
-      }
-      subtasks.forEach((subtask, index) => {
-         const item = document.createElement("li");
-         const checked = Boolean(subtask.completed);
-         item.className = "task-detail__subtask-item";
-         item.innerHTML = `<input type="checkbox" class="task-detail__subtask-checkbox" ${checked ? "checked" : ""} data-subtask-index="${index}"><span class="task-detail__subtask-text${checked ? " task-detail__subtask-text--done" : ""}">${subtask.text || `Subtask ${index + 1}`}</span>`;
-         list.appendChild(item);
-      });
+      renderTaskDetailList("taskDetailSubtasksList", subtasks, "No subtasks", createTaskDetailSubtaskItem);
    }
 
    /**
@@ -155,14 +197,13 @@
    /**
     * Opens the task detail.
     *
-    * @param {string|number} taskId - The task ID used for this operation.
+    * @param {string|number} taskId - The task ID.
     * @returns {void} Nothing.
     */
    function openTaskDetail(taskId) {
       const dialog = getTaskDetailDialog();
-      if (!dialog) return;
       const taskData = window.BoardData?.getTask(taskId);
-      if (!taskData) return;
+      if (!dialog || !taskData) return;
       dialog.dataset.taskId = String(taskId);
       renderTaskDetail(taskData);
       dialog.showModal();
@@ -170,42 +211,58 @@
    }
 
    /**
+    * Returns the selected detail checkbox.
+    *
+    * @param {Event} event - The change event.
+    * @returns {HTMLInputElement|null} The selected detail checkbox.
+    */
+   function getTaskDetailCheckbox(event) {
+      return event.target.closest(".task-detail__subtask-checkbox");
+   }
+
+   /**
+    * Returns the detail subtask index.
+    *
+    * @param {HTMLInputElement|null} checkbox - The subtask checkbox.
+    * @returns {number} The detail subtask index.
+    */
+   function getTaskDetailSubtaskIndex(checkbox) {
+      return Number.parseInt(checkbox?.dataset.subtaskIndex || "", 10);
+   }
+
+   /**
     * Returns the task detail subtask toggle payload.
     *
-    * @param {Event} event - The event object that triggered the handler.
-    * @returns {object|null} The task detail subtask toggle payload object, or null when it is not available.
+    * @param {Event} event - The change event.
+    * @returns {object|null} The task detail subtask toggle payload.
     */
    function getTaskDetailSubtaskTogglePayload(event) {
-      const checkbox = event.target.closest(".task-detail__subtask-checkbox");
+      const checkbox = getTaskDetailCheckbox(event);
       const taskId = getTaskDetailDialog()?.dataset.taskId;
-      const subtaskIndex = Number.parseInt(checkbox?.dataset.subtaskIndex || "", 10);
+      const subtaskIndex = getTaskDetailSubtaskIndex(checkbox);
       const currentTask = window.BoardData?.getTask(taskId);
-      if (!checkbox || !taskId || Number.isNaN(subtaskIndex) || !currentTask?.subtasks?.[subtaskIndex]) {
-         return null;
-      }
+      if (!checkbox || !taskId || Number.isNaN(subtaskIndex) || !currentTask?.subtasks?.[subtaskIndex]) return null;
       return { checkbox, taskId, subtaskIndex, currentTask };
    }
 
    /**
-    * Returns the task with toggled subtask.
+    * Returns the task with one toggled subtask.
     *
     * @param {object} task - The task object.
     * @param {number} subtaskIndex - The subtask index.
-    * @param {boolean} isCompleted - Whether it is completed.
-    * @returns {object} The task with toggled subtask object.
+    * @param {boolean} isCompleted - Whether the subtask is completed.
+    * @returns {object} The updated task.
     */
    function getTaskWithToggledSubtask(task, subtaskIndex, isCompleted) {
-      const subtasks = (task.subtasks || []).map((subtask, index) =>
-         index === subtaskIndex ? { ...subtask, completed: isCompleted } : subtask,
-      );
+      const subtasks = (task.subtasks || []).map((subtask, index) => index === subtaskIndex ? { ...subtask, completed: isCompleted } : subtask);
       return { ...task, subtasks };
    }
 
    /**
-    * Reloads the board and keep detail open.
+    * Reloads the board and keeps the detail open.
     *
-    * @param {string|number} taskId - The task ID used for this operation.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @param {string|number} taskId - The task ID.
+    * @returns {Promise<void>} A promise that resolves when the board is reloaded.
     */
    async function reloadBoardAndKeepDetailOpen(taskId) {
       const tasks = await window.BoardData.loadTasks();
@@ -217,9 +274,9 @@
    /**
     * Persists the task detail subtask toggle.
     *
-    * @param {string|number} taskId - The task ID used for this operation.
+    * @param {string|number} taskId - The task ID.
     * @param {object} updatedTask - The updated task object.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @returns {Promise<void>} A promise that resolves when the subtask toggle is stored.
     */
    async function persistTaskDetailSubtaskToggle(taskId, updatedTask) {
       await window.BoardData.putTask(taskId, updatedTask);
@@ -227,24 +284,29 @@
    }
 
    /**
+    * Reverts one detail checkbox state.
+    *
+    * @param {HTMLInputElement} checkbox - The subtask checkbox.
+    * @returns {void} Nothing.
+    */
+   function revertTaskDetailCheckbox(checkbox) {
+      checkbox.checked = !checkbox.checked;
+   }
+
+   /**
     * Handles the task detail subtask toggle.
     *
-    * @param {Event} event - The event object that triggered the handler.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @param {Event} event - The change event.
+    * @returns {Promise<void>} A promise that resolves when the change is handled.
     */
    async function handleTaskDetailSubtaskToggle(event) {
       const payload = getTaskDetailSubtaskTogglePayload(event);
       if (!payload) return;
-      const { checkbox, taskId, subtaskIndex, currentTask } = payload;
-      const updatedTask = getTaskWithToggledSubtask(
-         currentTask,
-         subtaskIndex,
-         checkbox.checked,
-      );
+      const updatedTask = getTaskWithToggledSubtask(payload.currentTask, payload.subtaskIndex, payload.checkbox.checked);
       try {
-         await persistTaskDetailSubtaskToggle(taskId, updatedTask);
+         await persistTaskDetailSubtaskToggle(payload.taskId, updatedTask);
       } catch (error) {
-         checkbox.checked = !checkbox.checked;
+         revertTaskDetailCheckbox(payload.checkbox);
          console.error("Subtask update failed:", error);
       }
    }
@@ -252,15 +314,14 @@
    /**
     * Handles deleting the task.
     *
-    * @param {string|number} taskId - The task ID used for this operation.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @param {string|number} taskId - The task ID.
+    * @returns {Promise<void>} A promise that resolves when the task is deleted.
     */
    async function handleDeleteTask(taskId) {
       try {
          await window.BoardData.deleteTask(taskId);
          closeTaskDetailDialog();
-         const tasks = await window.BoardData.loadTasks();
-         window.BoardCards?.renderBoardFromTasks(tasks);
+         window.BoardCards?.renderBoardFromTasks(await window.BoardData.loadTasks());
       } catch (error) {
          console.error("Task delete failed:", error);
       }
@@ -270,37 +331,74 @@
     * Handles the task detail delete click.
     *
     * @param {HTMLDialogElement|null} dialog - The dialog.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @returns {Promise<void>} A promise that resolves when the delete is handled.
     */
    async function handleTaskDetailDeleteClick(dialog) {
       const taskId = dialog?.dataset.taskId;
-      if (!taskId) return;
-      await handleDeleteTask(taskId);
+      if (taskId) await handleDeleteTask(taskId);
    }
 
    /**
     * Handles the task detail edit click.
     *
     * @param {HTMLDialogElement|null} dialog - The dialog.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @returns {Promise<void>} A promise that resolves when the edit is handled.
     */
    async function handleTaskDetailEditClick(dialog) {
       const taskId = dialog?.dataset.taskId;
-      if (!taskId) return;
-      await window.BoardTaskDetailForm?.openEditTaskDialog(taskId);
+      if (taskId) await window.BoardTaskDetailForm?.openEditTaskDialog(taskId);
    }
 
    /**
-    * Binds the task detail button.
+    * Binds one task detail button.
     *
-    * @param {string} id - The element ID.
-    * @param {string} eventName - The event object that triggered the handler.
-    * @param {*} handler - The handler.
+    * @param {string} id - The button ID.
+    * @param {string} eventName - The event name.
+    * @param {*} handler - The event handler.
     * @returns {void} Nothing.
     */
    function bindTaskDetailButton(id, eventName, handler) {
-      const element = document.getElementById(id);
-      if (element) element.addEventListener(eventName, handler);
+      document.getElementById(id)?.addEventListener(eventName, handler);
+   }
+
+   /**
+    * Handles the task detail delete button click.
+    *
+    * @param {HTMLDialogElement} dialog - The dialog.
+    * @returns {void} Nothing.
+    */
+   function handleTaskDetailDeleteButtonClick(dialog) {
+      handleTaskDetailDeleteClick(dialog);
+   }
+
+   /**
+    * Handles the task detail edit button click.
+    *
+    * @param {HTMLDialogElement} dialog - The dialog.
+    * @returns {void} Nothing.
+    */
+   function handleTaskDetailEditButtonClick(dialog) {
+      handleTaskDetailEditClick(dialog);
+   }
+
+   /**
+    * Binds the detail subtask list.
+    * @returns {void} Nothing.
+    */
+   function bindTaskDetailSubtasks() {
+      document.getElementById("taskDetailSubtasksList")?.addEventListener("change", handleTaskDetailSubtaskToggle);
+   }
+
+   /**
+    * Binds the detail action buttons.
+    *
+    * @param {HTMLDialogElement} dialog - The dialog.
+    * @returns {void} Nothing.
+    */
+   function bindTaskDetailActions(dialog) {
+      bindTaskDetailButton("taskDetailClose", "click", closeTaskDetailDialog);
+      bindTaskDetailButton("taskDetailDelete", "click", () => handleTaskDetailDeleteButtonClick(dialog));
+      bindTaskDetailButton("taskDetailEdit", "click", () => handleTaskDetailEditButtonClick(dialog));
    }
 
    /**
@@ -311,17 +409,8 @@
       const dialog = getTaskDetailDialog();
       if (!dialog || dialog.dataset.initialized === "true") return;
       dialog.dataset.initialized = "true";
-      const subtasksList = document.getElementById("taskDetailSubtasksList");
-      bindTaskDetailButton("taskDetailClose", "click", closeTaskDetailDialog);
-      if (subtasksList) {
-         subtasksList.addEventListener("change", handleTaskDetailSubtaskToggle);
-      }
-      bindTaskDetailButton("taskDetailDelete", "click", () =>
-         handleTaskDetailDeleteClick(dialog),
-      );
-      bindTaskDetailButton("taskDetailEdit", "click", () =>
-         handleTaskDetailEditClick(dialog),
-      );
+      bindTaskDetailSubtasks();
+      bindTaskDetailActions(dialog);
    }
 
    window.BoardTaskDetail = {
@@ -329,4 +418,4 @@
       openTaskDetail,
       setupTaskDetailInteractions,
    };
-})();
+}
