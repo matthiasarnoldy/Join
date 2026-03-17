@@ -1,4 +1,6 @@
-(function initContactsViewNamespace() {
+"use strict";
+
+{
    const ContactsFeature = window.ContactsFeature || {};
    ContactsFeature.state = ContactsFeature.state || {
       selectedContactId: null,
@@ -6,248 +8,511 @@
       editingContactKey: null,
       contacts: [],
    };
-
    const state = ContactsFeature.state;
 
    /**
-    * Formats the phone number.
+    * Formats a phone number for display.
     *
-    * @param {*} number - The number.
-    * @returns {string} The phone number.
+    * @param {*} number - The raw phone number.
+    * @returns {string} The formatted phone number.
     */
    function formatPhoneNumber(number) {
-      if (!number) return "";
+      const cleaned = normalizePhoneNumber(number);
+      if (!cleaned) return "";
+      if (!cleaned.startsWith("+49")) return cleaned;
+      return formatGermanPhone(cleaned.slice(3));
+   }
 
-      let cleaned = String(number).replace(/[\s\-().]/g, "");
-
-      if (cleaned.startsWith("00")) {
-         cleaned = `+${cleaned.slice(2)}`;
-      }
-
-      if (cleaned.startsWith("0") && !cleaned.startsWith("+")) {
-         cleaned = `+49${cleaned.slice(1)}`;
-      }
-
-      if (cleaned.startsWith("+49")) {
-         const local = cleaned.slice(3);
-
-         if (/^1[567]/.test(local) && local.length > 4) {
-            return `+49 ${local.slice(0, 4)} ${local.slice(4)}`;
-         }
-
-         if (/^[2-9][0-9]/.test(local) && local.length > 2) {
-            return `+49 ${local.slice(0, 2)} ${local.slice(2)}`;
-         }
-
-         return `+49 ${local}`;
-      }
-
+   /**
+    * Normalizes a raw phone number string.
+    *
+    * @param {*} number - The raw phone number.
+    * @returns {string} The normalized phone number.
+    */
+   function normalizePhoneNumber(number) {
+      let cleaned = String(number || "").replace(/[\s\-().]/g, "");
+      if (cleaned.startsWith("00")) cleaned = `+${cleaned.slice(2)}`;
+      if (cleaned.startsWith("0") && !cleaned.startsWith("+")) cleaned = `+49${cleaned.slice(1)}`;
       return cleaned;
    }
 
    /**
-    * Returns the initials.
+    * Formats a German local phone number.
     *
-    * @param {string} name - The name.
+    * @param {string} local - The local phone number part.
+    * @returns {string} The formatted phone number.
+    */
+   function formatGermanPhone(local) {
+      if (isGermanMobile(local)) return `+49 ${local.slice(0, 4)} ${local.slice(4)}`;
+      if (isGermanAreaCode(local)) return `+49 ${local.slice(0, 2)} ${local.slice(2)}`;
+      return `+49 ${local}`;
+   }
+
+   /**
+    * Checks whether a number looks like a German mobile number.
+    *
+    * @param {string} local - The local phone number part.
+    * @returns {boolean} Whether the number is mobile.
+    */
+   function isGermanMobile(local) {
+      return /^1[567]/.test(local) && local.length > 4;
+   }
+
+   /**
+    * Checks whether a number has a German area code.
+    *
+    * @param {string} local - The local phone number part.
+    * @returns {boolean} Whether the number has an area code.
+    */
+   function isGermanAreaCode(local) {
+      return /^[2-9][0-9]/.test(local) && local.length > 2;
+   }
+
+   /**
+    * Builds initials from a contact name.
+    *
+    * @param {string} name - The full contact name.
     * @returns {string} The initials.
     */
    function getInitials(name) {
-      const parts = String(name || "")
-         .trim()
-         .split(/\s+/)
-         .filter(Boolean);
-      if (parts.length >= 2) {
-         return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-      }
+      const parts = getNameParts(name);
+      if (parts.length >= 2) return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
       return parts[0] ? parts[0].substring(0, 2).toUpperCase() : "??";
    }
 
    /**
-    * Groups the contacts.
+    * Splits a name into usable parts.
     *
-    * @param {Array<object>} contacts - The contacts list.
-    * @returns {Array<object>} The contacts list.
+    * @param {string} name - The full contact name.
+    * @returns {Array<string>} The name parts.
     */
-   function groupContacts(contacts) {
-      return contacts.reduce((groups, contact) => {
-         const letter = (contact.name || "?").charAt(0).toUpperCase();
-         if (!groups[letter]) groups[letter] = [];
-         groups[letter].push(contact);
-         return groups;
-      }, {});
+   function getNameParts(name) {
+      return String(name || "").trim().split(/\s+/).filter(Boolean);
    }
 
    /**
-    * Renders the contacts.
+    * Groups contacts by their first letter.
+    *
+    * @param {Array<object>} contacts - The contacts list.
+    * @returns {object} The grouped contacts.
+    */
+   function groupContacts(contacts) {
+      return contacts.reduce(addContactToGroup, {});
+   }
+
+   /**
+    * Adds a contact to its letter group.
+    *
+    * @param {object} groups - The grouped contacts.
+    * @param {object} contact - The contact to group.
+    * @returns {object} The updated groups.
+    */
+   function addContactToGroup(groups, contact) {
+      const letter = getContactLetter(contact);
+      if (!groups[letter]) groups[letter] = [];
+      groups[letter].push(contact);
+      return groups;
+   }
+
+   /**
+    * Returns the group letter for a contact.
+    *
+    * @param {object} contact - The contact.
+    * @returns {string} The group letter.
+    */
+   function getContactLetter(contact) {
+      return (contact.name || "?").charAt(0).toUpperCase();
+   }
+
+   /**
+    * Renders the contacts list.
     * @returns {void} Nothing.
     */
    function renderContacts() {
       const listContainer = document.getElementById("contacts-list-content");
       if (!listContainer) return;
-
-      const sortedContacts = [...state.contacts].sort((a, b) =>
-         (a.name || "").localeCompare(b.name || "")
-      );
-      const groupedContacts = groupContacts(sortedContacts);
-
-      let html = "";
-      Object.keys(groupedContacts).forEach((letter) => {
-         html += `<div class="group-header">${letter}</div><hr>`;
-         groupedContacts[letter].forEach((contact) => {
-            const activeClass =
-               String(contact.id) === String(state.selectedContactId)
-                  ? "active"
-                  : "";
-            html += `
-        <div class="contact-item ${activeClass}" data-id="${contact.id}">
-          <div class="initials" style="background:${contact.color}">${getInitials(
-             contact.name
-          )}</div>
-          <div class="contact-info">
-            <span class="name">${contact.name}</span>
-            <span class="email">${contact.email}</span>
-          </div>
-        </div>`;
-         });
-      });
-
-      listContainer.innerHTML = html;
+      listContainer.innerHTML = buildContactsMarkup(getSortedContacts());
    }
 
    /**
-    * Shows the detail.
+    * Returns the contacts sorted by name.
+    * @returns {Array<object>} The sorted contacts.
+    */
+   function getSortedContacts() {
+      return [...state.contacts].sort(compareContactsByName);
+   }
+
+   /**
+    * Compares two contacts by name.
     *
-    * @param {object} contact - The contact object.
+    * @param {object} a - The first contact.
+    * @param {object} b - The second contact.
+    * @returns {number} The compare result.
+    */
+   function compareContactsByName(a, b) {
+      return (a.name || "").localeCompare(b.name || "");
+   }
+
+   /**
+    * Builds the full contacts list markup.
+    *
+    * @param {Array<object>} contacts - The contacts list.
+    * @returns {string} The contacts markup.
+    */
+   function buildContactsMarkup(contacts) {
+      return Object.entries(groupContacts(contacts)).map(buildGroupMarkup).join("");
+   }
+
+   /**
+    * Builds the markup for one contact group.
+    *
+    * @param {Array<*>} entry - The group entry.
+    * @returns {string} The group markup.
+    */
+   function buildGroupMarkup(entry) {
+      const [letter, contacts] = entry;
+      return contactGroupSectionHTML(letter, contacts.map(buildContactMarkup).join(""));
+   }
+
+   /**
+    * Builds the markup for one contact row.
+    *
+    * @param {object} contact - The contact.
+    * @returns {string} The contact markup.
+    */
+   function buildContactMarkup(contact) {
+      return contactListItemHTML(contact, getInitials(contact.name), getActiveClass(contact.id));
+   }
+
+   /**
+    * Returns the active class for a contact row.
+    *
+    * @param {string|number} contactId - The contact ID.
+    * @returns {string} The active class name.
+    */
+   function getActiveClass(contactId) {
+      return String(contactId) === String(state.selectedContactId) ? "active" : "";
+   }
+
+   /**
+    * Shows the detail view for a contact.
+    *
+    * @param {object} contact - The selected contact.
     * @returns {void} Nothing.
     */
    function showDetail(contact) {
-      if (!contact) return;
-      const view = document.getElementById("detail-view");
-      if (!view) return;
-      view.classList.remove("d-none");
-
-      const detailInitials = document.getElementById("detail-initials");
-      const detailName = document.getElementById("detail-name");
-      const detailEmail = document.getElementById("detail-email");
-      const detailPhone = document.getElementById("detail-phone");
-
-      if (detailInitials) {
-         detailInitials.innerText = getInitials(contact.name);
-         detailInitials.style.backgroundColor = contact.color;
-      }
-      if (detailName) detailName.innerText = contact.name;
-      if (detailEmail) {
-         detailEmail.innerText = contact.email;
-         detailEmail.href = `mailto:${contact.email}`;
-      }
-      if (detailPhone) {
-         detailPhone.innerText = formatPhoneNumber(contact.phone);
-      }
+      const elements = getDetailElements();
+      if (!contact || !elements.view) return;
+      elements.view.classList.remove("d-none");
+      fillDetailElements(elements, contact);
    }
 
    /**
-    * Closes the detail menu.
+    * Collects the detail view elements.
+    * @returns {object} The detail view elements.
+    */
+   function getDetailElements() {
+      return {
+         view: document.getElementById("detail-view"),
+         initials: document.getElementById("detail-initials"),
+         name: document.getElementById("detail-name"),
+         email: document.getElementById("detail-email"),
+         phone: document.getElementById("detail-phone"),
+      };
+   }
+
+   /**
+    * Fills the detail view with contact data.
+    *
+    * @param {object} elements - The detail elements.
+    * @param {object} contact - The selected contact.
+    * @returns {void} Nothing.
+    */
+   function fillDetailElements(elements, contact) {
+      setDetailInitials(elements.initials, contact);
+      setDetailText(elements.name, contact.name);
+      setDetailEmail(elements.email, contact.email);
+      setDetailText(elements.phone, formatPhoneNumber(contact.phone));
+   }
+
+   /**
+    * Updates the detail initials badge.
+    *
+    * @param {HTMLElement|null} element - The initials element.
+    * @param {object} contact - The selected contact.
+    * @returns {void} Nothing.
+    */
+   function setDetailInitials(element, contact) {
+      if (!element) return;
+      element.innerText = getInitials(contact.name);
+      element.style.backgroundColor = contact.color;
+   }
+
+   /**
+    * Sets text on a detail element.
+    *
+    * @param {HTMLElement|null} element - The target element.
+    * @param {string} value - The text value.
+    * @returns {void} Nothing.
+    */
+   function setDetailText(element, value) {
+      if (element) element.innerText = value;
+   }
+
+   /**
+    * Sets the detail email link.
+    *
+    * @param {HTMLAnchorElement|null} element - The email link element.
+    * @param {string} email - The email address.
+    * @returns {void} Nothing.
+    */
+   function setDetailEmail(element, email) {
+      if (!element) return;
+      element.innerText = email;
+      element.href = `mailto:${email}`;
+   }
+
+   /**
+    * Closes the mobile detail menu.
     * @returns {void} Nothing.
     */
    function closeDetailMenu() {
-      const menu = document.getElementById("contact-detail-menu");
+      const menu = getDetailMenu();
       if (menu) menu.classList.add("d-none");
    }
 
    /**
-    * Toggles the detail menu.
+    * Toggles the mobile detail menu.
     * @returns {void} Nothing.
     */
    function toggleDetailMenu() {
-      const menu = document.getElementById("contact-detail-menu");
-      if (!menu) return;
-      menu.classList.toggle("d-none");
+      const menu = getDetailMenu();
+      if (menu) menu.classList.toggle("d-none");
    }
 
    /**
-    * Switches the view.
+    * Returns the detail menu element.
+    * @returns {HTMLElement|null} The detail menu element.
+    */
+   function getDetailMenu() {
+      return document.getElementById("contact-detail-menu");
+   }
+
+   /**
+    * Switches the view for desktop or mobile.
     * @returns {void} Nothing.
     */
    function switchView() {
-      const listView = document.querySelector(".contacts-list");
-      const detailContainer = document.querySelector(".contacts-detail");
-      const detailView = document.getElementById("detail-view");
-      const detailEmpty = document.getElementById("detail-empty");
-      const backButton = document.getElementById("btn-back-to-list");
-      const detailMenuButton = document.getElementById("btn-contact-detail-menu");
+      const elements = getViewElements();
+      if (!hasResponsiveElements(elements)) return;
+      const viewState = getViewState();
+      toggleEmptyState(elements.detailEmpty);
+      viewState.isMobile ? applyMobileView(elements, viewState.hasSelection) : applyDesktopView(elements);
+   }
 
-      if (!listView || !detailContainer || !detailView) return;
+   /**
+    * Collects the responsive view elements.
+    * @returns {object} The view elements.
+    */
+   function getViewElements() {
+      return {
+         listView: document.querySelector(".contacts-list"),
+         detailContainer: document.querySelector(".contacts-detail"),
+         detailView: document.getElementById("detail-view"),
+         detailEmpty: document.getElementById("detail-empty"),
+         backButton: document.getElementById("btn-back-to-list"),
+         detailMenuButton: document.getElementById("btn-contact-detail-menu"),
+      };
+   }
 
-      const isMobile = window.matchMedia("(max-width: 820px)").matches;
-      const hasSelection = state.selectedContactId !== null;
+   /**
+    * Checks whether the responsive elements exist.
+    *
+    * @param {object} elements - The collected view elements.
+    * @returns {boolean} Whether the view can be updated.
+    */
+   function hasResponsiveElements(elements) {
+      return Boolean(elements.listView && elements.detailContainer && elements.detailView);
+   }
 
-      if (detailEmpty) {
-         detailEmpty.classList.remove("d-none");
-      }
+   /**
+    * Returns the current responsive view state.
+    * @returns {object} The view state.
+    */
+   function getViewState() {
+      return {
+         isMobile: window.matchMedia("(max-width: 820px)").matches,
+         hasSelection: state.selectedContactId !== null,
+      };
+   }
 
-      if (!isMobile) {
-         listView.classList.remove("d-none");
-         detailContainer.style.display = "";
-         if (backButton) backButton.classList.add("d-none");
-         if (detailMenuButton) detailMenuButton.hidden = true;
-         closeDetailMenu();
-         return;
-      }
+   /**
+    * Shows the empty detail placeholder.
+    *
+    * @param {HTMLElement|null} detailEmpty - The empty detail element.
+    * @returns {void} Nothing.
+    */
+   function toggleEmptyState(detailEmpty) {
+      if (!detailEmpty) return;
+      detailEmpty.classList.remove("d-none");
+   }
 
-      if (hasSelection) {
-         listView.classList.add("d-none");
-         detailContainer.style.display = "block";
-         detailView.classList.remove("d-none");
-         if (backButton) backButton.classList.remove("d-none");
-         if (detailMenuButton) detailMenuButton.hidden = false;
-         return;
-      }
-
-      listView.classList.remove("d-none");
-      detailContainer.style.display = "";
-      detailView.classList.add("d-none");
-      if (backButton) backButton.classList.add("d-none");
-      if (detailMenuButton) detailMenuButton.hidden = true;
+   /**
+    * Applies the desktop contact layout.
+    *
+    * @param {object} elements - The view elements.
+    * @returns {void} Nothing.
+    */
+   function applyDesktopView(elements) {
+      toggleListView(elements.listView, false);
+      setDetailContainerDisplay(elements.detailContainer, "");
+      toggleClass(elements.backButton, "d-none", true);
+      toggleMenuButton(elements.detailMenuButton, true);
       closeDetailMenu();
    }
 
    /**
-    * Creates the toast message.
+    * Applies the mobile contact layout.
     *
-    * @param {string} message - The message.
-    * @param {string} type - The type.
-    * @returns {HTMLDivElement} The toast message element.
+    * @param {object} elements - The view elements.
+    * @param {boolean} hasSelection - Whether a contact is selected.
+    * @returns {void} Nothing.
+    */
+   function applyMobileView(elements, hasSelection) {
+      hasSelection ? showMobileDetail(elements) : showMobileList(elements);
+   }
+
+   /**
+    * Shows the mobile detail panel.
+    *
+    * @param {object} elements - The view elements.
+    * @returns {void} Nothing.
+    */
+   function showMobileDetail(elements) {
+      toggleListView(elements.listView, true);
+      setDetailContainerDisplay(elements.detailContainer, "block");
+      toggleClass(elements.detailView, "d-none", false);
+      toggleClass(elements.backButton, "d-none", false);
+      toggleMenuButton(elements.detailMenuButton, false);
+   }
+
+   /**
+    * Shows the mobile contacts list.
+    *
+    * @param {object} elements - The view elements.
+    * @returns {void} Nothing.
+    */
+   function showMobileList(elements) {
+      toggleListView(elements.listView, false);
+      setDetailContainerDisplay(elements.detailContainer, "");
+      toggleClass(elements.detailView, "d-none", true);
+      toggleClass(elements.backButton, "d-none", true);
+      toggleMenuButton(elements.detailMenuButton, true);
+      closeDetailMenu();
+   }
+
+   /**
+    * Toggles the visibility of the list view.
+    *
+    * @param {HTMLElement|null} listView - The list element.
+    * @param {boolean} shouldHide - Whether the list should be hidden.
+    * @returns {void} Nothing.
+    */
+   function toggleListView(listView, shouldHide) {
+      toggleClass(listView, "d-none", shouldHide);
+   }
+
+   /**
+    * Sets the detail container display value.
+    *
+    * @param {HTMLElement|null} element - The container element.
+    * @param {string} value - The display value.
+    * @returns {void} Nothing.
+    */
+   function setDetailContainerDisplay(element, value) {
+      if (element) element.style.display = value;
+   }
+
+   /**
+    * Toggles the mobile menu button state.
+    *
+    * @param {HTMLElement|null} button - The menu button.
+    * @param {boolean} shouldHide - Whether the button should be hidden.
+    * @returns {void} Nothing.
+    */
+   function toggleMenuButton(button, shouldHide) {
+      if (button) button.hidden = shouldHide;
+   }
+
+   /**
+    * Toggles a class on an element.
+    *
+    * @param {HTMLElement|null} element - The target element.
+    * @param {string} className - The class name.
+    * @param {boolean} shouldAdd - Whether the class should be active.
+    * @returns {void} Nothing.
+    */
+   function toggleClass(element, className, shouldAdd) {
+      if (!element) return;
+      element.classList.toggle(className, shouldAdd);
+   }
+
+   /**
+    * Creates a toast element.
+    *
+    * @param {string} message - The toast message.
+    * @param {string} type - The toast type.
+    * @returns {HTMLDivElement} The toast element.
     */
    function createToastMessage(message, type) {
       const messageDiv = document.createElement("div");
       messageDiv.className = "contact-success-message";
-      if (type === "error") {
-         messageDiv.classList.add("contact-success-message--error");
-      }
+      if (type === "error") messageDiv.classList.add("contact-success-message--error");
       messageDiv.textContent = message;
       return messageDiv;
    }
 
    /**
-    * Shows the toast.
+    * Shows a short toast message.
     *
-    * @param {string} message - The message.
-    * @param {string} [type="success"] - The type. Defaults to "success".
+    * @param {string} message - The toast message.
+    * @param {string} [type="success"] - The toast type.
     * @returns {void} Nothing.
     */
    function showToast(message, type = "success") {
-      const existingMessages = document.querySelectorAll(
-         ".contact-success-message"
-      );
-      existingMessages.forEach((item) => item.remove());
+      removeToasts();
       const toast = createToastMessage(message, type);
       document.body.appendChild(toast);
-      requestAnimationFrame(() => {
-         toast.classList.add("contact-success-message--visible");
-      });
-      setTimeout(() => {
-         toast.remove();
-      }, 1200);
+      requestAnimationFrame(() => showToastElement(toast));
+      setTimeout(() => toast.remove(), 1200);
+   }
+
+   /**
+    * Removes all contact toast messages.
+    * @returns {void} Nothing.
+    */
+   function removeToasts() {
+      document.querySelectorAll(".contact-success-message").forEach(removeElement);
+   }
+
+   /**
+    * Removes one DOM element.
+    *
+    * @param {Element} element - The element to remove.
+    * @returns {void} Nothing.
+    */
+   function removeElement(element) {
+      element.remove();
+   }
+
+   /**
+    * Makes a toast visible.
+    *
+    * @param {HTMLElement} toast - The toast element.
+    * @returns {void} Nothing.
+    */
+   function showToastElement(toast) {
+      toast.classList.add("contact-success-message--visible");
    }
 
    ContactsFeature.view = {
@@ -263,4 +528,4 @@
    };
 
    window.ContactsFeature = ContactsFeature;
-})();
+}

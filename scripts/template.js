@@ -194,3 +194,47 @@ function taskCardHTML(categoryClass, categoryLabel, title, description, subtasks
 function taskCardFallbackHTML(categoryClass, categoryLabel, title, description, subtasksHTML, avatarsHTML, priorityIconSrc) {
    return `<span class="task-card__label ${categoryClass}">${categoryLabel}</span><h3 class="task-card__title">${title}</h3><p class="task-card__description">${description}</p>${subtasksHTML}<div class="task-card__meta"><div class="task-card__avatars">${avatarsHTML}</div><img class="task-card__priority" src="${priorityIconSrc}" alt="Priority" /></div>`;
 }
+
+
+/**
+ * Returns the contact group header HTML.
+ *
+ * @param {string} letter - The first letter.
+ * @returns {string} The contact group header HTML.
+ */
+function contactGroupHeaderHTML(letter) {
+   return `<div class="group-header">${letter}</div><hr>`;
+}
+
+
+/**
+ * Returns the contact list item HTML.
+ *
+ * @param {object} contact - The contact object.
+ * @param {string} initials - The initials.
+ * @param {string} activeClass - The active class.
+ * @returns {string} The contact list item HTML.
+ */
+function contactListItemHTML(contact, initials, activeClass) {
+   return `
+      <div class="contact-item ${activeClass}" data-id="${contact.id}">
+         <div class="initials" style="background:${contact.color}">${initials}</div>
+         <div class="contact-info">
+            <span class="name">${contact.name}</span>
+            <span class="email">${contact.email}</span>
+         </div>
+      </div>
+   `;
+}
+
+
+/**
+ * Returns the contact group section HTML.
+ *
+ * @param {string} letter - The first letter.
+ * @param {string} itemsHTML - The list items HTML.
+ * @returns {string} The contact group section HTML.
+ */
+function contactGroupSectionHTML(letter, itemsHTML) {
+   return `${contactGroupHeaderHTML(letter)}${itemsHTML}`;
+}

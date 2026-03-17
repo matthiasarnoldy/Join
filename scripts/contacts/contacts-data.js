@@ -1,7 +1,8 @@
-(function initContactsDataNamespace() {
+"use strict";
+
+{
    const DEFAULT_CONTACTS_BASE_URL =
       "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
-
    const ContactsFeature = window.ContactsFeature || {};
    ContactsFeature.state = ContactsFeature.state || {
       selectedContactId: null,
@@ -9,163 +10,197 @@
       editingContactKey: null,
       contacts: [],
    };
-
    const state = ContactsFeature.state;
 
    /**
-    * Returns the contacts base URL.
+    * Returns the contacts API base URL.
     * @returns {string} The contacts base URL.
     */
    function getContactsBaseUrl() {
-      return (
-         (window.JOIN_CONFIG && window.JOIN_CONFIG.BASE_URL) ||
-         DEFAULT_CONTACTS_BASE_URL
-      );
+      return (window.JOIN_CONFIG && window.JOIN_CONFIG.BASE_URL) || DEFAULT_CONTACTS_BASE_URL;
    }
 
    /**
-    * Normalizes the contact.
+    * Normalizes one contact from Firebase data.
     *
-    * @param {object} contact - The contact object.
+    * @param {object} contact - The raw contact data.
     * @param {string} firebaseKey - The Firebase key.
-    * @returns {object|null} The contact object, or null when it is not available.
+    * @returns {object|null} The normalized contact.
     */
    function normalizeContact(contact, firebaseKey) {
       if (!contact || typeof contact !== "object") return null;
-      const resolvedId = contact.id ?? firebaseKey;
-      return {
-         ...contact,
-         id: resolvedId,
-         _firebaseKey: firebaseKey,
-      };
+      return { ...contact, id: contact.id ?? firebaseKey, _firebaseKey: firebaseKey };
    }
 
    /**
-    * Normalizes the Firebase contacts.
+    * Converts Firebase contact data into an array.
     *
-    * @param {object} data - The data object.
-    * @returns {Array<object>} The Firebase contacts list.
+    * @param {object|Array<object>} data - The Firebase response data.
+    * @returns {Array<object>} The normalized contacts.
     */
    function normalizeFirebaseContacts(data) {
       if (!data) return [];
-      const entries = Array.isArray(data)
-         ? data.map((contact, index) => [String(index), contact])
-         : Object.entries(data);
-      return entries
-         .map(([key, contact]) => normalizeContact(contact, key))
-         .filter(Boolean);
+      return buildContactEntries(data).map(([key, contact]) => normalizeContact(contact, key)).filter(Boolean);
    }
 
    /**
-    * Loads the contacts.
+    * Builds key and contact pairs from Firebase data.
+    *
+    * @param {object|Array<object>} data - The Firebase response data.
+    * @returns {Array<Array<*>>} The contact entries.
+    */
+   function buildContactEntries(data) {
+      return Array.isArray(data) ? data.map((contact, index) => [String(index), contact]) : Object.entries(data);
+   }
+
+   /**
+    * Loads all contacts from Firebase.
     * @returns {Promise<Array<object>>} A promise that resolves to the contacts list.
     */
    async function loadContacts() {
       try {
-         const response = await fetch(`${getContactsBaseUrl()}contacts.json`);
-         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-         const data = await response.json();
-         state.contacts = normalizeFirebaseContacts(data);
+         state.contacts = normalizeFirebaseContacts(await fetchContactsJson());
       } catch (error) {
-         console.error("Contact loading failed:", error);
-         state.contacts = [];
+         handleLoadError(error);
       }
       return state.contacts;
    }
 
    /**
-    * Adds the contact.
+    * Fetches the raw contacts JSON.
+    * @returns {Promise<object|Array<object>>} A promise that resolves to the raw data.
+    */
+   async function fetchContactsJson() {
+      const response = await fetch(buildContactsCollectionUrl());
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.json();
+   }
+
+   /**
+    * Builds the contacts collection URL.
+    * @returns {string} The contacts collection URL.
+    */
+   function buildContactsCollectionUrl() {
+      return `${getContactsBaseUrl()}contacts.json`;
+   }
+
+   /**
+    * Handles contact loading errors.
     *
-    * @param {object} contact - The contact object.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @param {Error} error - The loading error.
+    * @returns {void} Nothing.
+    */
+   function handleLoadError(error) {
+      console.error("Contact loading failed:", error);
+      state.contacts = [];
+   }
+
+   /**
+    * Saves a new contact to Firebase.
+    *
+    * @param {object} contact - The new contact data.
+    * @returns {Promise<void>} A promise that resolves when the request is done.
     */
    async function addContact(contact) {
-      const response = await fetch(`${getContactsBaseUrl()}contacts.json`, {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify(contact),
-      });
-      if (!response.ok) {
-         throw new Error(`Contact save failed: HTTP ${response.status}`);
-      }
+      await sendContactRequest(buildContactsCollectionUrl(), "POST", contact, "Contact save failed");
    }
 
    /**
-    * Finds the contact key by ID.
+    * Finds the Firebase key for a contact ID.
     *
-    * @param {string|number} contactId - The contact ID used for this operation.
-    * @returns {Promise<string|null>} A promise that resolves to the contact key by ID, or null when it is not available.
+    * @param {string|number} contactId - The contact ID.
+    * @returns {Promise<string|null>} A promise that resolves to the Firebase key.
     */
    async function findContactKeyById(contactId) {
-      const targetId = String(contactId);
-      const match = state.contacts.find(
-         (contact) => String(contact.id) === targetId
-      );
-      return match?._firebaseKey || null;
+      return state.contacts.find((contact) => String(contact.id) === String(contactId))?._firebaseKey || null;
    }
 
    /**
-    * Sends the contact update request.
+    * Updates an existing contact in Firebase.
     *
-    * @param {string} contactKey - The contact key.
-    * @param {object} payload - The payload object.
-    * @returns {Promise<Response>} A promise that resolves to the update response.
-    */
-   async function sendContactUpdateRequest(contactKey, payload) {
-      return fetch(
-         `${getContactsBaseUrl()}contacts/${contactKey}.json`,
-         {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-         }
-      );
-   }
-
-   /**
-    * Updates the contact.
-    *
-    * @param {string|number} contactId - The contact ID used for this operation.
-    * @param {object} contactData - The contact data object.
-    * @param {string|null} [contactKeyOverride=null] - The contact key override. Defaults to null.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @param {string|number} contactId - The contact ID.
+    * @param {object} contactData - The updated contact data.
+    * @param {string|null} [contactKeyOverride=null] - The fallback Firebase key.
+    * @returns {Promise<void>} A promise that resolves when the request is done.
     */
    async function updateContact(contactId, contactData, contactKeyOverride = null) {
-      const contactKey =
-         (await findContactKeyById(contactId)) || contactKeyOverride;
-      if (!contactKey) {
-         throw new Error(`Contact key not found for id ${contactId}`);
-      }
-      const payload = {
-         ...contactData,
-         id: contactData.id ?? contactId,
-      };
-      const response = await sendContactUpdateRequest(contactKey, payload);
-      if (!response.ok) {
-         throw new Error(`Contact update failed: HTTP ${response.status}`);
-      }
+      const contactKey = await resolveContactKey(contactId, contactKeyOverride);
+      await sendContactRequest(buildContactUrl(contactKey), "PUT", buildContactPayload(contactId, contactData), "Contact update failed");
    }
 
    /**
-    * Deletes the contact.
+    * Resolves the Firebase key for a contact.
     *
-    * @param {string|number} contactId - The contact ID used for this operation.
-    * @returns {Promise<void>} A promise that resolves when the operation is complete.
+    * @param {string|number} contactId - The contact ID.
+    * @param {string|null} [contactKeyOverride=null] - The fallback Firebase key.
+    * @returns {Promise<string>} A promise that resolves to the Firebase key.
+    */
+   async function resolveContactKey(contactId, contactKeyOverride = null) {
+      const contactKey = (await findContactKeyById(contactId)) || contactKeyOverride;
+      if (!contactKey) throw new Error(`Contact key not found for id ${contactId}`);
+      return contactKey;
+   }
+
+   /**
+    * Builds the payload for a contact update.
+    *
+    * @param {string|number} contactId - The contact ID.
+    * @param {object} contactData - The contact data.
+    * @returns {object} The request payload.
+    */
+   function buildContactPayload(contactId, contactData) {
+      return { ...contactData, id: contactData.id ?? contactId };
+   }
+
+   /**
+    * Builds the URL for one contact record.
+    *
+    * @param {string} contactKey - The Firebase key.
+    * @returns {string} The contact URL.
+    */
+   function buildContactUrl(contactKey) {
+      return `${getContactsBaseUrl()}contacts/${contactKey}.json`;
+   }
+
+   /**
+    * Deletes a contact from Firebase.
+    *
+    * @param {string|number} contactId - The contact ID.
+    * @returns {Promise<void>} A promise that resolves when the request is done.
     */
    async function deleteContact(contactId) {
-      const contactKey = await findContactKeyById(contactId);
-      if (!contactKey) {
-         throw new Error(`Contact key not found for id ${contactId}`);
-      }
-      const response = await fetch(
-         `${getContactsBaseUrl()}contacts/${contactKey}.json`,
-         {
-            method: "DELETE",
-         }
-      );
-      if (!response.ok) {
-         throw new Error(`Contact delete failed: HTTP ${response.status}`);
-      }
+      const contactKey = await resolveContactKey(contactId);
+      await sendContactRequest(buildContactUrl(contactKey), "DELETE", null, "Contact delete failed");
+   }
+
+   /**
+    * Sends a contact request to Firebase.
+    *
+    * @param {string} url - The request URL.
+    * @param {string} method - The HTTP method.
+    * @param {object|null} payload - The request payload.
+    * @param {string} errorPrefix - The error message prefix.
+    * @returns {Promise<void>} A promise that resolves when the request is done.
+    */
+   async function sendContactRequest(url, method, payload, errorPrefix) {
+      const response = await fetch(url, buildRequestOptions(method, payload));
+      if (!response.ok) throw new Error(`${errorPrefix}: HTTP ${response.status}`);
+   }
+
+   /**
+    * Builds fetch options for contact requests.
+    *
+    * @param {string} method - The HTTP method.
+    * @param {object|null} payload - The request payload.
+    * @returns {object} The fetch options.
+    */
+   function buildRequestOptions(method, payload) {
+      if (payload === null) return { method };
+      return {
+         method,
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(payload),
+      };
    }
 
    ContactsFeature.data = {
@@ -179,4 +214,4 @@
    };
 
    window.ContactsFeature = ContactsFeature;
-})();
+}
