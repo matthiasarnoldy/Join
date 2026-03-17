@@ -11,28 +11,85 @@ function initSubtaskControls() {
 
 
 /**
+ * Returns the subtask control elements.
+ *
+ * @param {*} group - The group.
+ * @returns {object|null} The subtask control elements object.
+ */
+function getSubtaskControls(group) {
+   const input = group.querySelector(".add-task__input--subtasks");
+   const list = group.querySelector(".add-task__subtask-list");
+   const clearButton = group.querySelector(".add-task__subtask-button[data-action='clear']");
+   const addButton = group.querySelector(".add-task__subtask-button[data-action='add']");
+   if (!input || !list || !clearButton || !addButton) return null;
+   return { input, list, clearButton, addButton };
+}
+
+
+/**
+ * Binds the subtask clear button.
+ *
+ * @param {HTMLElement|null} button - The clear button.
+ * @param {HTMLElement|null} input - The subtask input.
+ * @returns {void} Nothing.
+ */
+function bindSubtaskClearButton(button, input) {
+   button.addEventListener("click", () => clearSubtaskInput(input));
+}
+
+
+/**
+ * Binds the subtask add button.
+ *
+ * @param {HTMLElement|null} button - The add button.
+ * @param {HTMLElement|null} input - The subtask input.
+ * @param {HTMLElement|null} list - The subtask list.
+ * @returns {void} Nothing.
+ */
+function bindSubtaskAddButton(button, input, list) {
+   button.addEventListener("click", () => addSubtaskFromInput(input, list));
+}
+
+
+/**
+ * Handles the subtask input keydown.
+ *
+ * @param {Event} event - The event object that triggered the handler.
+ * @param {HTMLElement|null} input - The subtask input.
+ * @param {HTMLElement|null} list - The subtask list.
+ * @returns {void} Nothing.
+ */
+function handleSubtaskInputKeydown(event, input, list) {
+   if (event.key !== "Enter") return;
+   event.preventDefault();
+   addSubtaskFromInput(input, list);
+}
+
+
+/**
+ * Binds the subtask input.
+ *
+ * @param {HTMLElement|null} input - The subtask input.
+ * @param {HTMLElement|null} list - The subtask list.
+ * @returns {void} Nothing.
+ */
+function bindSubtaskInput(input, list) {
+   input.addEventListener("keydown", (event) => handleSubtaskInputKeydown(event, input, list));
+}
+
+
+/**
  * Sets up the subtask buttons.
  *
  * @param {*} group - The group.
  * @returns {void} Nothing.
  */
 function setupSubtaskButtons(group) {
-   const input = group.querySelector(".add-task__input--subtasks");
-   const list = group.querySelector(".add-task__subtask-list");
-   const clearButton = group.querySelector(".add-task__subtask-button[data-action='clear']");
-   const addButton = group.querySelector(".add-task__subtask-button[data-action='add']");
-   if (!input || !list || !clearButton || !addButton) return;
-   clearButton.addEventListener("click", () => {
-      clearSubtaskInput(input);
-   });
-   addButton.addEventListener("click", () => {
-      addSubtaskFromInput(input, list);
-   });
-   input.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter") return;
-      event.preventDefault();
-      addSubtaskFromInput(input, list);
-   });
+   const controls = getSubtaskControls(group);
+   if (!controls) return;
+   bindSubtaskClearButton(controls.clearButton, controls.input);
+   bindSubtaskAddButton(controls.addButton, controls.input, controls.list);
+   bindSubtaskInput(controls.input, controls.list);
 }
 
 

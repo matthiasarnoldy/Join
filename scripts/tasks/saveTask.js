@@ -33,24 +33,53 @@ function saveTaskPagePath(pageFile) {
 
 
 /**
+ * Returns one selected contact.
+ *
+ * @param {HTMLElement|null} option - The selected option.
+ * @returns {object} The selected contact object.
+ */
+function getSelectedContact(option) {
+   const initialsElement = option.querySelector(".add-task__option-initials");
+   return {
+      name: option.dataset.name || option.textContent.trim(),
+      initials: initialsElement?.textContent || "",
+      value: option.dataset.value || "",
+   };
+}
+
+
+/**
  * Returns the selected contacts.
  * @returns {Array<object>} The selected contacts list.
  */
 function getSelectedContacts() {
-   const selectedOptions = document.querySelectorAll(`.${ASSIGNED_SELECTED_CLASS}`);
-   const contacts = [];
-   selectedOptions.forEach((option) => {
-      const initialsElement = option.querySelector(".add-task__option-initials");
-      const contactName = option.dataset.name || option.textContent.trim();
-      const contactValue = option.dataset.value || "";
-      const contactInitials = initialsElement?.textContent || "";
-      contacts.push({
-         name: contactName,
-         initials: contactInitials,
-         value: contactValue,
-      });
-   });
-   return contacts;
+   return Array.from(document.querySelectorAll(`.${ASSIGNED_SELECTED_CLASS}`)).map(getSelectedContact);
+}
+
+
+/**
+ * Returns one subtask text.
+ *
+ * @param {HTMLElement|null} item - The subtask item.
+ * @returns {string} The subtask text.
+ */
+function getSubtaskText(item) {
+   const textElement = item.querySelector(".add-task__subtask-text");
+   const inputElement = item.querySelector(".add-task__subtask-input");
+   return String(textElement?.textContent || inputElement?.value || "").trim();
+}
+
+
+/**
+ * Returns one subtask item payload.
+ *
+ * @param {HTMLElement|null} item - The subtask item.
+ * @returns {object|null} The subtask item payload.
+ */
+function getSubtaskPayload(item) {
+   const text = getSubtaskText(item);
+   if (!text) return null;
+   return { text, completed: item.dataset.completed === "true" };
 }
 
 
@@ -59,20 +88,7 @@ function getSelectedContacts() {
  * @returns {Array<object>} The subtasks list list.
  */
 function getSubtasksList() {
-   const subtaskItems = document.querySelectorAll(".add-task__subtask-item");
-   const subtasks = [];
-   subtaskItems.forEach((item) => {
-      const textElement = item.querySelector(".add-task__subtask-text");
-      const inputElement = item.querySelector(".add-task__subtask-input");
-      const subtaskText = textElement?.textContent || inputElement?.value || "";
-      if (subtaskText.trim()) {
-         subtasks.push({
-            text: subtaskText.trim(),
-            completed: item.dataset.completed === "true",
-         });
-      }
-   });
-   return subtasks;
+   return Array.from(document.querySelectorAll(".add-task__subtask-item")).map(getSubtaskPayload).filter(Boolean);
 }
 
 
@@ -87,26 +103,82 @@ function getDialogStatus() {
 
 
 /**
+ * Returns one input value.
+ *
+ * @param {string} selector - The field selector.
+ * @returns {string} The input value.
+ */
+function getTaskInputValue(selector) {
+   return document.querySelector(selector)?.value || "";
+}
+
+
+/**
+ * Returns the active priority button.
+ * @returns {HTMLElement|null} The active priority button.
+ */
+function getActivePriorityButton() {
+   return document.querySelector(".add-task__priority-option--active");
+}
+
+
+/**
+ * Returns whether the button is urgent.
+ *
+ * @param {HTMLElement|null} button - The priority button.
+ * @returns {boolean} Whether the button is urgent.
+ */
+function isUrgentPriorityButton(button) {
+   return button.classList.contains("add-task__priority-option--urgent");
+}
+
+
+/**
+ * Returns whether the button is low.
+ *
+ * @param {HTMLElement|null} button - The priority button.
+ * @returns {boolean} Whether the button is low.
+ */
+function isLowPriorityButton(button) {
+   return button.classList.contains("add-task__priority-option--low");
+}
+
+
+/**
+ * Returns the priority from button.
+ *
+ * @param {HTMLElement|null} button - The priority button.
+ * @returns {string} The priority value.
+ */
+function getPriorityFromButton(button) {
+   if (!button) return "medium";
+   if (isUrgentPriorityButton(button)) return "urgent";
+   if (isLowPriorityButton(button)) return "low";
+   return "medium";
+}
+
+
+/**
+ * Returns the task category input value.
+ * @returns {string} The task category input value.
+ */
+function getCategoryInputValue() {
+   return document.getElementById("addTaskCategoryInput")?.value?.trim() || "";
+}
+
+
+/**
  * Returns the basic inputs.
  * @returns {object} The basic inputs object.
  */
 function getBasicInputs() {
-   const title = document.querySelector("#addTaskTitle")?.value || "";
-   const description = document.querySelector("#addTaskDescription")?.value || "";
-   const date = document.querySelector("#addTaskDate")?.value || "";
-   const activeButton = document.querySelector(".add-task__priority-option--active");
-   let priority = "medium";
-   if (activeButton) {
-      if (activeButton.classList.contains("add-task__priority-option--urgent")) {
-         priority = "urgent";
-      } else if (activeButton.classList.contains("add-task__priority-option--medium")) {
-         priority = "medium";
-      } else if (activeButton.classList.contains("add-task__priority-option--low")) {
-         priority = "low";
-      }
-   }
-   const category = document.getElementById("addTaskCategoryInput")?.value?.trim() || "";
-   return { title, description, date, priority, category };
+   return {
+      title: getTaskInputValue("#addTaskTitle"),
+      description: getTaskInputValue("#addTaskDescription"),
+      date: getTaskInputValue("#addTaskDate"),
+      priority: getPriorityFromButton(getActivePriorityButton()),
+      category: getCategoryInputValue(),
+   };
 }
 
 
@@ -117,18 +189,13 @@ function getBasicInputs() {
  * @returns {object} The task data object.
  */
 function createTaskData(existingId = null) {
-   const status = getDialogStatus();
-   const { title, description, date, priority, category } = getBasicInputs();
+   const basicInputs = getBasicInputs();
    return {
       id: existingId || Date.now(),
-      title,
-      description,
-      date,
-      priority,
-      category,
+      ...basicInputs,
       assigned: getSelectedContacts(),
       subtasks: getSubtasksList(),
-      status,
+      status: getDialogStatus(),
    };
 }
 
@@ -188,6 +255,41 @@ function getDialogEditContext() {
 
 
 /**
+ * Loads the tasks for save lookup.
+ * @returns {Promise<object|null>} A promise that resolves to the save lookup tasks data.
+ */
+async function loadTasksForSaveLookup() {
+   const response = await fetch(`${SAVE_TASK_BASE_URL}tasks.json`);
+   if (!response.ok) return null;
+   return response.json();
+}
+
+
+/**
+ * Returns the save lookup task entries.
+ *
+ * @param {object} data - The task data object.
+ * @returns {Array<Array<*>>} The save lookup task entries.
+ */
+function getSaveLookupTaskEntries(data) {
+   if (!data) return [];
+   return Array.isArray(data) ? data.map((task, index) => [String(index), task]) : Object.entries(data);
+}
+
+
+/**
+ * Returns the matching save lookup task entry.
+ *
+ * @param {Array<Array<*>>} entries - The task entries.
+ * @param {string|number} taskId - The task ID used for this operation.
+ * @returns {Array<*>|undefined} The matching save lookup task entry.
+ */
+function findSaveLookupTaskEntry(entries, taskId) {
+   return entries.find(([, task]) => task && String(task.id ?? "") === String(taskId));
+}
+
+
+/**
  * Finds the task key by ID for save.
  *
  * @param {string|number} taskId - The task ID used for this operation.
@@ -195,16 +297,8 @@ function getDialogEditContext() {
  */
 async function findTaskKeyByIdForSave(taskId) {
    if (!taskId) return null;
-   const response = await fetch(`${SAVE_TASK_BASE_URL}tasks.json`);
-   if (!response.ok) return null;
-   const data = await response.json();
-   if (!data) return null;
-   const entries = Array.isArray(data)
-      ? data.map((task, index) => [String(index), task])
-      : Object.entries(data);
-   const match = entries.find(
-      ([, task]) => task && String(task.id ?? "") === String(taskId),
-   );
+   const data = await loadTasksForSaveLookup();
+   const match = findSaveLookupTaskEntry(getSaveLookupTaskEntries(data), taskId);
    return match ? match[0] : null;
 }
 
@@ -298,35 +392,105 @@ function withSaveTaskAuthUserQuery(path) {
 
 
 /**
+ * Stores the task save success flags.
+ *
+ * @param {boolean} isEdit - Whether edit mode is active.
+ * @returns {void} Nothing.
+ */
+function storeTaskSaveSuccessFlags(isEdit) {
+   localStorage.setItem("showTaskSuccess", "true");
+   localStorage.setItem("showTaskSuccessEdit", isEdit ? "true" : "false");
+}
+
+
+/**
+ * Handles the dialog save success.
+ *
+ * @param {boolean} isEdit - Whether edit mode is active.
+ * @returns {boolean} Whether the dialog save handling is complete.
+ */
+function handleDialogSaveSuccess(isEdit) {
+   storeTaskSaveSuccessFlags(isEdit);
+   redirectAfterSave();
+   return true;
+}
+
+
+/**
+ * Schedules the redirect after save.
+ * @returns {void} Nothing.
+ */
+function scheduleRedirectAfterSave() {
+   setTimeout(() => {
+      redirectAfterSave();
+   }, 1000);
+}
+
+
+/**
+ * Handles the page save success.
+ *
+ * @param {boolean} isEdit - Whether edit mode is active.
+ * @returns {boolean} Whether the page save handling is complete.
+ */
+function handlePageSaveSuccess(isEdit) {
+   showSuccessMessage(isEdit);
+   scheduleRedirectAfterSave();
+   return true;
+}
+
+
+/**
+ * Handles the save success.
+ *
+ * @param {boolean} isEdit - Whether edit mode is active.
+ * @returns {boolean} Whether the save success was handled.
+ */
+function handleSaveSuccess(isEdit) {
+   return isInDialog() ? handleDialogSaveSuccess(isEdit) : handlePageSaveSuccess(isEdit);
+}
+
+
+/**
+ * Updates an existing task for save.
+ *
+ * @param {string|number} taskId - The task ID used for this operation.
+ * @param {string|null} taskKey - The task key.
+ * @param {object} taskData - The task data object.
+ * @returns {Promise<void>} A promise that resolves when the task update is complete.
+ */
+async function persistEditedTask(taskId, taskKey, taskData) {
+   const resolvedTaskKey = taskKey || (await findTaskKeyByIdForSave(taskId));
+   if (!resolvedTaskKey) throw new Error(`Task key not found for edit id ${taskId}`);
+   await updateTaskInFirebase(resolvedTaskKey, taskData);
+}
+
+
+/**
+ * Persists the task data.
+ *
+ * @param {object} editContext - The dialog edit context object.
+ * @param {object} taskData - The task data object.
+ * @returns {Promise<void>} A promise that resolves when the task data is stored.
+ */
+async function persistTaskData(editContext, taskData) {
+   if (editContext.isEdit) return persistEditedTask(editContext.taskId, editContext.taskKey, taskData);
+   await addTaskToFirebase(taskData);
+}
+
+
+/**
  * Saves the task to board.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
 async function saveTaskToBoard() {
    if (isTaskSaveInProgress) return false;
    isTaskSaveInProgress = true;
-   const { isEdit, taskId, taskKey } = getDialogEditContext();
-   const taskData = createTaskData(taskId);
+   const editContext = getDialogEditContext();
+   const taskData = createTaskData(editContext.taskId);
    try {
-      if (isEdit) {
-         const resolvedTaskKey = taskKey || (await findTaskKeyByIdForSave(taskId));
-         if (!resolvedTaskKey) {
-            throw new Error(`Task key not found for edit id ${taskId}`);
-         }
-         await updateTaskInFirebase(resolvedTaskKey, taskData);
-      } else {
-         await addTaskToFirebase(taskData);
-      }
-      if (isInDialog()) {
-         localStorage.setItem("showTaskSuccess", "true");
-         localStorage.setItem("showTaskSuccessEdit", isEdit ? "true" : "false");
-         redirectAfterSave();
-         return true;
-      }
-      showSuccessMessage(isEdit);
-      setTimeout(() => {
-         redirectAfterSave();
-      }, 1000);
-      return true;
+      await persistTaskData(editContext, taskData);
+      return handleSaveSuccess(editContext.isEdit);
    } catch (error) {
       isTaskSaveInProgress = false;
       console.error(error);

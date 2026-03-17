@@ -211,6 +211,35 @@ function setupLiveValidation(fields, button) {
 
 
 /**
+ * Prevents repeated create submits.
+ *
+ * @param {HTMLElement|null} button - The create button.
+ * @param {Event} event - The event object that triggered the handler.
+ * @returns {boolean} Whether the submit was prevented.
+ */
+function preventRepeatedCreateSubmit(button, event) {
+   if (button?.dataset.submitting !== "true") return false;
+   event.preventDefault();
+   return true;
+}
+
+
+/**
+ * Prevents invalid create submits.
+ *
+ * @param {Event} event - The event object that triggered the handler.
+ * @param {object} fields - The fields object.
+ * @returns {boolean} Whether the submit was prevented.
+ */
+function preventInvalidCreateSubmit(event, fields) {
+   if (checkAllFieldsFilled(fields)) return false;
+   event.preventDefault();
+   showErrorsOnEmptyFields(fields);
+   return true;
+}
+
+
+/**
  * Handles createing the button click.
  *
  * @param {Event} event - The event object that triggered the handler.
@@ -219,22 +248,12 @@ function setupLiveValidation(fields, button) {
  */
 async function handleCreateButtonClick(event, fields) {
    const button = event.currentTarget;
-   if (button?.dataset.submitting === "true") {
-      event.preventDefault();
-      return;
-   }
-   const allFilled = checkAllFieldsFilled(fields);
-   if (!allFilled) {
-      event.preventDefault();
-      showErrorsOnEmptyFields(fields);
-      return;
-   }
+   if (preventRepeatedCreateSubmit(button, event)) return;
+   if (preventInvalidCreateSubmit(event, fields)) return;
    event.preventDefault();
    lockCreateButton(button);
    const saveSucceeded = await saveTaskToBoard();
-   if (!saveSucceeded) {
-      unlockCreateButton(button, allFilled);
-   }
+   if (!saveSucceeded) unlockCreateButton(button, true);
 }
 
 
@@ -251,9 +270,7 @@ function setupCreateButton(button) {
    const allValid = checkAllFieldsFilled(requiredFields);
    updateButtonState(button, allValid);
    setupLiveValidation(requiredFields, button);
-   button.addEventListener("click", async (event) => {
-      await handleCreateButtonClick(event, requiredFields);
-   });
+   button.addEventListener("click", (event) => handleCreateButtonClick(event, requiredFields));
 }
 
 

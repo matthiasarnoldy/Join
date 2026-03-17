@@ -41,30 +41,68 @@ function getInitialsFromName(name) {
 
 
 /**
+ * Returns the assigned contact entries.
+ *
+ * @param {object} data - The data object.
+ * @returns {Array<Array<*>>} The assigned contact entries.
+ */
+function getAssignedContactEntries(data) {
+   if (!data) return [];
+   return Array.isArray(data)
+      ? data.map((contact, index) => [String(index), contact])
+      : Object.entries(data);
+}
+
+
+/**
+ * Checks whether the assigned contact entry is valid.
+ *
+ * @param {Array<*>} entry - The assigned contact entry.
+ * @returns {boolean} Whether the assigned contact entry is valid.
+ */
+function isValidAssignedContactEntry(entry) {
+   const [, contact] = entry;
+   return Boolean(contact && typeof contact === "object");
+}
+
+
+/**
+ * Maps one assigned contact entry.
+ *
+ * @param {Array<*>} entry - The assigned contact entry.
+ * @returns {object} The mapped assigned contact.
+ */
+function mapAssignedContactEntry(entry) {
+   const [key, contact] = entry;
+   const resolvedName = String(contact.name || "").trim();
+   return {
+      id: contact.id ?? key,
+      name: resolvedName,
+      initials: getInitialsFromName(resolvedName),
+      color: String(contact.color || "").trim(),
+   };
+}
+
+
+/**
+ * Sorts the assigned contacts.
+ *
+ * @param {Array<object>} contacts - The assigned contacts.
+ * @returns {Array<object>} The sorted assigned contacts.
+ */
+function sortAssignedContacts(contacts) {
+   return contacts.filter((contact) => contact.name !== "").sort((a, b) => a.name.localeCompare(b.name));
+}
+
+
+/**
  * Normalizes the assigned contacts.
  *
  * @param {object} data - The data object.
  * @returns {object} The assigned contacts object.
  */
 function normalizeAssignedContacts(data) {
-   if (!data) return [];
-   const entries = Array.isArray(data)
-      ? data.map((contact, index) => [String(index), contact])
-      : Object.entries(data);
-   return entries
-      .filter(([, contact]) => contact && typeof contact === "object")
-      .map(([key, contact]) => {
-         const resolvedId = contact.id ?? key;
-         const resolvedName = String(contact.name || "").trim();
-         return {
-            id: resolvedId,
-            name: resolvedName,
-            initials: getInitialsFromName(resolvedName),
-            color: String(contact.color || "").trim(),
-         };
-      })
-      .filter((contact) => contact.name !== "")
-      .sort((a, b) => a.name.localeCompare(b.name));
+   return sortAssignedContacts(getAssignedContactEntries(data).filter(isValidAssignedContactEntry).map(mapAssignedContactEntry));
 }
 
 
@@ -159,12 +197,10 @@ function getSearchText(searchInput) {
  * @returns {void} Nothing.
  */
 function setupSearchListeners(searchInput, menu) {
-   searchInput.addEventListener("keydown", (e) => {
-      handleSearchKeydown(e, searchInput);
-   });
-   searchInput.addEventListener("input", (e) => {
-      handleSearchInput(e, searchInput, menu);
-   });
+   if (searchInput.dataset.listenersInitialized === "true") return;
+   searchInput.dataset.listenersInitialized = "true";
+   searchInput.addEventListener("keydown", (event) => handleSearchKeydown(event, searchInput));
+   searchInput.addEventListener("input", (event) => handleSearchInput(event, searchInput, menu));
 }
 
 
@@ -332,24 +368,66 @@ function setupAssignedListeners(elements) {
 
 
 /**
+ * Clears the assigned menu.
+ *
+ * @param {HTMLElement|null} menu - The menu.
+ * @returns {void} Nothing.
+ */
+function clearAssignedMenu(menu) {
+   menu.innerHTML = "";
+}
+
+
+/**
+ * Loads the assigned contacts into the menu.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {Promise<void>} A promise that resolves when the contacts are loaded.
+ */
+async function loadAssignedContacts(elements) {
+   try {
+      renderAssignedContacts(elements.menu, await loadAssignedContactsFromFirebase());
+   } catch (error) {
+      console.error("Assigned contacts loading failed:", error);
+      clearAssignedMenu(elements.menu);
+   }
+}
+
+
+/**
+ * Stores the current assigned input state.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
+function rememberAssignedInputState(elements) {
+   if (!elements.input.value) return;
+   elements.input.dataset.lastValue = elements.input.value;
+   elements.label.dataset.lastLabel = elements.label.textContent;
+}
+
+
+/**
+ * Initializes the assigned select state.
+ *
+ * @param {object} elements - The elements object.
+ * @returns {void} Nothing.
+ */
+function initializeAssignedSelectState(elements) {
+   elements.select.setAttribute("aria-expanded", "false");
+   elements.label.dataset.placeholder = elements.label.textContent;
+   rememberAssignedInputState(elements);
+}
+
+
+/**
  * Initializes the assigned select.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
 async function initAssignedSelect() {
    const elements = getAssignedElements();
    if (!elements) return;
-   try {
-      const contacts = await loadAssignedContactsFromFirebase();
-      renderAssignedContacts(elements.menu, contacts);
-   } catch (error) {
-      console.error("Assigned contacts loading failed:", error);
-      elements.menu.innerHTML = "";
-   }
-   elements.select.setAttribute("aria-expanded", "false");
-   elements.label.dataset.placeholder = elements.label.textContent;
-   if (elements.input.value) {
-      elements.input.dataset.lastValue = elements.input.value;
-      elements.label.dataset.lastLabel = elements.label.textContent;
-   }
+   await loadAssignedContacts(elements);
+   initializeAssignedSelectState(elements);
    setupAssignedListeners(elements);
 }

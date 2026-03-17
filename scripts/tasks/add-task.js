@@ -201,26 +201,72 @@ function resetAssignedSpacing(select) {
 
 
 /**
+ * Returns the category reset elements.
+ *
+ * @param {HTMLElement|null} container - The container.
+ * @returns {object|null} The category reset elements object.
+ */
+function getCategoryResetElements(container) {
+   const select = container.querySelector(".add-task__select--category");
+   if (!select) return null;
+   const label = select.querySelector(".add-task__select-value");
+   const input = container.querySelector("#addTaskCategoryInput");
+   if (!label || !input) return null;
+   return { select, label, input };
+}
+
+
+/**
+ * Resets the category label.
+ *
+ * @param {HTMLElement|null} label - The category label.
+ * @returns {void} Nothing.
+ */
+function resetCategoryLabel(label) {
+   const placeholder = label.dataset.placeholder || "Select task category";
+   label.textContent = placeholder;
+   label.dataset.placeholder = placeholder;
+   label.dataset.lastLabel = "";
+}
+
+
+/**
+ * Resets the category input.
+ *
+ * @param {HTMLInputElement|null} input - The category input.
+ * @returns {void} Nothing.
+ */
+function resetCategoryInput(input) {
+   input.value = "";
+   input.dataset.lastValue = "";
+}
+
+
+/**
+ * Closes the category select.
+ *
+ * @param {HTMLElement|null} select - The category select.
+ * @returns {void} Nothing.
+ */
+function closeCategorySelect(select) {
+   select.classList.remove("add-task__select--open");
+   select.setAttribute("aria-expanded", "false");
+}
+
+
+/**
  * Resets the category.
  *
  * @param {HTMLElement|null} container - The container.
  * @returns {void} Nothing.
  */
 function resetCategory(container) {
-   const select = container.querySelector(".add-task__select--category");
-   if (!select) return;
-   const label = select.querySelector(".add-task__select-value");
-   const input = container.querySelector("#addTaskCategoryInput");
-   if (!label || !input) return;
-   const placeholder = label.dataset.placeholder || "Select task category";
-   label.textContent = placeholder;
-   label.dataset.placeholder = placeholder;
-   label.dataset.lastLabel = "";
-   input.value = "";
-   input.dataset.lastValue = "";
-   select.classList.remove("add-task__select--open");
-   select.setAttribute("aria-expanded", "false");
-   input.dispatchEvent(new Event("input", { bubbles: true }));
+   const elements = getCategoryResetElements(container);
+   if (!elements) return;
+   resetCategoryLabel(elements.label);
+   resetCategoryInput(elements.input);
+   closeCategorySelect(elements.select);
+   elements.input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
 
