@@ -104,6 +104,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 35px;
+    z-index: 10;
 }
 
 .login__legalInformation {
