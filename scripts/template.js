@@ -314,3 +314,20 @@ function contactListItemHTML(contact, initials, activeClass) {
 function contactGroupSectionHTML(letter, itemsHTML) {
    return `${contactGroupHeaderHTML(letter)}${itemsHTML}`;
 }
+
+
+/**
+ * Returns the legal back-to-login button HTML.
+ *
+ * @param {string} assetBasePath - The asset base path.
+ * @param {string} buttonText - The button text.
+ * @returns {string} The legal back-to-login button HTML.
+ */
+function legalBackToLoginButtonHTML(assetBasePath, buttonText) {
+   return `
+      <button class="navBar__backToLogin" id="back-to-login">
+         <img src="${assetBasePath}icons/desktop/login.svg" alt="${buttonText}" class="navBar__backToLogin-icon">
+         <span class="navBar__backToLogin-text">${buttonText}</span>
+      </button>
+   `;
+}

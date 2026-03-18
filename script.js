@@ -4,7 +4,6 @@ const ACTIVE_CLASS = "navBar__quicklink--active";
 const NAV_ITEM_SELECTOR = ".navBar__quicklink, .legalInformation";
 const DEFAULT_BASE_URL =
    "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
-const GLOBAL_AUTH_USER_QUERY_KEY = "uid";
 
 document.documentElement.classList.add("app-loading");
 
@@ -35,12 +34,6 @@ const PAGE_FILES = {
    legal: "legalnotice.html",
    help: "help.html",
 };
-const PROTECTED_PAGE_FILES = new Set([
-   PAGE_FILES.summary,
-   PAGE_FILES.addTask,
-   PAGE_FILES.board,
-   PAGE_FILES.contacts,
-]);
 const IS_IN_TEMPLATES = window.location.pathname.includes("/templates/");
 const PAGE_BASE_PATH = IS_IN_TEMPLATES ? "./" : "./templates/";
 /**
@@ -95,15 +88,12 @@ function showAppToast(message, options = {}) {
    toast.className = `app-toast app-toast--${type}`;
    toast.textContent = message;
    container.appendChild(toast);
-
    requestAnimationFrame(() => toast.classList.add("app-toast--visible"));
-
    const duration = Number(options.duration) > 0 ? Number(options.duration) : 1200;
    setTimeout(() => {
       toast.classList.remove("app-toast--visible");
       setTimeout(() => toast.remove(), 220);
    }, duration);
-
    return toast;
 }
 
@@ -249,97 +239,6 @@ function bindSummaryCardRedirect() {
          location.href = withAuthUserQuery(getPagePath(PAGE_FILES.board));
       }
    });
-}
-
-
-/**
- * Returns the auth user ID from URL.
- * @returns {string} The auth user ID from URL.
- */
-function getAuthUserIdFromUrl() {
-   const params = new URLSearchParams(window.location.search);
-   return String(params.get(GLOBAL_AUTH_USER_QUERY_KEY) || "").trim();
-}
-
-/**
- * Returns the auth source from URL.
- * @returns {string} The auth source from URL.
- */
-function getAuthSourceFromUrl() {
-   const params = new URLSearchParams(window.location.search);
-   return String(params.get("from") || "").trim();
-}
-
-
-/**
- * Returns the current page file name.
- * @returns {string} The current page file name.
- */
-function getCurrentPageFileName() {
-   return String(window.location.pathname.split("/").pop() || "").toLowerCase();
-}
-
-
-/**
- * Checks whether the page is protected.
- * @returns {boolean} Whether the page is protected.
- */
-function isProtectedPage() {
-   return PROTECTED_PAGE_FILES.has(getCurrentPageFileName());
-}
-
-
-/**
- * Enforces the auth guard.
- * @returns {boolean} Whether the auth guard.
- */
-function enforceAuthGuard() {
-   if (!isProtectedPage()) return false;
-   if (getAuthUserIdFromUrl()) return false;
-   location.replace(getLoginEntryPath());
-   return true;
-}
-
-
-/**
- * Builds the auth user query.
- *
- * @param {string} path - The path.
- * @returns {string} The auth user query.
- */
-function withAuthUserQuery(path) {
-   const userId = getAuthUserIdFromUrl();
-   const authSource = getAuthSourceFromUrl();
-   if (!userId && !authSource) return path;
-
-   const url = new URL(path, window.location.href);
-   if (userId) {
-      url.searchParams.set(
-         GLOBAL_AUTH_USER_QUERY_KEY,
-         encodeURIComponent(userId)
-      );
-   }
-   if (authSource) url.searchParams.set("from", authSource);
-
-   return `${url.pathname}${url.search}`;
-}
-
-
-/**
- * Returns the login entry path.
- * @returns {string} The login entry path.
- */
-function getLoginEntryPath() {
-   return IS_IN_TEMPLATES ? "../index.html" : "./index.html";
-}
-
-
-/**
- * Returns the signup entry path.
- * @returns {string} The signup entry path.
- */
-function getSignupEntryPath() {
-   return IS_IN_TEMPLATES ? "./signup.html" : "./templates/signup.html";
 }
 
 

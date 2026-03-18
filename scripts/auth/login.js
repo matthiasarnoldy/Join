@@ -334,7 +334,6 @@ async function handleLogin(loginButton) {
         const [matchingUserId] = matchingUserEntry;
         redirectToSummary(matchingUserId);
     } catch (error) {
-        console.error("Login failed:", error);
         showLoginError();
     } finally {
         setButtonDisabled(loginButton, false);
