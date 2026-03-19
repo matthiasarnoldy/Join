@@ -3,7 +3,7 @@
 const ACTIVE_CLASS = "navBar__quicklink--active";
 const NAV_ITEM_SELECTOR = ".navBar__quicklink, .legalInformation";
 const DEFAULT_BASE_URL =
-   "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+   "https://join-278b5-default-rtdb.europe-west1.firebasedatabase.app/";
 
 document.documentElement.classList.add("app-loading");
 

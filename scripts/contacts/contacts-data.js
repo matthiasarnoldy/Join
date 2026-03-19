@@ -2,7 +2,7 @@
 
 {
    const DEFAULT_CONTACTS_BASE_URL =
-      "https://join-4bce1-default-rtdb.europe-west1.firebasedatabase.app/";
+      "https://join-278b5-default-rtdb.europe-west1.firebasedatabase.app/";
    const ContactsFeature = window.ContactsFeature || {};
    ContactsFeature.state = ContactsFeature.state || {
       selectedContactId: null,
