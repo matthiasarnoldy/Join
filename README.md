@@ -60,7 +60,7 @@ Remember that using **Join** effectively requires consistent updates from you an
 
 ## ❓ Questions?
 
-Have more questions about **Join**? Feel free to contact us at [Your Contact Email]. We're here to help you!
+Have more questions about **Join**? Feel free to contact us at m.arnoldy@outlook.de. We're here to help you!
 
 ---
 
